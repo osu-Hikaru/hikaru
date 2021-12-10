@@ -57,7 +57,7 @@ async function logMariadbStats() {
     "Idle Connections": pool.idleConnections(),
   });
 }
-setInterval(logMariadbStats, 5000);
+setInterval(logMariadbStats, 1000 * 60 * 2);
 
 async function runRankCalc() {
   const conn = await pool.getConnection();
@@ -334,7 +334,7 @@ function main() {
                 username: String(dbRes1[0].username),
                 cover_url: "https://a.hikaru.pw/1/default_cv.jpg",
                 discord: null,
-                has_supported: false,
+                has_supported: Boolean(dbRes1[0].has_supported.readInt8()),
                 interests: null,
                 join_date: String(new Date(dbRes1[0].join_date).toISOString()),
                 kudosu: {
@@ -398,11 +398,11 @@ function main() {
                     current: 1,
                     progress: 0,
                   },
-                  global_rank: Number(dbRes[0].global_rank),
-                  pp: Number(dbRes[0].pp),
+                  global_rank: Number(dbRes1[0].global_rank),
+                  pp: Number(dbRes1[0].pp),
                   ranked_score: 0,
                   hit_accuracy: 0,
-                  play_count: 0,
+                  play_count: Number(dbRes1[0].playcount),
                   play_time: null,
                   total_score: Number(dbRes1[0].total_score),
                   total_hits: 0,
@@ -542,7 +542,7 @@ function main() {
       .then((dbRes1) => {
         res.status(200);
         res.json({
-          avatar_url: String(dbRes[0].avatar_url),
+          avatar_url: String(dbRes1[0].avatar_url),
           country_code: String(dbRes1[0].country_code),
           default_group: "default",
           id: Number(dbRes1[0].id),
@@ -557,7 +557,7 @@ function main() {
           username: String(dbRes1[0].username),
           cover_url: "https://a.hikaru.pw/1/default_cv.jpg",
           discord: null,
-          has_supported: false,
+          has_supported: Boolean(dbRes1[0].has_supported.readInt8()),
           interests: null,
           join_date: String(new Date(dbRes1[0].join_date).toISOString()),
           kudosu: {
@@ -621,11 +621,11 @@ function main() {
               current: 1,
               progress: 0,
             },
-            global_rank: Number(dbRes[0].global_rank),
-            pp: Number(dbRes[0].pp),
+            global_rank: Number(dbRes1[0].global_rank),
+            pp: Number(dbRes1[0].pp),
             ranked_score: 0,
             hit_accuracy: 0,
-            play_count: 0,
+            play_count: Number(dbRes1[0].playcount),
             play_time: null,
             total_score: Number(dbRes1[0].total_score),
             total_hits: 0,
@@ -669,10 +669,17 @@ function main() {
     const promises = { presences: [], messages: [] };
 
     async function main() {
-      let dbResToken = await conn.query(
-        `SELECT id FROM active_tokens WHERE access_token = ?`,
-        [req.headers.authorization.split(" ")[1]]
-      );
+      const dbResToken = await conn
+        .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+          req.headers.authorization.split(" ")[1],
+        ])
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.send();
+          conn.close();
+          return;
+        });
 
       await conn
         .query(`SELECT * FROM chat_presence WHERE user_id = ?`, [
@@ -683,20 +690,44 @@ function main() {
             promises.presences.push(
               new Promise(async (resolve, reject) => {
                 try {
-                  const dbResChannels = await conn.query(
-                    `SELECT * FROM channels WHERE channel_id = ? LIMIT 1`,
-                    [presence.channel_id]
-                  );
-                  const dbChannelLast = await conn.query(
-                    `SELECT * FROM messages WHERE channel_id = ? ORDER BY message_id DESC LIMIT 1`,
-                    [presence.channel_id]
-                  );
+                  const dbResChannels = await conn
+                    .query(
+                      `SELECT * FROM channels WHERE channel_id = ? LIMIT 1`,
+                      [presence.channel_id]
+                    )
+                    .catch((err) => {
+                      console.log(err);
+                      res.status(500);
+                      res.send();
+                      conn.close();
+                      return;
+                    });
+                  const dbChannelLast = await conn
+                    .query(
+                      `SELECT * FROM messages WHERE channel_id = ? ORDER BY message_id DESC LIMIT 1`,
+                      [presence.channel_id]
+                    )
+                    .catch((err) => {
+                      console.log(err);
+                      res.status(500);
+                      res.send();
+                      conn.close();
+                      return;
+                    });
+
                   let users = [];
 
-                  const channelUsers = await conn.query(
-                    `SELECT * FROM chat_presence WHERE channel_id = ?`,
-                    [presence.channel_id]
-                  );
+                  const channelUsers = await conn
+                    .query(`SELECT * FROM chat_presence WHERE channel_id = ?`, [
+                      presence.channel_id,
+                    ])
+                    .catch((err) => {
+                      console.log(err);
+                      res.status(500);
+                      res.send();
+                      conn.close();
+                      return;
+                    });
 
                   channelUsers.forEach((user) => {
                     users.push(Number(user.user_id));
@@ -910,6 +941,18 @@ function main() {
     const conn = await pool.getConnection();
     const url = req.originalUrl.split("/");
 
+    const dbResToken = await conn
+      .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+        req.headers.authorization.split(" ")[1],
+      ])
+      .catch((err) => {
+        console.log(err);
+        res.status(500);
+        res.send();
+        conn.close();
+        return;
+      });
+
     if (url[8] === dbResToken.id) {
       await conn
         .query(
@@ -977,6 +1020,13 @@ function main() {
               conn.close();
               return;
             });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.send();
+          conn.close();
+          return;
         });
     } else {
       res.status(403);
@@ -987,6 +1037,17 @@ function main() {
   api.put("/api/v2/chat/channels/*/mark-as-read/*", async (req, res) => {
     const conn = await pool.getConnection();
     const url = req.originalUrl.split("/");
+    const dbResToken = await conn
+      .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+        req.headers.authorization.split(" ")[1],
+      ])
+      .catch((err) => {
+        console.log(err);
+        res.status(500);
+        res.send();
+        conn.close();
+        return;
+      });
 
     conn
       .query(`UPDATE chat_presence SET last_read_id = ? WHERE user_id = ?`, [
@@ -1009,6 +1070,17 @@ function main() {
   api.delete("/api/v2/chat/channels/*/users/*", async (req, res) => {
     const conn = await pool.getConnection();
     const url = req.originalUrl.split("/");
+    const dbResToken = await conn
+      .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+        req.headers.authorization.split(" ")[1],
+      ])
+      .catch((err) => {
+        console.log(err);
+        res.status(500);
+        res.send();
+        conn.close();
+        return;
+      });
 
     if (url[8] === dbResToken.id) {
       await conn
@@ -1100,6 +1172,207 @@ function main() {
           conn.close();
           return;
         });
+    }
+  );
+
+  api.put("/api/v2/beatmaps/*/solo/scores/*", async (req, res) => {
+    const conn = await pool.getConnection();
+    const url = req.originalUrl.split("/");
+
+    const dbResToken = await conn
+      .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+        req.headers.authorization.split(" ")[1],
+      ])
+      .catch((err) => {
+        console.log(err);
+        res.status(500);
+        res.send();
+        conn.close();
+        return;
+      });
+
+    if (req.body.user.id === dbResToken[0].id) {
+      await conn
+        .query(
+          `SELECT active_id, active_bm_id, current_ruleset FROM users WHERE id = ? LIMIT 1`,
+          [req.body.user.id]
+        )
+        .then(async (verify) => {
+          if (
+            Number(verify[0].active_id) !== Number(url[7]) ||
+            Number(verify[0].active_bm_id) !== Number(url[4]) ||
+            Number(verify[0].current_ruleset) !== Number(req.body.ruleset_id)
+          ) {
+            res.status(500);
+            res.send();
+            conn.close();
+            return;
+          } else {
+            const playdate = new Date();
+
+            const score = await conn
+              .query(
+                `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, rank, total_score, pp, max_combo, accuracy, date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+                  Number(req.body.user.id),
+                  Number(url[4]),
+                  Number(req.body.ruleset_id),
+                  Boolean(req.body.passed),
+                  Number(req.body.statistics.Miss),
+                  Number(req.body.statistics.Meh),
+                  Number(req.body.statistics.Ok),
+                  Number(req.body.statistics.Good),
+                  Number(req.body.statistics.Great),
+                  Number(req.body.statistics.Perfect),
+                  Number(req.body.statistics.SmallTickMiss),
+                  Number(req.body.statistics.SmallTickHit),
+                  Number(req.body.statistics.LargeTickMiss),
+                  Number(req.body.statistics.LargeTickHit),
+                  Number(req.body.statistics.SmallBonus),
+                  Number(req.body.statistics.LargeBonus),
+                  String(req.body.rank),
+                  Number(req.body.total_score),
+                  null,
+                  Number(req.body.max_combo),
+                  Number(req.body.accuracy),
+                  playdate,
+                ]
+              )
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.close();
+                return;
+              });
+
+            const score_id = await conn.query(
+              `SELECT score_id FROM scores WHERE user_id = ? AND date = ? LIMIT 1`,
+              [req.body.user.id, playdate]
+            );
+
+            const user = await conn
+              .query(`SELECT * FROM users WHERE id = ? LIMIT 1`, [
+                req.body.user.id,
+              ])
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.close();
+                return;
+              });
+
+            await conn
+              .query(
+                `UPDATE users SET total_score = ?, playcount = ? WHERE id = ?`,
+                [
+                  Number(user[0].total_score) + Number(req.body.total_score),
+                  Number(user[0].playcount + 1),
+                  Number(req.body.user.id),
+                ]
+              )
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.close();
+                return;
+              });
+
+            conn.close();
+            res.status(200);
+            res.send({
+              accuracy: Number(req.body.accuracy),
+              beatmap_id: Number(url[4]),
+              build_id: 6100,
+              ended_at: new Date(Date.now()).toISOString(),
+              id: Number(score_id),
+              max_combo: Number(req.body.max_combo),
+              mods: [],
+              passed: Boolean(req.body.passed),
+              rank: String(req.body.rank),
+              ruleset_id: Number(req.body.ruleset_id),
+              started_at: new Date(user[0].play_start).toISOString(),
+              statistics: {
+                Good: Number(req.body.statistics.Good),
+                Great: Number(req.body.statistics.Great),
+                LargeBonus: Number(req.body.statistics.LargeBonus),
+                LargeTickHit: Number(req.body.statistics.LargeTickHit),
+                LargeTickMiss: Number(req.body.statistics.LargeTickMiss),
+                Meh: Number(req.body.statistics.Meh),
+                Miss: Number(req.body.statistics.Miss),
+                Ok: Number(req.body.statistics.Ok),
+                Perfect: Number(req.body.statistics.Perfect),
+                SmallBonus: Number(req.body.statistics.SmallBonus),
+                SmallTickHit: Number(req.body.statistics.SmallTickHit),
+                SmallTickMiss: Number(req.body.statistics.SmallTickMiss),
+              },
+              total_score: Number(req.body.total_score),
+              user_id: Number(req.body.user.id),
+            });
+          }
+        });
+    } else {
+      conn.close();
+      res.status(400);
+      res.json({});
+      return;
+    }
+  });
+
+  api.get("/api/v2/beatmaps/*/scores", (req, res) => {
+    res.status(200);
+    res.json({});
+  });
+
+  api.post(
+    "/api/v2/beatmaps/*/solo/scores",
+    upload.none(),
+    async (req, res) => {
+      const conn = await pool.getConnection();
+      const url = req.originalUrl.split("/");
+      const scoreid = Math.floor(Math.random() * 100000000) + 1;
+
+      const dbResToken = await conn
+        .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+          req.headers.authorization.split(" ")[1],
+        ])
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.send();
+          conn.close();
+          return;
+        });
+
+      const user = await conn
+        .query(
+          `UPDATE users SET play_start = ?, current_ruleset = ?, active_id = ?, active_bm_id = ? WHERE id = ?`,
+          [new Date(), req.body.ruleset_id, scoreid, url[4], dbResToken[0].id]
+        )
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.send();
+          conn.close();
+          return;
+        });
+
+      console.log({
+        beatmap_id: Number(url[4]),
+        created_at: new Date(Date.now()).toISOString(),
+        id: Number(scoreid),
+        user_id: Number(dbResToken[0].id),
+      });
+
+      res.status(200);
+      res.json({
+        beatmap_id: Number(url[4]),
+        created_at: new Date(Date.now()).toISOString(),
+        id: Number(scoreid),
+        user_id: Number(dbResToken[0].id),
+      });
     }
   );
 

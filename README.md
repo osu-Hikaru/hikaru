@@ -6,15 +6,19 @@
 - - [x] Registration
 - - [x] Sign-In
 - - [x] Session Storage
+- [ ] Submissions
+- - [x] Send & Store
+- - [ ] Global Leaderboard
+- - [ ] Validation
 - [x] Profiles
 - - [x] Country
 - - [x] Last Seen
 - - [x] Registration Date
 - - [ ] Simple Profile Stats
 - - - [x] Online Status
-- - - [ ] Total Score
+- - - [x] Total Score
 - - - [ ] Total Hits
-- - - [ ] Playcount
+- - - [x] Playcount
 - - [ ] Advanced Profile Stats
 - - - [ ] Ranked Score
 - - - [ ] Ranked PP
@@ -59,36 +63,36 @@
 - - - [ ] Channels Parted
 - - - [ ] Messages Read
 - - - [ ] Messages
-- - [ ] Web
-- - - [ ] Forum
-- - - [ ] Listings
-- - - - [ ] Beatmap Listing
-- - - - [ ] User Listing
-- - - - [ ] Friends Listing
-- - - - [ ] Ranking Listing
-- - - - - [ ] Performance Ranking
-- - - - - - [ ] Global Listing
-- - - - - - [ ] Country Listing
-- - - - - [ ] Score Ranking
-- - - - - - [ ] Global Listing
-- - - - - - [ ] Country Listing
+- [ ] Web
+- - [ ] Forum
+- - [ ] Listings
+- - - [ ] Beatmap Listing
+- - - [ ] User Listing
+- - - [ ] Friends Listing
+- - - [ ] Ranking Listing
+- - - - [ ] Performance Ranking
+- - - - - [ ] Global Listing
 - - - - - [ ] Country Listing
-- - - [ ] Wiki
-- - - [ ] FAQ
-- - [ ] Administrative
-- - - [ ] Roles
-- - - - [ ] Admin
-- - - - [ ] Dev
-- - - - [ ] BN
-- - - - [ ] NAT/QAT
-- - - - [ ] Support
-- - - - [ ] Bots
-- - - - [ ] Alumni
-- - - - [ ] GMT
-- - - [ ] Management
-- - - - [ ] Account
-- - - - [ ] Chat
-- - - - [ ] Forum
-- - - - [ ] User Page
-- - [ ] Homepage
-- - [ ] News Posts
+- - - - [ ] Score Ranking
+- - - - - [ ] Global Listing
+- - - - - [ ] Country Listing
+- - - - [ ] Country Listing
+- - [ ] Wiki
+- - [ ] FAQ
+- [ ] Administrative
+- - [ ] Roles
+- - - [ ] Admin
+- - - [ ] Dev
+- - - [ ] BN
+- - - [ ] NAT/QAT
+- - - [ ] Support
+- - - [ ] Bots
+- - - [ ] Alumni
+- - - [ ] GMT
+- - [ ] Management
+- - - [ ] Account
+- - - [ ] Chat
+- - - [ ] Forum
+- - - [ ] User Page
+- [ ] Homepage
+- [ ] News Posts
