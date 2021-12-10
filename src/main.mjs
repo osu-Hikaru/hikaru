@@ -461,7 +461,7 @@ function main() {
           req.headers.authorization.split(" ")[1],
         ])
         .then((dbRes) => {
-          if (dbRes[0].created_at + dbRes[0].expires_in < Date.now()) {
+          if (dbRes[0] === undefined) {
             res.status(400);
             res.json({
               error: "invalid_grant",
@@ -474,22 +474,36 @@ function main() {
             conn.close();
             return;
           } else {
-            conn
-              .query(
-                `UPDATE users SET last_visit = ?, is_online = 1 WHERE id = ?`,
-                [new Date(), dbRes[0].id]
-              )
-              .then((apiResUsers) => {
-                next();
-                conn.close();
-              })
-              .catch((err) => {
-                console.log(err);
-                res.status(500);
-                res.send();
-                conn.close();
-                return;
+            if (dbRes[0].created_at + dbRes[0].expires_in < Date.now()) {
+              res.status(400);
+              res.json({
+                error: "invalid_grant",
+                error_description:
+                  "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
+                hint: "Incorrect sign in",
+                message:
+                  "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
               });
+              conn.close();
+              return;
+            } else {
+              conn
+                .query(
+                  `UPDATE users SET last_visit = ?, is_online = 1 WHERE id = ?`,
+                  [new Date(), dbRes[0].id]
+                )
+                .then((apiResUsers) => {
+                  next();
+                  conn.close();
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.status(500);
+                  res.send();
+                  conn.close();
+                  return;
+                });
+            }
           }
         })
         .catch((err) => {
@@ -655,6 +669,11 @@ function main() {
     const promises = { presences: [], messages: [] };
 
     async function main() {
+      let dbResToken = await conn.query(
+        `SELECT id FROM active_tokens WHERE access_token = ?`,
+        [req.headers.authorization.split(" ")[1]]
+      );
+
       await conn
         .query(`SELECT * FROM chat_presence WHERE user_id = ?`, [
           dbResToken[0].id,
