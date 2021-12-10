@@ -1,0 +1,20 @@
+{
+  "name": "osu-lazer-server",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "src/main.mjs",
+  "scripts": {
+    "test": "node src/main.mjs"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mariadb": "^2.5.5",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.3"
+  }
+}
