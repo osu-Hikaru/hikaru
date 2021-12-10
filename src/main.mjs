@@ -455,49 +455,56 @@ function main() {
   api.all("*", async (req, res, next) => {
     const conn = await pool.getConnection();
 
-    await conn
-      .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
-        req.headers.authorization.split(" ")[1],
-      ])
-      .then((dbRes) => {
-        if (dbRes[0].created_at + dbRes[0].expires_in < Date.now()) {
-          res.status(400);
-          res.json({
-            error: "invalid_grant",
-            error_description:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-            hint: "Incorrect sign in",
-            message:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-          });
+    if (req.headers.authorization !== undefined) {
+      await conn
+        .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
+          req.headers.authorization.split(" ")[1],
+        ])
+        .then((dbRes) => {
+          if (dbRes[0].created_at + dbRes[0].expires_in < Date.now()) {
+            res.status(400);
+            res.json({
+              error: "invalid_grant",
+              error_description:
+                "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
+              hint: "Incorrect sign in",
+              message:
+                "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
+            });
+            conn.close();
+            return;
+          } else {
+            conn
+              .query(
+                `UPDATE users SET last_visit = ?, is_online = 1 WHERE id = ?`,
+                [new Date(), dbRes[0].id]
+              )
+              .then((apiResUsers) => {
+                next();
+                conn.close();
+              })
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.close();
+                return;
+              });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.send();
           conn.close();
           return;
-        } else {
-          conn
-            .query(
-              `UPDATE users SET last_visit = ?, is_online = 1 WHERE id = ?`,
-              [new Date(), dbRes[0].id]
-            )
-            .then((apiResUsers) => {
-              next();
-              conn.close();
-            })
-            .catch((err) => {
-              console.log(err);
-              res.status(500);
-              res.send();
-              conn.close();
-              return;
-            });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500);
-        res.send();
-        conn.close();
-        return;
-      });
+        });
+    } else {
+      res.status(401);
+      res.json({ message: "Unauthorized." });
+      conn.close();
+      return;
+    }
   });
 
   api.get("/api/v2/users/*/*", async (req, res) => {
@@ -517,149 +524,118 @@ function main() {
     }
 
     conn
-      .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
-        req.headers.authorization.split(" ")[1],
-      ])
-      .then((dbRes) => {
-        if (dbRes[0].created_at + dbRes[0].expires_in < Date.now()) {
-          res.status(400);
-          res.json({
-            error: "invalid_grant",
-            error_description:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-            hint: "Incorrect sign in",
-            message:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-          });
-          conn.close();
-          return;
-        } else {
-          conn
-            .query(`SELECT * FROM users WHERE ${query2}=?`, [url[4]])
-            .then((dbRes1) => {
-              res.status(200);
-              res.json({
-                avatar_url: String(dbRes[0].avatar_url),
-                country_code: String(dbRes1[0].country_code),
-                default_group: "default",
-                id: Number(dbRes1[0].id),
-                is_active: Boolean(dbRes1[0].is_active.readInt8()),
-                is_bot: Boolean(dbRes1[0].is_bot.readInt8()),
-                is_deleted: Boolean(dbRes1[0].is_deleted.readInt8()),
-                is_online: Boolean(dbRes1[0].is_online.readInt8()),
-                is_supporter: Boolean(dbRes1[0].is_supporter.readInt8()),
-                last_visit: String(
-                  new Date(dbRes1[0].last_visit).toISOString()
-                ),
-                pm_friends_only: false,
-                profile_colour: null,
-                username: String(dbRes1[0].username),
-                cover_url: "https://a.hikaru.pw/1/default_cv.jpg",
-                discord: null,
-                has_supported: false,
-                interests: null,
-                join_date: String(new Date(dbRes1[0].join_date).toISOString()),
-                kudosu: {
-                  total: 0,
-                  available: 0,
-                },
-                location: null,
-                max_blocks: 50,
-                max_friends: 250,
-                occupation: null,
-                playmode: String(url[5].split("?")[0]),
-                playstyle: null,
-                post_count: 0,
-                profile_order: [
-                  "me",
-                  "recent_activity",
-                  "top_ranks",
-                  "medals",
-                  "historical",
-                  "beatmaps",
-                  "kudosu",
-                ],
-                title: null,
-                title_url: null,
-                twitter: null,
-                website: null,
-                country: {
-                  code: String(dbRes1[0].country_code),
-                  name: String(dbRes1[0].country_name),
-                },
-                cover: {
-                  custom_url: null,
-                  url: "https://a.hikaru.pw/1/default_cv.jpg",
-                  id: "4",
-                },
-                account_history: [],
-                active_tournament_banner: null,
-                badges: [],
-                beatmap_playcounts_count: 0,
-                comments_count: 0,
-                favourite_beatmapset_count: 0,
-                follower_count: 1,
-                graveyard_beatmapset_count: 0,
-                groups: [],
-                loved_beatmapset_count: 0,
-                mapping_follower_count: 0,
-                monthly_playcounts: [],
-                page: {
-                  html: "",
-                  raw: "",
-                },
-                pending_beatmapset_count: 0,
-                previous_usernames: [],
-                ranked_beatmapset_count: 0,
-                replays_watched_counts: [],
-                scores_best_count: 0,
-                scores_first_count: 0,
-                scores_recent_count: 0,
-                statistics: {
-                  level: {
-                    current: 1,
-                    progress: 0,
-                  },
-                  global_rank: Number(dbRes[0].global_rank),
-                  pp: Number(dbRes[0].pp),
-                  ranked_score: 0,
-                  hit_accuracy: 0,
-                  play_count: 0,
-                  play_time: null,
-                  total_score: Number(dbRes1[0].total_score),
-                  total_hits: 0,
-                  maximum_combo: 0,
-                  replays_watched_by_others: 0,
-                  is_ranked: false,
-                  grade_counts: {
-                    ss: 0,
-                    ssh: 0,
-                    s: 0,
-                    sh: 0,
-                    a: 0,
-                  },
-                  rank: {
-                    country: null,
-                  },
-                },
-                support_level: 0,
-                user_achievements: [],
-                rankHistory: null,
-                rank_history: null,
-                ranked_and_approved_beatmapset_count: 0,
-                unranked_beatmapset_count: 0,
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-              res.status(500);
-              res.send();
-              conn.close();
-              return;
-            });
-          conn.close();
-          return;
-        }
+      .query(`SELECT * FROM users WHERE ${query2}=?`, [url[4]])
+      .then((dbRes1) => {
+        res.status(200);
+        res.json({
+          avatar_url: String(dbRes[0].avatar_url),
+          country_code: String(dbRes1[0].country_code),
+          default_group: "default",
+          id: Number(dbRes1[0].id),
+          is_active: Boolean(dbRes1[0].is_active.readInt8()),
+          is_bot: Boolean(dbRes1[0].is_bot.readInt8()),
+          is_deleted: Boolean(dbRes1[0].is_deleted.readInt8()),
+          is_online: Boolean(dbRes1[0].is_online.readInt8()),
+          is_supporter: Boolean(dbRes1[0].is_supporter.readInt8()),
+          last_visit: String(new Date(dbRes1[0].last_visit).toISOString()),
+          pm_friends_only: false,
+          profile_colour: null,
+          username: String(dbRes1[0].username),
+          cover_url: "https://a.hikaru.pw/1/default_cv.jpg",
+          discord: null,
+          has_supported: false,
+          interests: null,
+          join_date: String(new Date(dbRes1[0].join_date).toISOString()),
+          kudosu: {
+            total: 0,
+            available: 0,
+          },
+          location: null,
+          max_blocks: 50,
+          max_friends: 250,
+          occupation: null,
+          playmode: String(url[5].split("?")[0]),
+          playstyle: null,
+          post_count: 0,
+          profile_order: [
+            "me",
+            "recent_activity",
+            "top_ranks",
+            "medals",
+            "historical",
+            "beatmaps",
+            "kudosu",
+          ],
+          title: null,
+          title_url: null,
+          twitter: null,
+          website: null,
+          country: {
+            code: String(dbRes1[0].country_code),
+            name: String(dbRes1[0].country_name),
+          },
+          cover: {
+            custom_url: null,
+            url: "https://a.hikaru.pw/1/default_cv.jpg",
+            id: "4",
+          },
+          account_history: [],
+          active_tournament_banner: null,
+          badges: [],
+          beatmap_playcounts_count: 0,
+          comments_count: 0,
+          favourite_beatmapset_count: 0,
+          follower_count: 1,
+          graveyard_beatmapset_count: 0,
+          groups: [],
+          loved_beatmapset_count: 0,
+          mapping_follower_count: 0,
+          monthly_playcounts: [],
+          page: {
+            html: "",
+            raw: "",
+          },
+          pending_beatmapset_count: 0,
+          previous_usernames: [],
+          ranked_beatmapset_count: 0,
+          replays_watched_counts: [],
+          scores_best_count: 0,
+          scores_first_count: 0,
+          scores_recent_count: 0,
+          statistics: {
+            level: {
+              current: 1,
+              progress: 0,
+            },
+            global_rank: Number(dbRes[0].global_rank),
+            pp: Number(dbRes[0].pp),
+            ranked_score: 0,
+            hit_accuracy: 0,
+            play_count: 0,
+            play_time: null,
+            total_score: Number(dbRes1[0].total_score),
+            total_hits: 0,
+            maximum_combo: 0,
+            replays_watched_by_others: 0,
+            is_ranked: false,
+            grade_counts: {
+              ss: 0,
+              ssh: 0,
+              s: 0,
+              sh: 0,
+              a: 0,
+            },
+            rank: {
+              country: null,
+            },
+          },
+          support_level: 0,
+          user_achievements: [],
+          rankHistory: null,
+          rank_history: null,
+          ranked_and_approved_beatmapset_count: 0,
+          unranked_beatmapset_count: 0,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -668,6 +644,8 @@ function main() {
         conn.close();
         return;
       });
+    conn.close();
+    return;
   });
 
   api.get("/api/v2/chat/updates", async (req, res) => {
@@ -678,161 +656,142 @@ function main() {
 
     async function main() {
       await conn
-        .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
-          req.headers.authorization.split(" ")[1],
+        .query(`SELECT * FROM chat_presence WHERE user_id = ?`, [
+          dbResToken[0].id,
         ])
-        .then(async (dbResToken) => {
-          if (
-            dbResToken[0].created_at + dbResToken[0].expires_in <
-            Date.now()
-          ) {
-            res.status(400);
-            res.json({
-              error: "invalid_grant",
-              error_description:
-                "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-              hint: "Incorrect sign in",
-              message:
-                "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
+        .then(async (dbResPresence) => {
+          await dbResPresence.forEach(async (presence) => {
+            promises.presences.push(
+              new Promise(async (resolve, reject) => {
+                try {
+                  const dbResChannels = await conn.query(
+                    `SELECT * FROM channels WHERE channel_id = ? LIMIT 1`,
+                    [presence.channel_id]
+                  );
+                  const dbChannelLast = await conn.query(
+                    `SELECT * FROM messages WHERE channel_id = ? ORDER BY message_id DESC LIMIT 1`,
+                    [presence.channel_id]
+                  );
+                  let users = [];
+
+                  const channelUsers = await conn.query(
+                    `SELECT * FROM chat_presence WHERE channel_id = ?`,
+                    [presence.channel_id]
+                  );
+
+                  channelUsers.forEach((user) => {
+                    users.push(Number(user.user_id));
+                  });
+
+                  let last_message_id;
+
+                  if (dbChannelLast[0] === undefined) {
+                    last_message_id = 0;
+                  } else {
+                    last_message_id = Number(dbChannelLast[0].message_id);
+                  }
+
+                  let data = {
+                    channel_id: Number(presence.channel_id),
+                    current_user_attributes: {
+                      can_message: Boolean(presence.can_message.readInt8()),
+                      last_read_id: Number(presence.last_read_id),
+                    },
+                    description: String(dbResChannels[0].description),
+                    icon: String(dbResChannels[0].icon),
+                    last_message_id: Number(last_message_id),
+                    last_read_id: presence.last_read_id,
+                    moderated: Boolean(dbResChannels[0].moderated.readInt8()),
+                    name: String(dbResChannels[0].name),
+                    type: String(dbResChannels[0].type),
+                    users: users,
+                  };
+
+                  await presences.push(data);
+
+                  resolve(data);
+                } catch (e) {
+                  reject(e);
+                }
+              })
+            );
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.send();
+          conn.close();
+          return;
+        });
+
+      await Promise.all(promises.presences).then(async (presences) => {
+        let present = [];
+
+        new Set(presences).forEach((presence) => {
+          present.push(presence.channel_id);
+        });
+
+        if (present.length < 1) return;
+
+        await conn
+          .query(
+            `SELECT * FROM messages WHERE channel_id IN ${
+              "(" + present.join(", ") + ")"
+            } AND message_id > ? ORDER BY message_id ASC LIMIT 50`,
+            [req.query.since]
+          )
+          .then(async (dbResMessages) => {
+            dbResMessages.forEach(async (message) => {
+              promises.messages.push(
+                new Promise(async (resolve, reject) => {
+                  try {
+                    const dbResUser = await conn.query(
+                      `SELECT * FROM users WHERE id = ? LIMIT 1`,
+                      [message.user_id]
+                    );
+                    resolve({
+                      channel_id: Number(message.channel_id),
+                      content: String(message.message_content),
+                      is_action: Boolean(message.is_action.readInt8()),
+                      message_id: Number(message.message_id),
+                      sender: {
+                        avatar_url: String(dbResUser[0].avatar_url),
+                        country_code: String(dbResUser[0].country_code),
+                        default_group: "default",
+                        id: Number(dbResUser[0].id),
+                        is_active: Boolean(dbResUser[0].is_active.readInt8()),
+                        is_bot: Boolean(dbResUser[0].is_bot.readInt8()),
+                        is_deleted: Boolean(dbResUser[0].is_deleted.readInt8()),
+                        is_online: Boolean(dbResUser[0].is_online.readInt8()),
+                        is_supporter: Boolean(
+                          dbResUser[0].is_supporter.readInt8()
+                        ),
+                        last_visit: String(
+                          dbResUser[0].last_visit.toISOString()
+                        ),
+                        pm_friends_only: false,
+                        profile_colour: null,
+                        username: String(dbResUser[0].username),
+                      },
+                      sender_id: String(dbResUser[0].id),
+                      timestamp: new Date(message.timestamp).toISOString(),
+                    });
+                  } catch (e) {
+                    reject(e);
+                  }
+                })
+              );
             });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500);
+            res.send();
             conn.close();
             return;
-          } else {
-            await conn
-              .query(`SELECT * FROM chat_presence WHERE user_id = ?`, [
-                dbResToken[0].id,
-              ])
-              .then(async (dbResPresence) => {
-                await dbResPresence.forEach(async (presence) => {
-                  promises.presences.push(
-                    new Promise(async (resolve, reject) => {
-                      try {
-                        const dbResChannels = await conn.query(
-                          `SELECT * FROM channels WHERE channel_id = ? LIMIT 1`,
-                          [presence.channel_id]
-                        );
-                        const dbResLastChannel = await conn.query(
-                          `SELECT * FROM messages WHERE channel_id = ? ORDER BY message_id DESC LIMIT 1`,
-                          [presence.channel_id]
-                        );
-
-                        let data = {
-                          channel_id: Number(presence.channel_id),
-                          current_user_attributes: {
-                            can_message: Boolean(
-                              presence.can_message.readInt8()
-                            ),
-                            last_read_id: Number(presence.last_read_id),
-                          },
-                          description: String(dbResChannels[0].description),
-                          icon: String(dbResChannels[0].icon),
-                          last_message_id: Number(
-                            dbResLastChannel[0].message_id
-                          ),
-                          last_read_id: presence.last_read_id,
-                          moderated: Boolean(
-                            dbResChannels[0].moderated.readInt8()
-                          ),
-                          name: String(dbResChannels[0].name),
-                          type: String(dbResChannels[0].type),
-                          users: [],
-                        };
-
-                        await presences.push(data);
-
-                        resolve(data);
-                      } catch (e) {
-                        reject(e);
-                      }
-                    })
-                  );
-                });
-              })
-              .catch((err) => {
-                console.log(err);
-                res.status(500);
-                res.send();
-                conn.close();
-                return;
-              });
-
-            await Promise.all(promises.presences).then(async (presences) => {
-              let present = [];
-
-              new Set(presences).forEach((presence) => {
-                present.push(presence.channel_id);
-              });
-
-              if (present.length < 1) return;
-
-              await conn
-                .query(
-                  `SELECT * FROM messages WHERE channel_id IN ${
-                    "(" + present.join(", ") + ")"
-                  } AND message_id > ? ORDER BY message_id ASC LIMIT 50`,
-                  [req.query.since]
-                )
-                .then(async (dbResMessages) => {
-                  dbResMessages.forEach(async (message) => {
-                    promises.messages.push(
-                      new Promise(async (resolve, reject) => {
-                        try {
-                          const dbResUser = await conn.query(
-                            `SELECT * FROM users WHERE id = ? LIMIT 1`,
-                            [message.user_id]
-                          );
-                          resolve({
-                            channel_id: Number(message.channel_id),
-                            content: String(message.message_content),
-                            is_action: Boolean(message.is_action.readInt8()),
-                            message_id: Number(message.message_id),
-                            sender: {
-                              avatar_url: String(dbResUser[0].avatar_url),
-                              country_code: String(dbResUser[0].country_code),
-                              default_group: "default",
-                              id: Number(dbResUser[0].id),
-                              is_active: Boolean(
-                                dbResUser[0].is_active.readInt8()
-                              ),
-                              is_bot: Boolean(dbResUser[0].is_bot.readInt8()),
-                              is_deleted: Boolean(
-                                dbResUser[0].is_deleted.readInt8()
-                              ),
-                              is_online: Boolean(
-                                dbResUser[0].is_online.readInt8()
-                              ),
-                              is_supporter: Boolean(
-                                dbResUser[0].is_supporter.readInt8()
-                              ),
-                              last_visit: String(
-                                dbResUser[0].last_visit.toISOString()
-                              ),
-                              pm_friends_only: false,
-                              profile_colour: null,
-                              username: String(dbResUser[0].username),
-                            },
-                            sender_id: String(dbResUser[0].id),
-                            timestamp: new Date(
-                              message.timestamp
-                            ).toISOString(),
-                          });
-                        } catch (e) {
-                          reject(e);
-                        }
-                      })
-                    );
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  res.status(500);
-                  res.send();
-                  conn.close();
-                  return;
-                });
-            });
-          }
-        });
+          });
+      });
     }
 
     await main();
@@ -932,130 +891,65 @@ function main() {
     const conn = await pool.getConnection();
     const url = req.originalUrl.split("/");
 
-    await conn
-      .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
-        req.headers.authorization.split(" ")[1],
-      ])
-      .then(async (dbResToken) => {
-        if (dbResToken[0].created_at + dbResToken[0].expires_in < Date.now()) {
-          res.status(400);
-          res.json({
-            error: "invalid_grant",
-            error_description:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-            hint: "Incorrect sign in",
-            message:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-          });
-          conn.close();
-          return;
-        } else {
-          if (url[8] === dbResToken.id) {
-            await conn
-              .query(
-                `INSERT INTO chat_presence (user_id, channel_id, can_message) VALUES (?,?,?)`,
-                [Number(dbResToken[0].id), Number(url[5]), Number(true)]
-              )
-              .then(async (dbResChatPresence) => {
-                await conn
-                  .query(
-                    `SELECT * FROM channels WHERE channel_id = ? LIMIT 1`,
-                    [Number(url[5])]
-                  )
-                  .then(async (dbResChannel) => {
-                    await conn
-                      .query(
-                        `SELECT message_id from messages WHERE channel_id = ? ORDER BY message_id DESC LIMIT 1`,
-                        [dbResChannel[0].channel_id]
-                      )
-                      .then((dbChannelLast) => {
-                        conn.close();
-                        res.status(200);
-                        res.json({
-                          channel_id: Number(url[6]),
-                          current_user_attributes: {
-                            can_message: Boolean(true),
-                            last_read_id: Number(null),
-                          },
-                          description: String(dbResChannel[0].description),
-                          icon: String(dbResChannel[0].icon),
-                          last_message_id: Number(dbChannelLast[0].message_id),
-                          last_read_id: null,
-                          moderated: Boolean(dbResChannel[0].moderated),
-                          name: String(dbResChannel[0].name),
-                          type: String(dbResChannel[0].type),
-                          users: [],
-                        });
-                        return;
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                        res.status(500);
-                        res.send();
-                        conn.close();
-                        return;
-                      });
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    res.status(500);
-                    res.send();
-                    conn.close();
-                    return;
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    res.status(500);
-                    res.send();
-                    conn.close();
-                    return;
+    if (url[8] === dbResToken.id) {
+      await conn
+        .query(
+          `INSERT INTO chat_presence (user_id, channel_id, can_message) VALUES (?,?,?)`,
+          [Number(dbResToken[0].id), Number(url[5]), Number(true)]
+        )
+        .then(async (dbResChatPresence) => {
+          await conn
+            .query(`SELECT * FROM channels WHERE channel_id = ? LIMIT 1`, [
+              Number(url[5]),
+            ])
+            .then(async (dbResChannel) => {
+              await conn
+                .query(
+                  `SELECT message_id from messages WHERE channel_id = ? ORDER BY message_id DESC LIMIT 1`,
+                  [dbResChannel[0].channel_id]
+                )
+                .then((dbChannelLast) => {
+                  let last_message_id;
+
+                  if (dbChannelLast[0] === undefined) {
+                    last_message_id = 0;
+                  } else {
+                    last_message_id = Number(dbChannelLast[0].message_id);
+                  }
+
+                  conn.close();
+                  res.status(200);
+                  res.json({
+                    channel_id: Number(url[6]),
+                    current_user_attributes: {
+                      can_message: Boolean(true),
+                      last_read_id: Number(null),
+                    },
+                    description: String(dbResChannel[0].description),
+                    icon: String(dbResChannel[0].icon),
+                    last_message_id: last_message_id,
+                    last_read_id: null,
+                    moderated: Boolean(dbResChannel[0].moderated),
+                    name: String(dbResChannel[0].name),
+                    type: String(dbResChannel[0].type),
+                    users: [],
                   });
-              });
-          } else {
-            res.status(403);
-            res.send();
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500);
-        res.send();
-        conn.close();
-        return;
-      });
-  });
-
-  api.put("/api/v2/chat/channels/*/mark-as-read/*", async (req, res) => {
-    const conn = await pool.getConnection();
-    const url = req.originalUrl.split("/");
-
-    await conn
-      .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
-        req.headers.authorization.split(" ")[1],
-      ])
-      .then(async (dbResToken) => {
-        if (dbResToken[0].created_at + dbResToken[0].expires_in < Date.now()) {
-          res.status(400);
-          res.json({
-            error: "invalid_grant",
-            error_description:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-            hint: "Incorrect sign in",
-            message:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-          });
-          conn.close();
-          return;
-        } else {
-          conn
-            .query(
-              `UPDATE chat_presence SET last_read_id = ? WHERE user_id = ?`,
-              [Number(url[7]), dbResToken[0].id]
-            )
-            .then((dbResPresence) => {
-              res.status(200);
-              res.json({});
+                  return;
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.status(500);
+                  res.send();
+                  conn.close();
+                  return;
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(500);
+              res.send();
+              conn.close();
+              return;
             })
             .catch((err) => {
               console.log(err);
@@ -1064,7 +958,25 @@ function main() {
               conn.close();
               return;
             });
-        }
+        });
+    } else {
+      res.status(403);
+      res.send();
+    }
+  });
+
+  api.put("/api/v2/chat/channels/*/mark-as-read/*", async (req, res) => {
+    const conn = await pool.getConnection();
+    const url = req.originalUrl.split("/");
+
+    conn
+      .query(`UPDATE chat_presence SET last_read_id = ? WHERE user_id = ?`, [
+        Number(url[7]),
+        dbResToken[0].id,
+      ])
+      .then((dbResPresence) => {
+        res.status(200);
+        res.json({});
       })
       .catch((err) => {
         console.log(err);
@@ -1079,50 +991,24 @@ function main() {
     const conn = await pool.getConnection();
     const url = req.originalUrl.split("/");
 
-    await conn
-      .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
-        req.headers.authorization.split(" ")[1],
-      ])
-      .then(async (dbResToken) => {
-        if (dbResToken[0].created_at + dbResToken[0].expires_in < Date.now()) {
-          res.status(400);
-          res.json({
-            error: "invalid_grant",
-            error_description:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-            hint: "Incorrect sign in",
-            message:
-              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-          });
+    if (url[8] === dbResToken.id) {
+      await conn
+        .query(
+          `DELETE FROM chat_presence WHERE user_id = ? AND channel_id = ?`,
+          [Number(dbResToken[0].id), Number(url[5])]
+        )
+        .then(async (dbResChatPresence) => {
           conn.close();
-          return;
-        } else {
-          if (url[8] === dbResToken.id) {
-            await conn
-              .query(
-                `DELETE FROM chat_presence WHERE user_id = ? AND channel_id = ?`,
-                [Number(dbResToken[0].id), Number(url[5])]
-              )
-              .then(async (dbResChatPresence) => {
-                conn.close();
-                res.status(200);
-                res.send();
-              });
-          } else {
-            conn.close();
-            res.status(403);
-            res.send();
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500);
-        res.send();
-        conn.close();
-        return;
-      });
+          res.status(200);
+          res.send();
+        });
+    } else {
+      conn.close();
+      res.status(403);
+      res.send();
+    }
   });
+
   api.get("/api/v2/chat/channels/*/messages", (req, res) => {
     res.status(200);
     res.json({});
@@ -1136,96 +1022,57 @@ function main() {
       const url = req.originalUrl.split("/");
 
       conn
-        .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
-          req.headers.authorization.split(" ")[1],
-        ])
-        .then((dbResTokens) => {
-          if (
-            dbResTokens[0].created_at + dbResTokens[0].expires_in <
-            Date.now()
-          ) {
-            res.status(400);
-            res.json({
-              error: "invalid_grant",
-              error_description:
-                "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-              hint: "Incorrect sign in",
-              message:
-                "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-            });
-            conn.close();
-            return;
-          } else {
-            conn
-              .query(
-                `SELECT * FROM users WHERE ID = ? LIMIT 1`,
-                dbResTokens[0].id
-              )
-              .then(async (dbResUsers) => {
-                let dbResCount = await conn.query(
-                  `SELECT count(*) FROM messages`
-                );
-                const messageID = Number(dbResCount[0]["count(*)"]) + 1;
+        .query(`SELECT * FROM users WHERE ID = ? LIMIT 1`, dbResTokens[0].id)
+        .then(async (dbResUsers) => {
+          let dbResCount = await conn.query(`SELECT count(*) FROM messages`);
+          const messageID = Number(dbResCount[0]["count(*)"]) + 1;
 
-                conn
-                  .query(
-                    `INSERT INTO messages (channel_id, user_id, timestamp, message_content, is_action) VALUES (?,?,?,?,?)`,
-                    [
-                      Number(url[5]),
-                      Number(dbResUsers[0].id),
-                      new Date(Date.now()),
-                      String(req.body.message),
-                      req.body.is_action === "true",
-                    ]
-                  )
-                  .then((dbResMessage) => {
-                    res.status(200);
-                    res.json({
-                      channel_id: url[5],
-                      content: req.body.message,
-                      is_action: req.body.is_action,
-                      message_id: messageID,
-                      sender: {
-                        avatar_url: dbResUsers[0].avatar_url,
-                        country_code: dbResUsers[0].country_code,
-                        default_group: "default",
-                        id: dbResUsers[0].id,
-                        is_active: Boolean(dbResUsers[0].is_active.readInt8()),
-                        is_bot: Boolean(dbResUsers[0].is_bot.readInt8()),
-                        is_deleted: Boolean(
-                          dbResUsers[0].is_deleted.readInt8()
-                        ),
-                        is_online: Boolean(dbResUsers[0].is_online.readInt8()),
-                        is_supporter: Boolean(
-                          dbResUsers[0].is_supporter.readInt8()
-                        ),
-                        last_visit: new Date(Date.now()).toISOString(),
-                        pm_friends_only: false,
-                        profile_colour: null,
-                        username: dbResUsers[0].username,
-                      },
-                      sender_id: dbResUsers[0].id,
-                      timestamp: new Date(Date.now()).toISOString(),
-                    });
-                    conn.close();
-                    return;
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    res.status(500);
-                    res.send();
-                    conn.close();
-                    return;
-                  });
-              })
-              .catch((err) => {
-                console.log(err);
-                res.status(500);
-                res.send();
-                conn.close();
-                return;
+          conn
+            .query(
+              `INSERT INTO messages (channel_id, user_id, timestamp, message_content, is_action) VALUES (?,?,?,?,?)`,
+              [
+                Number(url[5]),
+                Number(dbResUsers[0].id),
+                new Date(Date.now()),
+                String(req.body.message),
+                req.body.is_action === "true",
+              ]
+            )
+            .then((dbResMessage) => {
+              res.status(200);
+              res.json({
+                channel_id: url[5],
+                content: req.body.message,
+                is_action: req.body.is_action,
+                message_id: messageID,
+                sender: {
+                  avatar_url: dbResUsers[0].avatar_url,
+                  country_code: dbResUsers[0].country_code,
+                  default_group: "default",
+                  id: dbResUsers[0].id,
+                  is_active: Boolean(dbResUsers[0].is_active.readInt8()),
+                  is_bot: Boolean(dbResUsers[0].is_bot.readInt8()),
+                  is_deleted: Boolean(dbResUsers[0].is_deleted.readInt8()),
+                  is_online: Boolean(dbResUsers[0].is_online.readInt8()),
+                  is_supporter: Boolean(dbResUsers[0].is_supporter.readInt8()),
+                  last_visit: new Date(Date.now()).toISOString(),
+                  pm_friends_only: false,
+                  profile_colour: null,
+                  username: dbResUsers[0].username,
+                },
+                sender_id: dbResUsers[0].id,
+                timestamp: new Date(Date.now()).toISOString(),
               });
-          }
+              conn.close();
+              return;
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(500);
+              res.send();
+              conn.close();
+              return;
+            });
         })
         .catch((err) => {
           console.log(err);

@@ -15,7 +15,6 @@
 - - - [ ] Total Score
 - - - [ ] Total Hits
 - - - [ ] Playcount
-- - - [ ] Playcount
 - - [ ] Advanced Profile Stats
 - - - [ ] Ranked Score
 - - - [ ] Ranked PP
