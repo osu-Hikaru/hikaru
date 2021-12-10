@@ -1,3 +1,95 @@
 # Hikaru Server
-# Hikaru Server
-# Hikaru Server
+
+## ToDo
+
+- [x] Accounts
+- - [x] Registration
+- - [x] Sign-In
+- - [x] Session Storage
+- [x] Profiles
+- - [x] Country
+- - [x] Last Seen
+- - [x] Registration Date
+- - [ ] Simple Profile Stats
+- - - [x] Online Status
+- - - [ ] Total Score
+- - - [ ] Total Hits
+- - - [ ] Playcount
+- - - [ ] Playcount
+- - [ ] Advanced Profile Stats
+- - - [ ] Ranked Score
+- - - [ ] Ranked PP
+- - - [ ] Maximum Combo
+- - - [ ] Grades Achieved
+- - - [ ] Rank Graph
+- - - [ ] Plays Graph
+- - - [x] Global Ranking
+- - - [ ] Country Ranking
+- - - [ ] Top 100
+- - - [ ] Most Played
+- - - [ ] Recent Plays
+- - [ ] Extended Profile Stats
+- - - [ ] Profile Page
+- - - [ ] Favorite Beatmaps
+- - - [ ] Replays Watched
+- - - [ ] Replays Watched Graph
+- - - [ ] First Place Ranks
+- - - [ ] Uploaded Beatmaps
+- - - - [ ] Ranked
+- - - - [ ] Loved
+- - - - [ ] Pending/WIP
+- - - - [ ] Graveyard
+- - - [ ] Kudosu
+- [ ] Spectator
+- - [ ] ?
+- [ ] Multiplayer
+- - [ ] ?
+- [ ] Other Modes
+- - [ ] ?
+- [ ] Chat
+- - [ ] Silences
+- - [x] Public
+- - - [x] Channel List
+- - - [x] Channels Joined
+- - - [x] Channels Parted
+- - - [x] Messages Read
+- - - [x] Messages
+- - [ ] Private
+- - - [ ] Channel List
+- - - [ ] Channels Joined
+- - - [ ] Channels Parted
+- - - [ ] Messages Read
+- - - [ ] Messages
+- - [ ] Web
+- - - [ ] Forum
+- - - [ ] Listings
+- - - - [ ] Beatmap Listing
+- - - - [ ] User Listing
+- - - - [ ] Friends Listing
+- - - - [ ] Ranking Listing
+- - - - - [ ] Performance Ranking
+- - - - - - [ ] Global Listing
+- - - - - - [ ] Country Listing
+- - - - - [ ] Score Ranking
+- - - - - - [ ] Global Listing
+- - - - - - [ ] Country Listing
+- - - - - [ ] Country Listing
+- - - [ ] Wiki
+- - - [ ] FAQ
+- - [ ] Administrative
+- - - [ ] Roles
+- - - - [ ] Admin
+- - - - [ ] Dev
+- - - - [ ] BN
+- - - - [ ] NAT/QAT
+- - - - [ ] Support
+- - - - [ ] Bots
+- - - - [ ] Alumni
+- - - - [ ] GMT
+- - - [ ] Management
+- - - - [ ] Account
+- - - - [ ] Chat
+- - - - [ ] Forum
+- - - - [ ] User Page
+- - [ ] Homepage
+- - [ ] News Posts
