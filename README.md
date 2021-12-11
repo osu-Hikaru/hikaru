@@ -4,7 +4,7 @@
 
 This Repository, Project and the people behind it are not affiliated in any way, shape or form with `ppy Pty Ltd` or any party involved.
 
-This is an independent Fan project made for education purposes only. Please check out the official source for the game (osu!)[https://osu.ppy.sh/].
+This is an independent Fan project made for education purposes only. Please check out the official source for the game [osu!](https://osu.ppy.sh/).
 
 ## ToDo
 
