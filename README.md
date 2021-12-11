@@ -96,3 +96,9 @@
 - - - [ ] User Page
 - [ ] Homepage
 - [ ] News Posts
+
+## License Notice
+
+Licensed under GPL v3 - Check Repository Root for full License notice.
+osu!Hikaru, a fully independent osu!Lazer Private Server backend.
+Copyright (C) 2021 Christen Tautz <chrisneuss01@gmail.com>
