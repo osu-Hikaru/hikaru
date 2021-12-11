@@ -37,6 +37,10 @@ setInterval(function () {
   modules.rankCalc(pool);
 }, 1000 * 60 * 1);
 
+setInterval(function () {
+  modules.checkActiveTokens(pool);
+}, 1000 * 60 * 60);
+
 function main() {
   api.use(morgan("dev"));
   api.use(bodyparser.default.json());

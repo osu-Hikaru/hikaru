@@ -9,6 +9,7 @@ import genNumber from "./utilities/genNumber.mjs";
 import updateUserStatus from "./utilities/updateUserStatus.mjs";
 import logMariadbStats from "./utilities/logMariadbStats.mjs";
 import rankCalc from "./utilities/rankCalc.mjs";
+import checkActiveTokens from "./utilities/checkActiveTokens.mjs";
 
 // Endpoints
 
@@ -39,6 +40,7 @@ export {
   updateUserStatus as updateUserStatus,
   logMariadbStats as logMariadbStats,
   rankCalc as rankCalc,
+  checkActiveTokens as checkActiveTokens,
   //-------------------------------
   postUsers as postUsers,
   oauth as oauth,
