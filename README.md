@@ -10,14 +10,14 @@
 - - [x] Send & Store
 - - [ ] Global Leaderboard
 - - [ ] Validation
-- [x] Profiles
+- [ ] Profiles
 - - [x] Country
 - - [x] Last Seen
 - - [x] Registration Date
-- - [ ] Simple Profile Stats
+- - [x] Simple Profile Stats
 - - - [x] Online Status
 - - - [x] Total Score
-- - - [ ] Total Hits
+- - - [x] Total Hits
 - - - [x] Playcount
 - - [ ] Advanced Profile Stats
 - - - [ ] Ranked Score

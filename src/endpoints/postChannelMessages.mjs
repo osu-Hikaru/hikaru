@@ -6,8 +6,20 @@ export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const url = req.originalUrl.split("/");
 
-  conn
-    .query(`SELECT * FROM users WHERE ID = ? LIMIT 1`, dbResTokens[0].id)
+  const dbResToken = await conn
+    .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+      req.headers.authorization.split(" ")[1],
+    ])
+    .catch((err) => {
+      console.log(err);
+      res.status(500);
+      res.send();
+      conn.close();
+      return;
+    });
+
+  await conn
+    .query(`SELECT * FROM users WHERE ID = ? LIMIT 1`, dbResToken[0].id)
     .then(async (dbResUsers) => {
       let dbResCount = await conn.query(`SELECT count(*) FROM messages`);
       const messageID = Number(dbResCount[0]["count(*)"]) + 1;

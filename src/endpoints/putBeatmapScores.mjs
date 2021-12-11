@@ -92,10 +92,15 @@ export default async (pool, req, res) => {
 
           await conn
             .query(
-              `UPDATE users SET total_score = ?, playcount = ? WHERE id = ?`,
+              `UPDATE users SET total_score = ?, playcount = ?, total_hits = ? WHERE id = ?`,
               [
                 Number(user[0].total_score) + Number(req.body.total_score),
                 Number(user[0].playcount + 1),
+                Number(req.body.statistics.Good) +
+                  Number(req.body.statistics.Great) +
+                  Number(req.body.statistics.Meh) +
+                  Number(req.body.statistics.Ok) +
+                  Number(user[0].playcount + 1),
                 Number(req.body.user.id),
               ]
             )

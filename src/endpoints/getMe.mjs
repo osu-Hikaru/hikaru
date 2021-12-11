@@ -113,7 +113,7 @@ export default async (pool, req, res) => {
                 play_count: Number(dbRes1[0].playcount),
                 play_time: null,
                 total_score: Number(dbRes1[0].total_score),
-                total_hits: 0,
+                total_hits: Number(dbRes1[0].total_hits),
                 maximum_combo: 0,
                 replays_watched_by_others: 0,
                 is_ranked: false,
