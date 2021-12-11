@@ -1,6 +1,6 @@
 # Hikaru Server
 
-## Disclaimer:
+## Disclaimer
 
 This Repository, Project and the people behind it are not affiliated in any way, shape or form with `ppy Pty Ltd` or any party involved with it.
 
@@ -49,6 +49,10 @@ This is an independent Fan project made for education purposes only. Please chec
 - - - - [ ] Pending/WIP
 - - - - [ ] Graveyard
 - - - [ ] Kudosu
+- [ ] Client
+- - [ ] Beatmap Information Ingame
+- - - [x] Implemented
+- - - - [x] Caviat: It just forwards and returns result from osu!API
 - [ ] Spectator
 - - [ ] ?
 - [ ] Multiplayer

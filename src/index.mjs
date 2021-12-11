@@ -31,6 +31,12 @@ import postChannelMessages from "./endpoints/postChannelMessages.mjs";
 import putBeatmapScores from "./endpoints/putBeatmapScores.mjs";
 import getBeatmapScores from "./endpoints/getBeatmapScores.mjs";
 import postBeatmapScores from "./endpoints/postBeatmapScores.mjs";
+import getLookupBeatmap from "./endpoints/getLookupBeatmap.mjs";
+
+// osu!API Routes
+
+import oapiAuthorization from "./osu-api/Authorization.mjs";
+import oapiGetBeatmap from "./osu-api/GetBeatmap.mjs";
 
 // Imports
 
@@ -60,4 +66,8 @@ export {
   putBeatmapScores as putBeatmapScores,
   getBeatmapScores as getBeatmapScores,
   postBeatmapScores as postBeatmapScores,
+  getLookupBeatmap as getLookupBeatmap,
+  //-------------------------------
+  oapiAuthorization as oapiAuthorization,
+  oapiGetBeatmap as oapiGetBeatmap,
 };

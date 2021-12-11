@@ -118,6 +118,10 @@ function main() {
     modules.getBeatmapScores(pool, req, res);
   });
 
+  api.get("/api/v2/beatmaps/lookup", (req, res) => {
+    modules.getLookupBeatmap(pool, req, res);
+  });
+
   api.post(
     "/api/v2/beatmaps/*/solo/scores",
     upload.none(),
