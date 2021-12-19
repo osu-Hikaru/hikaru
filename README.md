@@ -54,6 +54,12 @@ This is an independent Fan project made for education purposes only. Please chec
 - - [ ] Beatmap Information Ingame
 - - - [x] Implemented
 - - - - [x] Caviat: It just forwards and returns result from osu!API
+- [ ] Parsing .osu
+- - [ ] ?
+- [ ] Parsing .osz
+- - [ ] ?
+- [ ] Parsing .osr
+- - [ ] ?
 - [ ] Spectator
 - - [ ] ?
 - [ ] Multiplayer
@@ -107,6 +113,8 @@ This is an independent Fan project made for education purposes only. Please chec
 - - - [ ] User Page
 - [ ] Homepage
 - [ ] News Posts
+- - [x] Basic Ingame Posts
+- - [ ] Framework for Website Posts
 
 ## License Notice
 

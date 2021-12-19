@@ -102,11 +102,9 @@ export default async (pool, req, res) => {
                   Number(req.body.statistics.Ok) +
                   Number(user[0].playcount + 1),
                 Number(user[0].play_time) +
-                  (
-                    Number(
-                      Number(Date.now()) -
-                        Number(new Date(user[0].play_start).getTime())
-                    ) / 1000
+                  Number(
+                    Number(Date.now() / 1000) -
+                      Number(new Date(user[0].play_start).getTime() / 1000)
                   ).toFixed(0),
                 Number(req.body.user.id),
               ]

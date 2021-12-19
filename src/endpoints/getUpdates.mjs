@@ -206,9 +206,9 @@ export default async (pool, req, res) => {
           }
         });
       });
+      conn.close();
       res.status(200);
       res.json({ messages: messages, presence: presences, silences: [] });
-      conn.close();
     })
     .catch((err) => {
       console.log(err);
