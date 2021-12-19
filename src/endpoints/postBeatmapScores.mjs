@@ -25,6 +25,7 @@ export default async (pool, req, res) => {
       [new Date(), req.body.ruleset_id, scoreid, url[3], dbResToken[0].id]
     )
     .then((dbResUsers) => {
+      conn.close();
       res.status(200);
       res.json({
         beatmap_id: Number(url[3]),
