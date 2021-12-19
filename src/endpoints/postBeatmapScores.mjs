@@ -12,6 +12,7 @@ export default async (pool, req, res) => {
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
+      conn.close();
       console.log(err);
       res.status(500);
       res.send();
