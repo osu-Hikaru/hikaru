@@ -54,7 +54,7 @@ function main() {
     modules.oauth(pool, req, res);
   });
 
-  api.get("/api/v2/me", async (req, res) => {
+  api.get("/v2/me", async (req, res) => {
     modules.getMe(pool, req, res);
   });
 
@@ -62,73 +62,69 @@ function main() {
     modules.allRoutes(pool, req, res, next);
   });
 
-  api.get("/api/v2/users/*/*", async (req, res) => {
+  api.get("/v2/users/*/*", async (req, res) => {
     modules.getUsers(pool, req, res);
   });
 
-  api.get("/api/v2/chat/updates", async (req, res) => {
+  api.get("/v2/chat/updates", async (req, res) => {
     modules.getUpdates(pool, req, res);
   });
 
-  api.get("/api/v2/chat/channels", async (req, res) => {
+  api.get("/v2/chat/channels", async (req, res) => {
     modules.getChannels(pool, req, res);
   });
 
-  api.get("/api/v2/friends", (req, res) => {
+  api.get("/v2/friends", (req, res) => {
     modules.getFriends(pool, req, res);
   });
 
-  api.get("/api/v2/seasonal-backgrounds", (req, res) => {
+  api.get("/v2/seasonal-backgrounds", (req, res) => {
     modules.getSeasonals(pool, req, res);
   });
 
-  api.put("/api/v2/chat/channels/*/users/*", async (req, res) => {
+  api.put("/v2/chat/channels/*/users/*", async (req, res) => {
     modules.putChannelUsers(pool, req, res);
   });
 
-  api.put("/api/v2/chat/channels/*/mark-as-read/*", async (req, res) => {
+  api.put("/v2/chat/channels/*/mark-as-read/*", async (req, res) => {
     modules.putChannelMAS(pool, req, res);
   });
 
-  api.delete("/api/v2/chat/channels/*/users/*", async (req, res) => {
+  api.delete("/v2/chat/channels/*/users/*", async (req, res) => {
     modules.delChannelUsers(pool, req, res);
   });
 
-  api.get("/api/v2/chat/channels/*/messages", (req, res) => {
+  api.get("/v2/chat/channels/*/messages", (req, res) => {
     modules.getMessages(pool, req, res);
   });
 
-  api.post("/api/v2/chat/channels", upload.none(), async (req, res) => {
+  api.post("/v2/chat/channels", upload.none(), async (req, res) => {
     modules.postChannels(pool, req, res);
   });
 
-  api.post(
-    "/api/v2/chat/channels/*/messages",
-    upload.none(),
-    async (req, res) => {
-      modules.postChannelMessages(pool, req, res);
-    }
-  );
+  api.post("/v2/chat/channels/*/messages", upload.none(), async (req, res) => {
+    modules.postChannelMessages(pool, req, res);
+  });
 
-  api.put("/api/v2/beatmaps/*/solo/scores/*", async (req, res) => {
+  api.put("/v2/beatmaps/*/solo/scores/*", async (req, res) => {
     modules.putBeatmapScores(pool, req, res);
   });
 
-  api.get("/api/v2/beatmaps/*/scores", (req, res) => {
+  api.get("/v2/beatmaps/*/scores", (req, res) => {
     modules.getBeatmapScores(pool, req, res);
   });
 
-  api.get("/api/v2/beatmaps/lookup", (req, res) => {
+  api.get("/v2/beatmaps/lookup", (req, res) => {
     modules.getLookupBeatmap(pool, req, res);
   });
 
-  api.post(
-    "/api/v2/beatmaps/*/solo/scores",
-    upload.none(),
-    async (req, res) => {
-      modules.postBeatmapScores(pool, req, res);
-    }
-  );
+  api.post("/v2/beatmaps/*/solo/scores", upload.none(), async (req, res) => {
+    modules.postBeatmapScores(pool, req, res);
+  });
+
+  api.get("/v2/news", async (req, res) => {
+    modules.getNews(pool, req, res);
+  });
 
   api.all("*", (req, res) => {
     res.status(404);

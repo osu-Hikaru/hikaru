@@ -32,6 +32,7 @@ import putBeatmapScores from "./endpoints/putBeatmapScores.mjs";
 import getBeatmapScores from "./endpoints/getBeatmapScores.mjs";
 import postBeatmapScores from "./endpoints/postBeatmapScores.mjs";
 import getLookupBeatmap from "./endpoints/getLookupBeatmap.mjs";
+import getNews from "./endpoints/getNews.mjs";
 
 // osu!API Routes
 
@@ -67,6 +68,7 @@ export {
   getBeatmapScores as getBeatmapScores,
   postBeatmapScores as postBeatmapScores,
   getLookupBeatmap as getLookupBeatmap,
+  getNews as getNews,
   //-------------------------------
   oapiAuthorization as oapiAuthorization,
   oapiGetBeatmap as oapiGetBeatmap,
