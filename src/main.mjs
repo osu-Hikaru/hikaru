@@ -46,11 +46,11 @@ function main() {
   api.use(bodyparser.default.json());
   api.use(bodyparser.default.urlencoded({ extended: true }));
 
-  api.post("/users", upload.none(), async (req, res) => {
+  api.post("/", upload.none(), async (req, res) => {
     modules.postUsers(pool, req, res);
   });
 
-  api.post("/oauth/token", upload.none(), async (req, res) => {
+  api.post("/token", upload.none(), async (req, res) => {
     modules.oauth(pool, req, res);
   });
 
@@ -132,7 +132,7 @@ function main() {
   });
 
   api.listen(config.express.port, () => {
-    console.log(`Server running on port 26701`);
+    console.log(`Server running on port ${config.express.port}`);
   });
 }
 main();
