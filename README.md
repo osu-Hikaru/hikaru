@@ -32,6 +32,7 @@ This is an independent Fan project made for education purposes only. Please chec
 - - - [ ] Grades Achieved
 - - - [ ] Rank Graph
 - - - [ ] Plays Graph
+- - - [x] Play Time
 - - - [x] Global Ranking
 - - - [ ] Country Ranking
 - - - [ ] Top 100

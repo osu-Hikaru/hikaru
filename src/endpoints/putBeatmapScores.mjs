@@ -39,7 +39,7 @@ export default async (pool, req, res) => {
 
           const score = await conn
             .query(
-              `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, rank, total_score, pp, max_combo, accuracy, date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+              `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, rank, total_score, pp, max_combo, accuracy, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
               [
                 Number(req.body.user.id),
                 Number(url[3]),
@@ -74,7 +74,7 @@ export default async (pool, req, res) => {
             });
 
           const score_id = await conn.query(
-            `SELECT score_id FROM scores WHERE user_id = ? AND date = ? LIMIT 1`,
+            `SELECT score_id FROM scores WHERE user_id = ? AND created_at = ? LIMIT 1`,
             [req.body.user.id, playdate]
           );
 
@@ -92,7 +92,7 @@ export default async (pool, req, res) => {
 
           await conn
             .query(
-              `UPDATE users SET total_score = ?, playcount = ?, total_hits = ? WHERE id = ?`,
+              `UPDATE users SET total_score = ?, playcount = ?, total_hits = ?, play_time = ? WHERE id = ?`,
               [
                 Number(user[0].total_score) + Number(req.body.total_score),
                 Number(user[0].playcount + 1),
@@ -101,6 +101,13 @@ export default async (pool, req, res) => {
                   Number(req.body.statistics.Meh) +
                   Number(req.body.statistics.Ok) +
                   Number(user[0].playcount + 1),
+                Number(user[0].play_time) +
+                  (
+                    Number(
+                      Number(Date.now()) -
+                        Number(new Date(user[0].play_start).getTime())
+                    ) / 1000
+                  ).toFixed(0),
                 Number(req.body.user.id),
               ]
             )
