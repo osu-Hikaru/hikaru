@@ -26,8 +26,8 @@ export default async (pool, req, res) => {
       )
       .then(async (verify) => {
         if (
-          Number(verify[0].active_id) !== Number(url[7]) ||
-          Number(verify[0].active_bm_id) !== Number(url[4]) ||
+          Number(verify[0].active_id) !== Number(url[6]) ||
+          Number(verify[0].active_bm_id) !== Number(url[3]) ||
           Number(verify[0].current_ruleset) !== Number(req.body.ruleset_id)
         ) {
           res.status(500);
@@ -42,7 +42,7 @@ export default async (pool, req, res) => {
               `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, rank, total_score, pp, max_combo, accuracy, date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
               [
                 Number(req.body.user.id),
-                Number(url[4]),
+                Number(url[3]),
                 Number(req.body.ruleset_id),
                 Boolean(req.body.passed),
                 Number(req.body.statistics.Miss),
@@ -116,7 +116,7 @@ export default async (pool, req, res) => {
           res.status(200);
           res.send({
             accuracy: Number(req.body.accuracy),
-            beatmap_id: Number(url[4]),
+            beatmap_id: Number(url[3]),
             build_id: 6100,
             ended_at: new Date(Date.now()).toISOString(),
             id: Number(score_id),

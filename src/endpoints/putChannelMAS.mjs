@@ -19,7 +19,7 @@ export default async (pool, req, res) => {
 
   conn
     .query(`UPDATE chat_presence SET last_read_id = ? WHERE user_id = ?`, [
-      Number(url[7]),
+      Number(url[6]),
       dbResToken[0].id,
     ])
     .then((dbResPresence) => {

@@ -19,7 +19,7 @@ export default async (pool, req, res) => {
   }
 
   conn
-    .query(`SELECT * FROM users WHERE ${query2}=?`, [url[4]])
+    .query(`SELECT * FROM users WHERE ${query2}=?`, [url[3]])
     .then((dbRes1) => {
       res.status(200);
       res.json({
@@ -49,7 +49,7 @@ export default async (pool, req, res) => {
         max_blocks: 50,
         max_friends: 250,
         occupation: null,
-        playmode: String(url[5].split("?")[0]),
+        playmode: String(url[4].split("?")[0]),
         playstyle: null,
         post_count: 0,
         profile_order: [

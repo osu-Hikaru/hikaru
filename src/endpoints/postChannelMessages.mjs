@@ -28,7 +28,7 @@ export default async (pool, req, res) => {
         .query(
           `INSERT INTO messages (channel_id, user_id, timestamp, message_content, is_action) VALUES (?,?,?,?,?)`,
           [
-            Number(url[5]),
+            Number(url[4]),
             Number(dbResUsers[0].id),
             new Date(Date.now()),
             String(req.body.message),
@@ -38,7 +38,7 @@ export default async (pool, req, res) => {
         .then((dbResMessage) => {
           res.status(200);
           res.json({
-            channel_id: url[5],
+            channel_id: url[4],
             content: req.body.message,
             is_action: req.body.is_action,
             message_id: messageID,

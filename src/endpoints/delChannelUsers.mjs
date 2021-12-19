@@ -17,11 +17,11 @@ export default async (pool, req, res) => {
       return;
     });
 
-  if (url[8] === dbResToken.id) {
+  if (url[7] === dbResToken.id) {
     await conn
       .query(`DELETE FROM chat_presence WHERE user_id = ? AND channel_id = ?`, [
         Number(dbResToken[0].id),
-        Number(url[5]),
+        Number(url[4]),
       ])
       .then(async (dbResChatPresence) => {
         conn.close();

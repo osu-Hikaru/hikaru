@@ -18,16 +18,16 @@ export default async (pool, req, res) => {
       return;
     });
 
-  if (url[8] === dbResToken.id) {
+  if (url[7] === dbResToken.id) {
     await conn
       .query(
         `INSERT INTO chat_presence (user_id, channel_id, can_message) VALUES (?,?,?)`,
-        [Number(dbResToken[0].id), Number(url[5]), Number(true)]
+        [Number(dbResToken[0].id), Number(url[4]), Number(true)]
       )
       .then(async (dbResChatPresence) => {
         await conn
           .query(`SELECT * FROM channels WHERE channel_id = ? LIMIT 1`, [
-            Number(url[5]),
+            Number(url[4]),
           ])
           .then(async (dbResChannel) => {
             await conn
@@ -47,7 +47,7 @@ export default async (pool, req, res) => {
                 conn.close();
                 res.status(200);
                 res.json({
-                  channel_id: Number(url[6]),
+                  channel_id: Number(url[5]),
                   current_user_attributes: {
                     can_message: Boolean(true),
                     last_read_id: Number(null),
