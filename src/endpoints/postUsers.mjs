@@ -2,6 +2,8 @@
 // osu!Hikaru, a fully independent osu!Lazer Private Server backend.
 // Copyright (C) 2021 Hikaru Team <copyright@hikaru.pw>
 
+import bcrypt from "bcrypt";
+
 export default async (pool, req, res) => {
   const conn = await pool.getConnection();
 
@@ -35,21 +37,8 @@ export default async (pool, req, res) => {
             ])
             .then(async (apiRes) => {
               await conn.query(
-                `INSERT INTO users (username, id, is_active, is_bot, is_deleted, is_online, is_supporter, avatar_url, country_code, country_name, total_score, join_date) VALUES (?, ?, ? ,? ,? ,? ,?, ?, ?, ?, ?, ?)`,
-                [
-                  apiRes[0].username,
-                  apiRes[0].id,
-                  Boolean(1),
-                  Boolean(0),
-                  Boolean(0),
-                  Boolean(1),
-                  Boolean(0),
-                  String("https://a.hikaru.pw/1/default_av.jpg"),
-                  null,
-                  null,
-                  Number(0),
-                  new Date(),
-                ]
+                `INSERT INTO users (username, id, join_date) VALUES (?, ?, ?)`,
+                [apiRes[0].username, apiRes[0].id, new Date()]
               );
               res.status(200);
               res.send();

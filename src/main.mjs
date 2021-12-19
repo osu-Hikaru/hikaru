@@ -135,7 +135,7 @@ function main() {
     res.json({ message: "Not found." });
   });
 
-  api.listen(26701, () => {
+  api.listen(config.express.port, () => {
     console.log(`Server running on port 26701`);
   });
 }

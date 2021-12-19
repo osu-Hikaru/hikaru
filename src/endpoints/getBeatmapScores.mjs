@@ -4,5 +4,7 @@
 
 export default async (pool, req, res) => {
   res.status(200);
-  res.json([]);
+  res.json({
+    scores: [],
+  });
 };

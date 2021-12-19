@@ -26,11 +26,16 @@ export default async (id, checksum) => {
         Authorization: "Bearer " + config.osu.bearer,
       },
     })
-      .then(function (res) {
+      .then(async (res) => {
         resolve(res);
       })
-      .catch(function (error) {
-        reject(error);
+      .catch(async (error) => {
+        if (error.status === 401) {
+          await modules.oapiAuthorization();
+          resolve(await modules.oapiGetBeatmap(id, checksum));
+        } else {
+          reject(error);
+        }
       });
   });
 };

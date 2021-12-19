@@ -10,7 +10,10 @@ export default async (pool, req, res) => {
       req.headers.authorization.split(" ")[1],
     ])
     .then((dbRes) => {
-      if (dbRes[0].created_at + dbRes[0].expires_in < Date.now()) {
+      if (
+        dbRes[0] === undefined ||
+        dbRes[0].created_at + dbRes[0].expires_in < Date.now()
+      ) {
         res.status(400);
         res.json({
           error: "invalid_grant",
