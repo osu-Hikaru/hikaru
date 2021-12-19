@@ -22,8 +22,17 @@ export default async (pool, req, res) => {
   const user = await conn
     .query(
       `UPDATE users SET play_start = ?, current_ruleset = ?, active_id = ?, active_bm_id = ? WHERE id = ?`,
-      [new Date(), req.body.ruleset_id, scoreid, url[4], dbResToken[0].id]
+      [new Date(), req.body.ruleset_id, scoreid, url[3], dbResToken[0].id]
     )
+    .then((dbResUsers) => {
+      res.status(200);
+      res.json({
+        beatmap_id: Number(url[3]),
+        created_at: new Date(Date.now()).toISOString(),
+        id: Number(scoreid),
+        user_id: Number(dbResToken[0].id),
+      });
+    })
     .catch((err) => {
       console.log(err);
       res.status(500);
@@ -31,19 +40,4 @@ export default async (pool, req, res) => {
       conn.close();
       return;
     });
-
-  console.log({
-    beatmap_id: Number(url[4]),
-    created_at: new Date(Date.now()).toISOString(),
-    id: Number(scoreid),
-    user_id: Number(dbResToken[0].id),
-  });
-
-  res.status(200);
-  res.json({
-    beatmap_id: Number(url[4]),
-    created_at: new Date(Date.now()).toISOString(),
-    id: Number(scoreid),
-    user_id: Number(dbResToken[0].id),
-  });
 };
