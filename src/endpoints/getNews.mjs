@@ -27,7 +27,7 @@ export default async (pool, req, res) => {
   query_statement += ` ORDER BY id DESC`;
 
   conn
-    .query(`${query_statement} LIMIT 50`, query_params)
+    .query(`${query_statement} LIMIT 10`, query_params)
     .then(async (dbResNews) => {
       if (dbResNews.length > 0) {
         newsposts.cursor.id = dbResNews[0].id;
@@ -47,9 +47,9 @@ export default async (pool, req, res) => {
         });
       }
 
-      console.log(newsposts);
       res.status(200);
       res.json(newsposts);
+      conn.close();
     })
     .catch((err) => {
       console.log(err);
