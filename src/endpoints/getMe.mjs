@@ -6,7 +6,6 @@ export default async (pool, req, res) => {
   const conn = await pool.getConnection();
 
   if(req.headers.authorization === undefined) {
-      console.log(err);
       res.status(401);
       res.send();
       conn.close();
