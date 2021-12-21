@@ -5,7 +5,14 @@
 export default async (pool, req, res) => {
   const conn = await pool.getConnection();
 
-  await conn
+  if(req.headers.authorization === undefined) {
+      console.log(err);
+      res.status(401);
+      res.send();
+      conn.close();
+      return;
+  } else {
+    await conn
     .query(`SELECT * FROM active_tokens WHERE access_token = ? LIMIT 1`, [
       req.headers.authorization.split(" ")[1],
     ])
@@ -161,4 +168,7 @@ export default async (pool, req, res) => {
       conn.close();
       return;
     });
+  }
+
+ 
 };
