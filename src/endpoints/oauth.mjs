@@ -60,7 +60,7 @@ export default async (pool, req, res) => {
         conn.close();
         return;
       });
-  } else {
+  } else if(req.body.username && req.body.password) {
     await conn
       .query(`SELECT * FROM accounts WHERE username = ? LIMIT 1`, [
         req.body.username,
@@ -127,5 +127,10 @@ export default async (pool, req, res) => {
           }
         );
       });
+  } else {
+    res.status(403);
+    res.json({message: "No authorization provided."});
+    conn.close();
+    return;
   }
 };
