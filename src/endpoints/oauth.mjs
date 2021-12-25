@@ -60,76 +60,90 @@ export default async (pool, req, res) => {
         conn.close();
         return;
       });
-  } else if(req.body.username && req.body.password) {
+  } else if (req.body.username && req.body.password) {
     await conn
       .query(`SELECT * FROM accounts WHERE username = ? LIMIT 1`, [
         req.body.username,
       ])
       .then((dbRes) => {
-        bcrypt.compare(
-          req.body.password,
-          dbRes[0].password,
-          async (err, result) => {
-            if (err) {
-              console.log(err);
-              res.status(500);
-              res.send();
-              conn.close();
-              return;
-            }
+        if (dbRes[0] === undefined) {
+          res.status(400);
+          res.json({
+            error: "invalid_grant",
+            error_description:
+              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
+            hint: "Incorrect sign in",
+            message:
+              "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
+          });
+          conn.close();
+          return;
+        } else {
+          bcrypt.compare(
+            req.body.password,
+            dbRes[0].password,
+            async (err, result) => {
+              if (err) {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.close();
+                return;
+              }
 
-            if (result === true) {
-              const access_token = await modules.genToken(512);
-              const expires_in = await modules.genNumber(65000, 70000);
-              const refresh_token = await modules.genToken(512);
+              if (result === true) {
+                const access_token = await modules.genToken(512);
+                const expires_in = await modules.genNumber(65000, 70000);
+                const refresh_token = await modules.genToken(512);
 
-              conn
-                .query(
-                  `INSERT INTO active_tokens (id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
-                  [
-                    dbRes[0].id,
-                    access_token,
-                    expires_in,
-                    refresh_token,
-                    new Date(),
-                  ]
-                )
-                .then((dbRes1) => {
-                  res.status(200);
-                  res.json({
-                    access_token: access_token,
-                    expires_in: expires_in,
-                    refresh_token: refresh_token,
-                    token_type: "Bearer",
+                conn
+                  .query(
+                    `INSERT INTO active_tokens (id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
+                    [
+                      dbRes[0].id,
+                      access_token,
+                      expires_in,
+                      refresh_token,
+                      new Date(),
+                    ]
+                  )
+                  .then((dbRes1) => {
+                    res.status(200);
+                    res.json({
+                      access_token: access_token,
+                      expires_in: expires_in,
+                      refresh_token: refresh_token,
+                      token_type: "Bearer",
+                    });
+                    conn.close();
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    res.status(500);
+                    res.send();
+                    conn.close();
+                    return;
                   });
-                  conn.close();
-                })
-                .catch((err) => {
-                  console.log(err);
-                  res.status(500);
-                  res.send();
-                  conn.close();
-                  return;
+              } else {
+                res.status(400);
+                res.json({
+                  error: "invalid_grant",
+                  error_description:
+                    "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
+                  hint: "Incorrect sign in",
+                  message:
+                    "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
                 });
-            } else {
-              res.status(400);
-              res.json({
-                error: "invalid_grant",
-                error_description:
-                  "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-                hint: "Incorrect sign in",
-                message:
-                  "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
-              });
-              conn.close();
-              return;
+                conn.close();
+                return;
+              }
             }
-          }
-        );
+          );
+        }
       });
   } else {
     res.status(403);
-    res.json({message: "No authorization provided."});
+    res.json({ message: "No authorization provided." });
     conn.close();
     return;
   }
