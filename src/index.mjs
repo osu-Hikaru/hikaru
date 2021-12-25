@@ -18,7 +18,7 @@ import oauth from "./endpoints/oauth.mjs";
 import getUsers from "./endpoints/getUsers.mjs";
 import getMe from "./endpoints/getMe.mjs";
 import allRoutes from "./endpoints/allRoutes.mjs";
-import getUpdates from "./endpoints/getUpdates.mjs";
+import getChatUpdates from "./endpoints/getChatUpdates.mjs";
 import getChannels from "./endpoints/getChannels.mjs";
 import getFriends from "./endpoints/getFriends.mjs";
 import getSeasonals from "./endpoints/getSeasonals.mjs";
@@ -33,11 +33,13 @@ import getBeatmapScores from "./endpoints/getBeatmapScores.mjs";
 import postBeatmapScores from "./endpoints/postBeatmapScores.mjs";
 import getLookupBeatmap from "./endpoints/getLookupBeatmap.mjs";
 import getNews from "./endpoints/getNews.mjs";
+import getBeatmapSearch from "./endpoints/getBeatmapSearch.mjs";
 
 // osu!API Routes
 
 import oapiAuthorization from "./osu-api/Authorization.mjs";
 import oapiGetBeatmap from "./osu-api/GetBeatmap.mjs";
+import oapiBeatmapSearch from "./osu-api/BeatmapSearch.mjs";
 
 // Imports
 
@@ -54,7 +56,7 @@ export {
   getUsers as getUsers,
   getMe as getMe,
   allRoutes as allRoutes,
-  getUpdates as getUpdates,
+  getChatUpdates as getChatUpdates,
   getChannels as getChannels,
   getFriends as getFriends,
   getSeasonals as getSeasonals,
@@ -69,7 +71,9 @@ export {
   postBeatmapScores as postBeatmapScores,
   getLookupBeatmap as getLookupBeatmap,
   getNews as getNews,
+  getBeatmapSearch as getBeatmapSearch,
   //-------------------------------
   oapiAuthorization as oapiAuthorization,
   oapiGetBeatmap as oapiGetBeatmap,
+  oapiBeatmapSearch as oapiBeatmapSearch,
 };

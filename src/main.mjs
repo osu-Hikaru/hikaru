@@ -67,7 +67,7 @@ function main() {
   });
 
   api.get("/v2/chat/updates", async (req, res) => {
-    modules.getUpdates(pool, req, res);
+    modules.getChatUpdates(pool, req, res);
   });
 
   api.get("/v2/chat/channels", async (req, res) => {
@@ -124,6 +124,10 @@ function main() {
 
   api.get("/v2/news", async (req, res) => {
     modules.getNews(pool, req, res);
+  });
+
+  api.get("/v2/beatmapsets/search", async (req, res) => {
+    modules.getBeatmapSearch(pool, req, res);
   });
 
   api.all("*", (req, res) => {
