@@ -6,6 +6,7 @@ import express from "express";
 import morgan from "morgan";
 import multer from "multer";
 import mariadb from "mariadb";
+import compression from "compression";
 import fs from "fs";
 import * as modules from "./index.mjs";
 import * as bodyparser from "body-parser";
@@ -45,6 +46,7 @@ function main() {
   api.use(morgan("dev"));
   api.use(bodyparser.default.json());
   api.use(bodyparser.default.urlencoded({ extended: true }));
+  api.use(compression());
 
   api.post("/", upload.none(), async (req, res) => {
     modules.postUsers(pool, req, res);
@@ -124,6 +126,14 @@ function main() {
 
   api.get("/v2/news", async (req, res) => {
     modules.getNews(pool, req, res);
+  });
+
+  api.get("/v2/beatmapsets/*/download", async (req, res) => {
+    modules.getDownloadBeatmap(pool, req, res);
+  });
+
+  api.get("/v2/beatmapsets/*", async (req, res) => {
+    modules.getBeatmapsets(pool, req, res);
   });
 
   api.get("/v2/beatmapsets/search", async (req, res) => {

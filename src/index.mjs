@@ -34,12 +34,17 @@ import postBeatmapScores from "./endpoints/postBeatmapScores.mjs";
 import getLookupBeatmap from "./endpoints/getLookupBeatmap.mjs";
 import getNews from "./endpoints/getNews.mjs";
 import getBeatmapSearch from "./endpoints/getBeatmapSearch.mjs";
+import getBeatmapsets from "./endpoints/getBeatmapsets.mjs";
+import getDownloadBeatmap from "./endpoints/getDownloadBeatmap.mjs";
 
 // osu!API Routes
 
 import oapiAuthorization from "./osu-api/Authorization.mjs";
+import oapiLazerAuthorization from "./osu-api/LazerAuthorization.mjs";
 import oapiGetBeatmap from "./osu-api/GetBeatmap.mjs";
 import oapiBeatmapSearch from "./osu-api/BeatmapSearch.mjs";
+import oapiGetBeatmapset from "./osu-api/GetBeatmapset.mjs";
+import oapiDownloadBeatmap from "./osu-api/DownloadBeatmap.mjs";
 
 // Imports
 
@@ -72,8 +77,13 @@ export {
   getLookupBeatmap as getLookupBeatmap,
   getNews as getNews,
   getBeatmapSearch as getBeatmapSearch,
+  getBeatmapsets as getBeatmapsets,
+  getDownloadBeatmap as getDownloadBeatmap,
   //-------------------------------
   oapiAuthorization as oapiAuthorization,
+  oapiLazerAuthorization as oapiLazerAuthorization,
   oapiGetBeatmap as oapiGetBeatmap,
   oapiBeatmapSearch as oapiBeatmapSearch,
+  oapiGetBeatmapset as oapiGetBeatmapset,
+  oapiDownloadBeatmap as oapiDownloadBeatmap,
 };
