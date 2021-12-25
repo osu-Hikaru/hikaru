@@ -4,6 +4,7 @@
 
 import axios from "axios";
 import fs from "fs";
+import jsftp from "jsftp";
 import * as modules from "../index.mjs";
 
 export default (id) => {
@@ -32,12 +33,27 @@ export default (id) => {
       },
     })
       .then(async (apiRes) => {
-        const writer = fs.createWriteStream(process.cwd() + "/temp/file.osz");
+        const writer = fs.createWriteStream(process.cwd() + `/temp/${id}.osz`);
         apiRes.data.pipe(writer);
 
         writer.on("finish", () => {
+          if (config.mirror.ftp_enabled === true) {
+            const Ftp = new jsftp({
+              host: config.mirror.host,
+              port: config.mirror.port,
+              user: config.mirror.user,
+              pass: config.mirror.pass,
+            });
+
+            modules.ftpUpload(
+              Ftp,
+              process.cwd() + `/temp/${id}.osz`,
+              `/www.pekkie.cloud/s/${id}.osz`
+            );
+          }
+
           resolve({
-            path: process.cwd() + "/temp/file.osz",
+            path: process.cwd() + `/temp/${id}.osz`,
             CT: apiRes.headers["content-type"],
             CL: apiRes.headers["content-length"],
             LM: apiRes.headers["last-modified"],
