@@ -83,7 +83,7 @@ This is an independent Fan project made for education purposes only. Please chec
 - [ ] Web
 - - [ ] Forum
 - - [ ] Listings
-- - - [ ] Beatmap Listing
+- - - [x] Beatmap Listing
 - - - [ ] User Listing
 - - - [ ] Friends Listing
 - - - [ ] Ranking Listing
@@ -99,7 +99,7 @@ This is an independent Fan project made for education purposes only. Please chec
 - [ ] Administrative
 - - [ ] Roles
 - - - [ ] Admin
-- - - [ ] Dev
+- - - [x] Dev
 - - - [ ] BN
 - - - [ ] NAT/QAT
 - - - [ ] Support
