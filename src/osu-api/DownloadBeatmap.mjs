@@ -11,6 +11,8 @@ export default (id, pool) => {
   return new Promise(async (resolve, reject) => {
     const conn = await pool.getConnection();
 
+    console.log(`Beatmap download for map ${id} requested.`);
+
     let mirror_map = undefined;
     let config = JSON.parse(
       await fs.readFileSync("./src/config.json", "utf-8", () => {})
