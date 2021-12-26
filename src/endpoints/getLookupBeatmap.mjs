@@ -23,7 +23,20 @@ export default async (pool, req, res) => {
   if (map[0] === undefined) {
     map[0] = {};
     map[0].status = 0;
+    map[0].beatmapset_id = 0;
   }
+
+  let set = await conn
+    .query(`SELECT * FROM beatmapsets WHERE id = ? LIMIT 1`, [
+      map[0].beatmapset_id,
+    ])
+    .catch((err) => {
+      console.log(err);
+      res.status(500);
+      res.send();
+      conn.close();
+      return;
+    });
 
   if ((map[0].id !== undefined && map[0].status === 1) || map[0].status === 2) {
     res.status(200);
@@ -31,54 +44,70 @@ export default async (pool, req, res) => {
       accuracy: Number(map[0].accuracy),
       ar: Number(map[0].ar),
       beatmapset: {
-        artist: null,
-        artist_unicode: null,
+        artist: String(set[0].artist),
+        artist_unicode: String(set[0].artist_unicode),
         availability: {
-          download_disabled: false,
-          more_information: null,
+          download_disabled: Boolean(set[0].availability.download_disabled),
+          more_information: String(set[0].availability.more_information),
         },
-        bpm: 135.98,
-        can_be_hyped: false,
+        bpm: Number(set[0].bpm),
+        can_be_hyped: Boolean(false),
         covers: {
-          card: null,
-          "card@2x": null,
-          cover: null,
-          "cover@2x": null,
-          list: null,
-          "list@2x": null,
-          slimcover: null,
-          "slimcover@2x": null,
+          cover: String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/cover.jpg?${set[0].cover_id}`
+          ),
+          "cover@2x": String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/cover@2x.jpg?${set[0].cover_id}`
+          ),
+          card: String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/card.jpg?${set[0].cover_id}`
+          ),
+          "card@2x": String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/card@2x.jpg?${set[0].cover_id}`
+          ),
+          list: String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/list.jpg?${set[0].cover_id}`
+          ),
+          "list@2x": String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/list@2x.jpg?${set[0].cover_id}`
+          ),
+          slimcover: String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/slimcover.jpg?${set[0].cover_id}`
+          ),
+          "slimcover@2x": String(
+            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/slimcover@2x.jpg?${set[0].cover_id}`
+          ),
         },
-        creator: null,
-        discussion_enabled: false,
-        discussion_locked: false,
-        favourite_count: 0,
-        has_favourited: false,
-        hype: null,
-        id: null,
-        is_scoreable: true,
-        last_updated: null,
-        legacy_thread_url: null,
+        creator: String(set[0].creator),
+        discussion_enabled: Boolean(false),
+        discussion_locked: Boolean(true),
+        favourite_count: Number(0),
+        has_favourited: Boolean(false),
+        hype: Number(null),
+        id: Number(set[0].id),
+        is_scoreable: Boolean(true),
+        last_updated: String(new Date(set[0].last_updated).toISOString()),
+        legacy_thread_url: String(null),
         nominations_summary: {
-          current: 0,
-          required: 0,
+          current: Number(2),
+          required: Number(2),
         },
-        nsfw: false,
-        play_count: null,
-        preview_url: null,
-        ranked: 1,
-        ranked_date: null,
+        nsfw: Boolean(set[0].nsfw),
+        play_count: Number(0),
+        preview_url: String(set[0].preview_url),
+        ranked: Number(set[0].ranked),
+        ranked_date: String(new Date(set[0].ranked_date).toISOString()),
         ratings: [],
-        source: null,
-        status: "ranked",
-        storyboard: true,
-        submitted_date: null,
-        tags: null,
-        title: null,
-        title_unicode: null,
-        track_id: null,
-        user_id: null,
-        video: false,
+        source: String(set[0].source),
+        status: String(set[0].status),
+        storyboard: Boolean(set[0].storyboard),
+        submitted_date: String(new Date(set[0].submitted_date).toISOString()),
+        tags: String(set[0].tags),
+        title: String(set[0].title),
+        title_unicode: String(set[0].title_unicode),
+        track_id: Number(set[0].track_id),
+        user_id: Number(3),
+        video: Boolean(set[0].video),
       },
       beatmapset_id: Number(map[0].beatmapset_id),
       bpm: Number(map[0].bpm),
@@ -160,60 +189,111 @@ export default async (pool, req, res) => {
         return;
       });
 
+    if (set[0] === undefined) {
+      await conn
+        .query(
+          `REPLACE INTO beatmapsets (artist, artist_unicode, cover_id, creator, id, nsfw, preview_url, source, status, title, title_unicode, track_id, user_id, video, download_disabled, more_information, bpm, last_updated, ranked, ranked_date, storyboard, submitted_date, tags) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          [
+            String(beatmap.data.beatmapset.artist),
+            String(beatmap.data.beatmapset.artist_unicode),
+            Number(beatmap.data.beatmapset.covers.cover.split("?")[1]),
+            String(beatmap.data.beatmapset.creator),
+            Number(beatmap.data.beatmapset.id),
+            Number(beatmap.data.beatmapset.nsfw),
+            String(beatmap.data.beatmapset.preview_url),
+            String(beatmap.data.beatmapset.source),
+            String(beatmap.data.beatmapset.status),
+            String(beatmap.data.beatmapset.title),
+            String(beatmap.data.beatmapset.title_unicode),
+            Number(beatmap.data.beatmapset.track_id),
+            Number(3),
+            Number(beatmap.data.beatmapset.video),
+            Number(beatmap.data.beatmapset.availability.download_disabled),
+            String(beatmap.data.beatmapset.availability.more_information),
+            Number(beatmap.data.beatmapset.bpm),
+            new Date(beatmap.data.beatmapset.last_updated),
+            Number(beatmap.data.beatmapset.ranked),
+            new Date(beatmap.data.beatmapset.ranked_date),
+            Number(beatmap.data.beatmapset.storyboard),
+            new Date(beatmap.data.beatmapset.submitted_date),
+            String(beatmap.data.beatmapset.tags),
+          ]
+        )
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.send();
+          conn.close();
+          return;
+        });
+    }
+
     conn.close();
     res.status(200);
     res.json({
       accuracy: Number(beatmap.data.accuracy),
       ar: Number(beatmap.data.ar),
       beatmapset: {
-        artist: null,
-        artist_unicode: null,
+        artist: String(beatmap.data.beatmapset.artist),
+        artist_unicode: String(beatmap.data.beatmapset.artist_unicode),
         availability: {
-          download_disabled: false,
-          more_information: null,
+          download_disabled: Boolean(
+            beatmap.data.beatmapset.availability.download_disabled
+          ),
+          more_information: String(
+            beatmap.data.beatmapset.availability.more_information
+          ),
         },
-        bpm: 135.98,
-        can_be_hyped: false,
+        bpm: Number(beatmap.data.beatmapset.bpm),
+        can_be_hyped: Boolean(false),
         covers: {
-          card: null,
-          "card@2x": null,
-          cover: null,
-          "cover@2x": null,
-          list: null,
-          "list@2x": null,
-          slimcover: null,
-          "slimcover@2x": null,
+          card: String(beatmap.data.beatmapset.covers.card),
+          "card@2x": String(beatmap.data.beatmapset.covers["card@2x"]),
+          cover: String(beatmap.data.beatmapset.covers.cover),
+          "cover@2x": String(beatmap.data.beatmapset.covers["cover@2x"]),
+          list: String(beatmap.data.beatmapset.covers.list),
+          "list@2x": String(beatmap.data.beatmapset.covers["list@2x"]),
+          slimcover: String(beatmap.data.beatmapset.covers.slimcover),
+          "slimcover@2x": String(
+            beatmap.data.beatmapset.covers["slimcover@2x"]
+          ),
         },
-        creator: null,
-        discussion_enabled: false,
-        discussion_locked: false,
-        favourite_count: 0,
-        has_favourited: false,
-        hype: null,
-        id: null,
-        is_scoreable: true,
-        last_updated: null,
-        legacy_thread_url: null,
+        creator: String(beatmap.data.beatmapset.creator),
+        discussion_enabled: Boolean(false),
+        discussion_locked: Boolean(true),
+        favourite_count: Number(0),
+        has_favourited: Boolean(false),
+        hype: Number(null),
+        id: Number(beatmap.data.beatmapset.id),
+        is_scoreable: Boolean(true),
+        last_updated: String(
+          new Date(beatmap.data.beatmapset.last_updated).toISOString()
+        ),
+        legacy_thread_url: String(null),
         nominations_summary: {
-          current: 0,
-          required: 0,
+          current: Number(2),
+          required: Number(2),
         },
-        nsfw: false,
-        play_count: null,
-        preview_url: null,
-        ranked: 1,
-        ranked_date: null,
+        nsfw: Boolean(beatmap.data.beatmapset.nsfw),
+        play_count: Number(0),
+        preview_url: String(beatmap.data.beatmapset.preview_url),
+        ranked: Number(beatmap.data.beatmapset.ranked),
+        ranked_date: String(
+          new Date(beatmap.data.beatmapset.ranked_date).toISOString()
+        ),
         ratings: [],
-        source: null,
-        status: "ranked",
-        storyboard: true,
-        submitted_date: null,
-        tags: null,
-        title: null,
-        title_unicode: null,
-        track_id: null,
-        user_id: null,
-        video: false,
+        source: String(beatmap.data.beatmapset.source),
+        status: String(beatmap.data.beatmapset.status),
+        storyboard: Boolean(beatmap.data.beatmapset.storyboard),
+        submitted_date: String(
+          new Date(beatmap.data.beatmapset.submitted_date).toISOString()
+        ),
+        tags: String(beatmap.data.beatmapset.tags),
+        title: String(beatmap.data.beatmapset.title),
+        title_unicode: String(beatmap.data.beatmapset.title_unicode),
+        track_id: Number(beatmap.data.beatmapset.track_id),
+        user_id: Number(3),
+        video: Boolean(beatmap.data.beatmapset.video),
       },
       beatmapset_id: Number(beatmap.data.beatmapset_id),
       bpm: Number(beatmap.data.bpm),
