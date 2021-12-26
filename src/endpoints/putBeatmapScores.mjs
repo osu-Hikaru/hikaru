@@ -90,6 +90,33 @@ export default async (pool, req, res) => {
               return;
             });
 
+          const beatmap = await conn
+            .query(`SELECT hit_length FROM beatmaps WHERE id = ? LIMIT 1`, [
+              url[3],
+            ])
+            .catch((err) => {
+              console.log(err);
+              res.status(500);
+              res.send();
+              conn.close();
+              return;
+            });
+
+          let playtime = 0;
+
+          if (
+            beatmap[0].hit_length >
+            Number(
+              Date.now() / 1000 - new Date(user[0].play_start).getTime() / 1000
+            )
+          ) {
+            playtime = Number(
+              Date.now() / 1000 - new Date(user[0].play_start).getTime() / 1000
+            );
+          } else {
+            playtime = beatmap[0].hit_length;
+          }
+
           await conn
             .query(
               `UPDATE users SET total_score = ?, playcount = ?, total_hits = ?, play_time = ? WHERE id = ?`,
@@ -101,11 +128,7 @@ export default async (pool, req, res) => {
                   Number(req.body.statistics.Meh) +
                   Number(req.body.statistics.Ok) +
                   Number(user[0].playcount + 1),
-                Number(
-                  Number(user[0].play_time) +
-                    Date.now() / 1000 -
-                    new Date(user[0].play_start).getTime() / 1000
-                ),
+                Number(Number(user[0].play_time) + playtime),
                 Number(req.body.user.id),
               ]
             )
