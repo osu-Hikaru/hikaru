@@ -8,7 +8,9 @@ export default async (Ftp, path, remote) => {
   fs.readFile(path, (err, data) => {
     Ftp.put(data, remote, (err) => {
       if (!err) {
-        console.log("File transferred successfully!");
+        console.log(
+          "FTP File transferred successfully!\nDestination: " + remote
+        );
       }
     });
   });
