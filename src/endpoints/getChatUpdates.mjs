@@ -150,13 +150,11 @@ export default async (pool, req, res) => {
                       country_code: String(dbResUser[0].country_code),
                       default_group: "default",
                       id: Number(dbResUser[0].id),
-                      is_active: Boolean(dbResUser[0].is_active.readInt8()),
-                      is_bot: Boolean(dbResUser[0].is_bot.readInt8()),
-                      is_deleted: Boolean(dbResUser[0].is_deleted.readInt8()),
-                      is_online: Boolean(dbResUser[0].is_online.readInt8()),
-                      is_supporter: Boolean(
-                        dbResUser[0].is_supporter.readInt8()
-                      ),
+                      is_active: Boolean(dbResUser[0].is_active),
+                      is_bot: Boolean(dbResUser[0].is_bot),
+                      is_deleted: Boolean(dbResUser[0].is_deleted),
+                      is_online: Boolean(dbResUser[0].is_online),
+                      is_supporter: Boolean(dbResUser[0].is_supporter),
                       last_visit: String(dbResUser[0].last_visit.toISOString()),
                       pm_friends_only: false,
                       profile_colour: null,

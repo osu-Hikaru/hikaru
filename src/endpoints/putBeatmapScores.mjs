@@ -44,7 +44,7 @@ export default async (pool, req, res) => {
                 Number(req.body.user.id),
                 Number(url[3]),
                 Number(req.body.ruleset_id),
-                Boolean(req.body.passed),
+                Number(req.body.passed),
                 Number(req.body.statistics.Miss),
                 Number(req.body.statistics.Meh),
                 Number(req.body.statistics.Ok),
@@ -91,7 +91,7 @@ export default async (pool, req, res) => {
             });
 
           const beatmap = await conn
-            .query(`SELECT hit_length FROM beatmaps WHERE id = ? LIMIT 1`, [
+            .query(`SELECT total_length FROM beatmaps WHERE id = ? LIMIT 1`, [
               url[3],
             ])
             .catch((err) => {
@@ -105,7 +105,7 @@ export default async (pool, req, res) => {
           let playtime = 0;
 
           if (
-            beatmap[0].hit_length >
+            beatmap[0].total_length >
             Number(
               Date.now() / 1000 - new Date(user[0].play_start).getTime() / 1000
             )
@@ -114,7 +114,7 @@ export default async (pool, req, res) => {
               Date.now() / 1000 - new Date(user[0].play_start).getTime() / 1000
             );
           } else {
-            playtime = beatmap[0].hit_length;
+            playtime = beatmap[0].total_length;
           }
 
           await conn

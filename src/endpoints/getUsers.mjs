@@ -71,11 +71,11 @@ export default async (pool, req, res) => {
                 country_code: String(dbRes1[0].country_code),
                 default_group: "default",
                 id: Number(dbRes1[0].id),
-                is_active: Boolean(dbRes1[0].is_active.readInt8()),
-                is_bot: Boolean(dbRes1[0].is_bot.readInt8()),
-                is_deleted: Boolean(dbRes1[0].is_deleted.readInt8()),
-                is_online: Boolean(dbRes1[0].is_online.readInt8()),
-                is_supporter: Boolean(dbRes1[0].is_supporter.readInt8()),
+                is_active: Boolean(dbRes1[0].is_active),
+                is_bot: Boolean(dbRes1[0].is_bot),
+                is_deleted: Boolean(dbRes1[0].is_deleted),
+                is_online: Boolean(dbRes1[0].is_online),
+                is_supporter: Boolean(dbRes1[0].is_supporter),
                 last_visit: String(
                   new Date(dbRes1[0].last_visit).toISOString()
                 ),
@@ -84,7 +84,7 @@ export default async (pool, req, res) => {
                 username: String(dbRes1[0].username),
                 cover_url: "https://a.hikaru.pw/1/default_cv.jpg",
                 discord: null,
-                has_supported: Boolean(dbRes1[0].has_supported.readInt8()),
+                has_supported: Boolean(dbRes1[0].has_supported),
                 interests: null,
                 join_date: String(new Date(dbRes1[0].join_date).toISOString()),
                 kudosu: {

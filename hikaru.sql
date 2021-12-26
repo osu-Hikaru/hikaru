@@ -90,7 +90,6 @@ CREATE TABLE IF NOT EXISTS `beatmapsets` (
   `id` int(11) NOT NULL,
   `nsfw` tinyint(1) NOT NULL DEFAULT 0,
   `play_count` int(11) NOT NULL DEFAULT 0,
-  `preview_url` varchar(64) DEFAULT NULL,
   `source` varchar(64) DEFAULT NULL,
   `status` varchar(32) NOT NULL DEFAULT 'graveyard',
   `title` varchar(256) DEFAULT NULL,
@@ -208,13 +207,13 @@ CREATE TABLE IF NOT EXISTS `scores` (
   `score_id` int(10) NOT NULL AUTO_INCREMENT,
   `beatmap_id` int(11) DEFAULT NULL,
   `ruleset_id` int(10) NOT NULL DEFAULT 0,
-  `passed` bit(1) DEFAULT b'0',
+  `passed` tinyint(1) DEFAULT NULL,
   `count_miss` int(8) DEFAULT NULL,
   `count_meh` int(8) DEFAULT NULL,
   `count_ok` int(8) DEFAULT NULL,
   `count_good` int(8) DEFAULT NULL,
   `count_great` int(8) DEFAULT NULL,
-  `perfect` bit(1) DEFAULT b'0',
+  `perfect` tinyint(1) DEFAULT NULL,
   `count_STM` int(8) DEFAULT NULL,
   `count_STH` int(8) DEFAULT NULL,
   `count_LTM` int(8) DEFAULT NULL,
@@ -227,9 +226,9 @@ CREATE TABLE IF NOT EXISTS `scores` (
   `max_combo` int(10) DEFAULT NULL,
   `accuracy` float DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
-  `user_best` bit(1) DEFAULT b'0',
+  `user_best` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`score_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -240,12 +239,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   `country_name` varchar(128) DEFAULT NULL,
   `id` int(10) NOT NULL,
   `username` varchar(28) NOT NULL,
-  `is_active` bit(1) DEFAULT b'1',
-  `is_bot` bit(1) DEFAULT b'0',
-  `is_deleted` bit(1) DEFAULT b'0',
-  `is_online` bit(1) DEFAULT b'1',
-  `is_supporter` bit(1) DEFAULT b'0',
-  `has_supported` bit(1) DEFAULT b'0',
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_bot` tinyint(1) DEFAULT 0,
+  `is_deleted` tinyint(1) DEFAULT 0,
+  `is_online` tinyint(1) DEFAULT 1,
+  `is_supporter` tinyint(4) DEFAULT 0,
+  `has_supported` tinyint(4) DEFAULT 0,
   `global_rank` int(8) DEFAULT 0,
   `pp` float DEFAULT 0,
   `total_hits` int(16) DEFAULT 0,
@@ -259,6 +258,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `active_id` int(11) DEFAULT NULL,
   `active_bm_id` int(11) DEFAULT NULL,
   `groups` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `pm_friends_only` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
