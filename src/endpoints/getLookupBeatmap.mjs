@@ -79,8 +79,8 @@ export default async (pool, req, res) => {
           ),
         },
         creator: String(set[0].creator),
-        discussion_enabled: Boolean(false),
-        discussion_locked: Boolean(true),
+        discussion_enabled: Boolean(true),
+        discussion_locked: Boolean(false),
         favourite_count: Number(0),
         has_favourited: Boolean(false),
         hype: Number(null),
@@ -94,7 +94,7 @@ export default async (pool, req, res) => {
         },
         nsfw: Boolean(set[0].nsfw),
         play_count: Number(0),
-        preview_url: String(set[0].preview_url),
+        preview_url: String(`https://b.ppy.sh/preview/${set[0].id}.mp3`),
         ranked: Number(set[0].ranked),
         ranked_date: String(new Date(set[0].ranked_date).toISOString()),
         ratings: [],
@@ -192,7 +192,7 @@ export default async (pool, req, res) => {
     if (set[0] === undefined) {
       await conn
         .query(
-          `REPLACE INTO beatmapsets (artist, artist_unicode, cover_id, creator, id, nsfw, preview_url, source, status, title, title_unicode, track_id, user_id, video, download_disabled, more_information, bpm, last_updated, ranked, ranked_date, storyboard, submitted_date, tags) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          `REPLACE INTO beatmapsets (artist, artist_unicode, cover_id, creator, id, nsfw, source, status, title, title_unicode, track_id, user_id, video, download_disabled, more_information, bpm, last_updated, ranked, ranked_date, storyboard, submitted_date, tags) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
           [
             String(beatmap.data.beatmapset.artist),
             String(beatmap.data.beatmapset.artist_unicode),
@@ -200,7 +200,6 @@ export default async (pool, req, res) => {
             String(beatmap.data.beatmapset.creator),
             Number(beatmap.data.beatmapset.id),
             Number(beatmap.data.beatmapset.nsfw),
-            String(beatmap.data.beatmapset.preview_url),
             String(beatmap.data.beatmapset.source),
             String(beatmap.data.beatmapset.status),
             String(beatmap.data.beatmapset.title),
@@ -259,8 +258,8 @@ export default async (pool, req, res) => {
           ),
         },
         creator: String(beatmap.data.beatmapset.creator),
-        discussion_enabled: Boolean(false),
-        discussion_locked: Boolean(true),
+        discussion_enabled: Boolean(true),
+        discussion_locked: Boolean(false),
         favourite_count: Number(0),
         has_favourited: Boolean(false),
         hype: Number(null),
@@ -276,7 +275,9 @@ export default async (pool, req, res) => {
         },
         nsfw: Boolean(beatmap.data.beatmapset.nsfw),
         play_count: Number(0),
-        preview_url: String(beatmap.data.beatmapset.preview_url),
+        preview_url: String(
+          `https://b.ppy.sh/preview/${beatmap.data.beatmapset.id}.mp3`
+        ),
         ranked: Number(beatmap.data.beatmapset.ranked),
         ranked_date: String(
           new Date(beatmap.data.beatmapset.ranked_date).toISOString()
