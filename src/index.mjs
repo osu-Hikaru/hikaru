@@ -11,6 +11,7 @@ import logMariadbStats from "./utilities/logMariadbStats.mjs";
 import rankCalc from "./utilities/rankCalc.mjs";
 import checkActiveTokens from "./utilities/checkActiveTokens.mjs";
 import ftpUpload from "./utilities/ftpUpload.mjs";
+import sqlToOsuDate from "./utilities/sqlToOsuDate.mjs";
 
 // Endpoints
 
@@ -57,6 +58,7 @@ export {
   rankCalc as rankCalc,
   checkActiveTokens as checkActiveTokens,
   ftpUpload as ftpUpload,
+  sqlToOsuDate as sqlToOsuDate,
   //-------------------------------
   postUsers as postUsers,
   oauth as oauth,
