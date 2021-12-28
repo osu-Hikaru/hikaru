@@ -43,7 +43,8 @@ export default async () => {
       });
     })
     .catch((error) => {
-      console.log("osu!LazerAuthorization: Failure!");
+      console.log("osu!LazerAuthorization: Failure! Retrying in 10 seconds...");
       console.log(error);
+      setTimeout(modules.oapiLazerAuthorization, 1000 * 10);
     });
 };

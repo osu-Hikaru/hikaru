@@ -40,7 +40,8 @@ export default async () => {
       });
     })
     .catch((error) => {
-      console.log("osu!Authorization: Failure!");
+      console.log("osu!Authorization: Failure! Retrying in 10 Seconds...");
       console.log(error);
+      setTimeout(modules.oapiAuthorization, 1000 * 10);
     });
 };
