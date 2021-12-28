@@ -39,7 +39,7 @@ export default async () => {
       config.lazer.date_created = Date.now();
       await fs.writeFile("./src/config.json", JSON.stringify(config), () => {
         console.log("osu!LazerAuthorization: Success!");
-        setTimeout(modules.oapiLazerAuthorization, res.data.expires_in);
+        setTimeout(modules.oapiLazerAuthorization, 1000 * res.data.expires_in);
       });
     })
     .catch((error) => {

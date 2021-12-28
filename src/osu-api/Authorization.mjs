@@ -36,7 +36,7 @@ export default async () => {
       config.osu.date_created = Date.now();
       await fs.writeFile("./src/config.json", JSON.stringify(config), () => {
         console.log("osu!Authorization: Success!");
-        setTimeout(modules.oapiAuthorization, res.data.expires_in);
+        setTimeout(modules.oapiAuthorization, 1000 * res.data.expires_in);
       });
     })
     .catch((error) => {
