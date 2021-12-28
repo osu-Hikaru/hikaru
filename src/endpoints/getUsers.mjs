@@ -14,7 +14,7 @@ export default async (pool, req, res) => {
   } else {
     res.status(400);
     res.send();
-    conn.close();
+    conn.end();
     return;
   }
 
@@ -181,14 +181,14 @@ export default async (pool, req, res) => {
               console.log(response);
               res.status(200);
               res.json(response);
-              conn.close();
+              conn.end();
               return;
             })
             .catch((err) => {
               console.log(err);
               res.status(500);
               res.send();
-              conn.close();
+              conn.end();
               return;
             });
         } else {
@@ -201,7 +201,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };

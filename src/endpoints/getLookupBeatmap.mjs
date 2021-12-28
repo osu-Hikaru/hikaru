@@ -16,7 +16,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
@@ -34,7 +34,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
@@ -142,7 +142,7 @@ export default async (pool, req, res) => {
       user_id: Number(map[0].user_id),
       version: String(map[0].version),
     });
-    conn.close();
+    conn.end();
   } else {
     const beatmap = await modules
       .oapiGetBeatmap(req.query.id, req.query.checksum)
@@ -150,7 +150,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.json("Internal Server Error.");
-        conn.close();
+        conn.end();
         return;
       });
 
@@ -192,7 +192,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
 
@@ -231,12 +231,12 @@ export default async (pool, req, res) => {
           console.log(err);
           res.status(500);
           res.send();
-          conn.close();
+          conn.end();
           return;
         });
     }
 
-    conn.close();
+    conn.end();
     res.status(200);
     res.json({
       accuracy: Number(beatmap.data.accuracy),

@@ -77,7 +77,7 @@ export default async (pool, req, res) => {
     if (i === scores.length) {
       res.status(200);
       res.json(response);
-      conn.close();
+      conn.end();
     } else {
       setTimeout(sendResult, 200);
     }

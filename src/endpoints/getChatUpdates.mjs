@@ -17,7 +17,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
 
@@ -39,7 +39,7 @@ export default async (pool, req, res) => {
                     console.log(err);
                     res.status(500);
                     res.send();
-                    conn.close();
+                    conn.end();
                     return;
                   });
                 const dbChannelLast = await conn
@@ -51,7 +51,7 @@ export default async (pool, req, res) => {
                     console.log(err);
                     res.status(500);
                     res.send();
-                    conn.close();
+                    conn.end();
                     return;
                   });
 
@@ -65,7 +65,7 @@ export default async (pool, req, res) => {
                     console.log(err);
                     res.status(500);
                     res.send();
-                    conn.close();
+                    conn.end();
                     return;
                   });
 
@@ -111,7 +111,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
 
@@ -174,7 +174,7 @@ export default async (pool, req, res) => {
           console.log(err);
           res.status(500);
           res.send();
-          conn.close();
+          conn.end();
           return;
         });
     });
@@ -198,13 +198,13 @@ export default async (pool, req, res) => {
                 console.log(err);
                 res.status(500);
                 res.send();
-                conn.close();
+                conn.end();
                 return;
               });
           }
         });
       });
-      conn.close();
+      conn.end();
       res.status(200);
       res.json({ messages: messages, presence: presences, silences: [] });
     })
@@ -212,7 +212,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };

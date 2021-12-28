@@ -51,6 +51,7 @@ console.log(
     Date.now() - runtime
   }ms...`
 );
+modules.logMariadbStats(pool);
 
 modules.oapiAuthorization();
 

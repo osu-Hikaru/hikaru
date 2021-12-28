@@ -12,11 +12,11 @@ export default async (pool, req, res) => {
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
-      conn.close();
+      conn.end();
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
@@ -26,7 +26,7 @@ export default async (pool, req, res) => {
       [new Date(), req.body.ruleset_id, scoreid, url[3], dbResToken[0].id]
     )
     .then((dbResUsers) => {
-      conn.close();
+      conn.end();
       res.status(200);
       res.json({
         beatmap_id: Number(url[3]),
@@ -39,7 +39,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };

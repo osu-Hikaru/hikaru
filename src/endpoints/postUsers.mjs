@@ -12,7 +12,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     }
 
@@ -21,7 +21,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       }
 
@@ -42,7 +42,7 @@ export default async (pool, req, res) => {
               );
               res.status(200);
               res.send();
-              conn.close();
+              conn.end();
               return;
             });
         })
@@ -57,7 +57,7 @@ export default async (pool, req, res) => {
             message:
               "The provided username or email is already in use. Please change it before attempting to register again.",
           });
-          conn.close();
+          conn.end();
           return;
         });
     });

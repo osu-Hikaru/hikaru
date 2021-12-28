@@ -17,12 +17,12 @@ export default async (pool) => {
           player.id,
         ]);
       });
-      conn.close();
+      conn.end();
       return;
     })
     .catch((err) => {
       console.log(err);
-      conn.close();
+      conn.end();
       return;
     });
 };

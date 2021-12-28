@@ -14,7 +14,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
@@ -44,7 +44,7 @@ export default async (pool, req, res) => {
                   last_message_id = Number(dbChannelLast[0].message_id);
                 }
 
-                conn.close();
+                conn.end();
                 res.status(200);
                 res.json({
                   channel_id: Number(url[5]),
@@ -67,7 +67,7 @@ export default async (pool, req, res) => {
                 console.log(err);
                 res.status(500);
                 res.send();
-                conn.close();
+                conn.end();
                 return;
               });
           })
@@ -75,14 +75,14 @@ export default async (pool, req, res) => {
             console.log(err);
             res.status(500);
             res.send();
-            conn.close();
+            conn.end();
             return;
           })
           .catch((err) => {
             console.log(err);
             res.status(500);
             res.send();
-            conn.close();
+            conn.end();
             return;
           });
       })
@@ -90,7 +90,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
   } else {

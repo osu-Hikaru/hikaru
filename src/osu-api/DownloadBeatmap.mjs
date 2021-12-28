@@ -53,12 +53,12 @@ export default (id, pool) => {
               CD: mirror_map.CD,
               ET: mirror_map.ETag,
             });
-            conn.close();
+            conn.end();
           });
         })
         .catch((err) => {
           console.log("Beatmap download from mirror failed!");
-          conn.close();
+          conn.end();
           reject(err);
         });
     } else {
@@ -102,11 +102,11 @@ export default (id, pool) => {
                   ]
                 )
                 .then(() => {
-                  conn.close();
+                  conn.end();
                   console.log("DB Insert succeeded! Transferring...");
                 })
                 .catch((err) => {
-                  conn.close();
+                  conn.end();
                   console.log("DB Insert Failed! Cancelling...");
                   console.log(err);
                 });

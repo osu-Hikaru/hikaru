@@ -8,7 +8,7 @@ export default async (pool, req, res) => {
   if (req.headers.authorization === undefined) {
     res.status(401);
     res.send();
-    conn.close();
+    conn.end();
     return;
   } else {
     await conn
@@ -29,7 +29,7 @@ export default async (pool, req, res) => {
             message:
               "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
           });
-          conn.close();
+          conn.end();
           return;
         } else {
           conn
@@ -201,14 +201,14 @@ export default async (pool, req, res) => {
 
                       res.status(200);
                       res.json(response);
-                      conn.close();
+                      conn.end();
                       return;
                     })
                     .catch((err) => {
                       console.log(err);
                       res.status(500);
                       res.send();
-                      conn.close();
+                      conn.end();
                       return;
                     });
                 } else {
@@ -221,7 +221,7 @@ export default async (pool, req, res) => {
               console.log(err);
               res.status(500);
               res.send();
-              conn.close();
+              conn.end();
               return;
             });
         }
@@ -230,7 +230,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
   }

@@ -14,7 +14,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
@@ -60,14 +60,14 @@ export default async (pool, req, res) => {
             sender_id: dbResUsers[0].id,
             timestamp: new Date(Date.now()).toISOString(),
           });
-          conn.close();
+          conn.end();
           return;
         })
         .catch((err) => {
           console.log(err);
           res.status(500);
           res.send();
-          conn.close();
+          conn.end();
           return;
         });
     })
@@ -75,7 +75,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };

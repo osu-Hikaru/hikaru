@@ -21,17 +21,17 @@ export default async (pool) => {
             ])
             .catch((err) => {
               console.log(err);
-              conn.close();
+              conn.end();
               return;
             });
         }
       });
-      conn.close();
+      conn.end();
       return;
     })
     .catch((err) => {
       console.log(err);
-      conn.close();
+      conn.end();
       return;
     });
 };

@@ -13,7 +13,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
@@ -24,12 +24,12 @@ export default async (pool, req, res) => {
         Number(url[4]),
       ])
       .then(async (dbResChatPresence) => {
-        conn.close();
+        conn.end();
         res.status(200);
         res.send();
       });
   } else {
-    conn.close();
+    conn.end();
     res.status(403);
     res.send();
   }

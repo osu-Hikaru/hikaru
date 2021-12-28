@@ -21,7 +21,7 @@ export default async (pool, req, res, next) => {
             message:
               "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
           });
-          conn.close();
+          conn.end();
           return;
         } else {
           if (dbRes[0].created_at + dbRes[0].expires_in < Date.now()) {
@@ -34,7 +34,7 @@ export default async (pool, req, res, next) => {
               message:
                 "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
             });
-            conn.close();
+            conn.end();
             return;
           } else {
             conn
@@ -44,13 +44,13 @@ export default async (pool, req, res, next) => {
               )
               .then((apiResUsers) => {
                 next();
-                conn.close();
+                conn.end();
               })
               .catch((err) => {
                 console.log(err);
                 res.status(500);
                 res.send();
-                conn.close();
+                conn.end();
                 return;
               });
           }
@@ -60,13 +60,13 @@ export default async (pool, req, res, next) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
   } else {
     res.status(401);
     res.json({ message: "Unauthorized." });
-    conn.close();
+    conn.end();
     return;
   }
 };
