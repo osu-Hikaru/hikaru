@@ -14,7 +14,7 @@ This is an independent Fan project made for education purposes only. Please chec
 - - [x] Session Storage
 - [ ] Submissions
 - - [x] Send & Store
-- - [ ] Global Leaderboard
+- - [x] Global Leaderboard
 - - [ ] Validation
 - [ ] Profiles
 - - [x] Country
@@ -51,9 +51,12 @@ This is an independent Fan project made for education purposes only. Please chec
 - - - - [ ] Graveyard
 - - - [ ] Kudosu
 - [ ] Client
-- - [ ] Beatmap Information Ingame
-- - - [x] Implemented
-- - - - [x] Caviat: It just forwards and returns result from osu!API
+- - [ ] Beatmap Information
+- - - [x] Basic Set Information
+- - - [x] Basic Map Information
+- - - [ ] Ratings
+- - - [ ] Comments
+- - - [ ] Points of failure
 - [ ] Parsing .osu
 - - [ ] ?
 - [ ] Parsing .osz
@@ -109,6 +112,7 @@ This is an independent Fan project made for education purposes only. Please chec
 - - [ ] Management
 - - - [ ] Account
 - - - [ ] Chat
+- - - - [x] Role Restricted Channels
 - - - [ ] Forum
 - - - [ ] User Page
 - [ ] Homepage
