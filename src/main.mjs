@@ -58,7 +58,7 @@ modules.oapiAuthorization();
 modules.oapiLazerAuthorization();
 
 setInterval(function () {
-  modules.updateUserStatus(pool);
+  modules.updateUserStatus(pool, config);
 }, 1000 * 60 * 5);
 
 setInterval(function () {

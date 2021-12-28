@@ -5,6 +5,8 @@
 import * as modules from "../index.mjs";
 import fs from "fs";
 
+const uptime = Date.now();
+
 export default async (conn, channels, user, config, catchup) => {
   try {
     if (catchup === true) {
@@ -24,10 +26,12 @@ export default async (conn, channels, user, config, catchup) => {
           const content = message.message_content.split(" ");
 
           switch (content[0]) {
-            case "roll":
+            case `${config.umineko.prefix}roll`:
               modules.umiRoll(conn, message, config);
               break;
-
+            case `${config.umineko.prefix}uptime`:
+              modules.umiUptime(conn, message, config, uptime);
+              break;
             default:
               break;
           }
@@ -71,10 +75,12 @@ export default async (conn, channels, user, config, catchup) => {
           const content = message.message_content.split(" ");
 
           switch (content[0]) {
-            case "!roll":
+            case `${config.umineko.prefix}roll`:
               modules.umiRoll(conn, message, config);
               break;
-
+            case `${config.umineko.prefix}uptime`:
+              modules.umiUptime(conn, message, config, uptime);
+              break;
             default:
               break;
           }

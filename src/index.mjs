@@ -53,6 +53,7 @@ import oapiDownloadBeatmap from "./osu-api/DownloadBeatmap.mjs";
 import umiInit from "./umineko/init.mjs";
 import umiMessageListener from "./umineko/messageListener.mjs";
 import umiRoll from "./umineko/roll.mjs";
+import umiUptime from "./umineko/uptime.mjs";
 
 // Imports
 
@@ -100,4 +101,5 @@ export {
   umiInit as umiInit,
   umiMessageListener as umiMessageListener,
   umiRoll as umiRoll,
+  umiUptime as umiUptime,
 };

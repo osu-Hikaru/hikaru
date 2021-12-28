@@ -4,24 +4,24 @@
 
 import * as modules from "../index.mjs";
 
-export default async (conn, message, config) => {
+export default async (conn, message, config, uptime) => {
   try {
-    let content = message.message_content.split(" ");
-
-    if (isNaN(content[1]) || content[1] === undefined) {
-      content[1] = 100;
-    }
-
     await conn.query(
       `INSERT INTO messages (channel_id, user_id, timestamp, message_content, is_action) VALUES (?, ${Number(
         config.umineko.user_id
       )}, ?, ?, 1)`,
-      [message.channel_id, new Date(), await modules.genNumber(0, content[1])]
+      [
+        message.channel_id,
+        new Date(),
+        `Server Uptime: ${Number((Date.now() - uptime) / 1000 / 60).toFixed(
+          1
+        )} minutes!`,
+      ]
     );
 
-    console.log(`Umineko: FAILURE! Command: ${config.umineko.prefix}roll`);
+    console.log(`Umineko: OK! Command: ${config.umineko.prefix}uptime`);
   } catch (e) {
-    console.log(`Umineko: FAILURE! Command: ${config.umineko.prefix}roll`);
+    console.log(`Umineko: FAILURE! Command: ${config.umineko.prefix}uptime`);
     console.log(e);
   }
 };
