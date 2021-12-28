@@ -16,11 +16,19 @@ export default async (pool, req, res) => {
   async function returnMaps() {
     if ((i = Object.keys(req.query).length)) {
       console.log(`Finished loop. Params: ${params}`);
-      await modules.oapiBeatmapSearch(params).then((apiRes) => {
-        console.log(apiRes.data.beatmapsets);
-        res.status(200);
-        res.json(apiRes.data);
-      });
+      await modules
+        .oapiBeatmapSearch(params)
+        .then((apiRes) => {
+          console.log(apiRes.data.beatmapsets);
+          res.status(200);
+          res.json(apiRes.data);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500);
+          res.json("Internal Server Error.");
+          return;
+        });
     } else {
       setTimeout(returnMaps, 500);
     }

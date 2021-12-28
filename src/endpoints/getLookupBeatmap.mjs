@@ -144,10 +144,15 @@ export default async (pool, req, res) => {
     });
     conn.close();
   } else {
-    const beatmap = await modules.oapiGetBeatmap(
-      req.query.id,
-      req.query.checksum
-    );
+    const beatmap = await modules
+      .oapiGetBeatmap(req.query.id, req.query.checksum)
+      .catch((err) => {
+        console.log(err);
+        res.status(500);
+        res.json("Internal Server Error.");
+        conn.close();
+        return;
+      });
 
     await conn
       .query(
