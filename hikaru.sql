@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `is_probationary` tinyint(1) NOT NULL DEFAULT 0,
   `colour` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -166,9 +166,9 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `user_id` int(10) DEFAULT NULL,
   `timestamp` datetime DEFAULT NULL,
   `message_content` varchar(512) DEFAULT NULL,
-  `is_action` bit(1) DEFAULT NULL,
+  `is_action` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`message_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `scores` (
   `created_at` datetime DEFAULT NULL,
   `user_best` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`score_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
