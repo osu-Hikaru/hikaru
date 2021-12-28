@@ -3,6 +3,7 @@
 // Copyright (C) 2021 Hikaru Team <copyright@hikaru.pw>
 
 export default async (pool) => {
+  console.log("Running updateUserStatus");
   const conn = await pool.getConnection();
 
   await conn.query(`SELECT * FROM users`).then((dbRes) => {

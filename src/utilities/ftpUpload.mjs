@@ -5,6 +5,7 @@
 import fs from "fs";
 
 export default async (Ftp, path, remote) => {
+  console.log("Running ftpUpload");
   fs.readFile(path, (err, data) => {
     Ftp.put(data, remote, (err) => {
       if (!err) {
