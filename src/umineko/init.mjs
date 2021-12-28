@@ -15,18 +15,18 @@ export default async (pool, config) => {
     ]);
 
     if (user[0] === undefined) {
-      console.log("Failed to initialize Umineko: User not found.");
+      console.log("Umineko: Failed to initialize: User not found.");
     } else {
       const channels = await conn.query(`SELECT * FROM channels`);
 
       console.log(
-        "Successfully Initialized Umineko! Starting to listen for messages..."
+        "Umineko: Successfully Initialized! Starting to listen for messages..."
       );
 
       modules.umiMessageListener(conn, channels, user, config, true);
     }
   } catch (e) {
-    console.log("Failed to initialize Umineko!");
+    console.log("Umineko: Failed to initialize!");
     console.log(e);
   }
 };

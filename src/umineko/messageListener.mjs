@@ -10,7 +10,7 @@ export default async (conn, channels, user, config, catchup) => {
     if (catchup === true) {
       let i = 0;
 
-      console.log("Message listener starting offline catchup...");
+      console.log("Umineko: Message listener starting offline catchup...");
 
       const messages = await conn.query(
         `SELECT * FROM messages WHERE message_id > ?`,
@@ -39,7 +39,7 @@ export default async (conn, channels, user, config, catchup) => {
       async function waitForFinish() {
         if (i === messages.length) {
           console.log(
-            `Caught up ${messages.length} messages! Now running every ${config.umineko.listen_interval} seconds!`
+            `Umineko: Caught up ${messages.length} messages! Now running every ${config.umineko.listen_interval} seconds!`
           );
 
           await fs.writeFile(

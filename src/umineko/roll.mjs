@@ -23,7 +23,7 @@ export default async (conn, message, config) => {
 
     console.log("Umineko: OK! Command: !roll");
   } catch (e) {
-    console.log("Failed to initialize Umineko!");
+    console.log("Umineko: FAILURE! Command: !roll");
     console.log(e);
   }
 };
