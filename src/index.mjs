@@ -48,6 +48,12 @@ import oapiBeatmapSearch from "./osu-api/BeatmapSearch.mjs";
 import oapiGetBeatmapset from "./osu-api/GetBeatmapset.mjs";
 import oapiDownloadBeatmap from "./osu-api/DownloadBeatmap.mjs";
 
+// Umineko
+
+import umiInit from "./umineko/init.mjs";
+import umiMessageListener from "./umineko/messageListener.mjs";
+import umiRoll from "./umineko/roll.mjs";
+
 // Imports
 
 export {
@@ -90,4 +96,8 @@ export {
   oapiBeatmapSearch as oapiBeatmapSearch,
   oapiGetBeatmapset as oapiGetBeatmapset,
   oapiDownloadBeatmap as oapiDownloadBeatmap,
+  //-------------------------------
+  umiInit as umiInit,
+  umiMessageListener as umiMessageListener,
+  umiRoll as umiRoll,
 };

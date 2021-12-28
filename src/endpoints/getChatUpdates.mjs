@@ -143,7 +143,7 @@ export default async (pool, req, res) => {
                   resolve({
                     channel_id: Number(message.channel_id),
                     content: String(message.message_content),
-                    is_action: Boolean(message.is_action.readInt8()),
+                    is_action: Boolean(message.is_action),
                     message_id: Number(message.message_id),
                     sender: {
                       avatar_url: String(dbResUser[0].avatar_url),

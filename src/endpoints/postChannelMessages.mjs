@@ -31,7 +31,9 @@ export default async (pool, req, res) => {
         sendMessage();
         break;
       case "SYSTEM":
-        if (user[0].groups.split(",").indexOf("dev") > -1) {
+        if (
+          user[0].groups.split(",").some((r) => ["dev", "bot"].indexOf(r) >= 0)
+        ) {
           sendMessage();
         } else {
           rejectMessage();

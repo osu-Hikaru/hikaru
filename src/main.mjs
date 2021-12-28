@@ -73,6 +73,12 @@ setInterval(function () {
   modules.checkActiveTokens(pool);
 }, 1000 * 60 * 60);
 
+if (config.umineko.enabled === true) {
+  console.log(`Loading Umineko @ ${Date.now() - runtime}ms...`);
+
+  modules.umiInit(pool, config);
+}
+
 console.log(`Loading Express modules @ ${Date.now() - runtime}ms...`);
 
 api.use(morgan("dev"));
