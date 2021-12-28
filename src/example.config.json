@@ -5,7 +5,8 @@
     "user": "hikaru",
     "password": "",
     "database": "hikaru",
-    "connectionLimit": 100
+    "connectionLimit": 100,
+    "dbDebug": false
   },
   "mirror": {
     "mirror_enabled": false,

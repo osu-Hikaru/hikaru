@@ -7,5 +7,6 @@ export default async (pool) => {
     "Total Connections": pool.totalConnections(),
     "Active Connections": pool.activeConnections(),
     "Idle Connections": pool.idleConnections(),
+    "Task Query Size": pool.taskQueueSize(),
   });
 };
