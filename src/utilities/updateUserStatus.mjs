@@ -13,5 +13,6 @@ export default async (pool) => {
         ]);
       }
     });
+    conn.close();
   });
 };
