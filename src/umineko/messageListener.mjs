@@ -7,8 +7,12 @@ import fs from "fs";
 
 const uptime = Date.now();
 
-export default async (conn, channels, user, config, catchup) => {
+export default async (conn, channels, user, catchup) => {
   try {
+    let config = JSON.parse(
+      await fs.readFileSync("./src/config.json", "utf-8", () => {})
+    );
+
     if (catchup === true) {
       let i = 0;
 

@@ -26,6 +26,7 @@ const pool = await mariadb.createPool({
   password: config.mariadb.password,
   database: config.mariadb.database,
   connectionLimit: config.mariadb.connectionLimit,
+  idleTimeout: 60,
 });
 
 if (config.mariadb.dbDebug === true) {
@@ -53,9 +54,9 @@ console.log(
 );
 modules.logMariadbStats(pool);
 
-modules.oapiAuthorization();
-
-modules.oapiLazerAuthorization();
+modules.oapiAuthorization().then(() => {
+  modules.oapiLazerAuthorization();
+})
 
 setInterval(function () {
   modules.updateUserStatus(pool, config);
@@ -180,6 +181,10 @@ api.get("/v2/beatmapsets/search", async (req, res) => {
   modules.getBeatmapSearch(pool, req, res);
 });
 
+api.get("/v2/rankings/*/*", async (req, res) => {
+  modules.getRankings(pool, req, res);
+});
+
 api.all("*", (req, res) => {
   res.status(404);
   res.json({ message: "Not found." });
@@ -189,7 +194,7 @@ console.log(`Starting to Listen for requests @ ${Date.now() - runtime}ms...`);
 
 api.listen(config.express.port, () => {
   console.log(
-    `Startup complete!\nPort: ${config.express.port}\nRuntime: ${
+    `Startup complete!\nPort: ${config.express.port}\nStartup Time: ${
       Date.now() - runtime
     }ms`
   );

@@ -3,6 +3,12 @@
 // Copyright (C) 2021 Hikaru Team <copyright@hikaru.pw>
 
 export default async (pool, req, res) => {
-  res.status(200);
-  res.json({});
+  try {
+    res.status(200);
+    res.json({});
+  } catch (e) {
+    res.status(500);
+    res.json({});
+    console.log(e);
+  }
 };

@@ -6,6 +6,7 @@ import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
 import * as modules from "../index.mjs";
+import process from "process";
 
 export default async () => {
   console.log("Running osu!Authorization...");
@@ -34,9 +35,10 @@ export default async () => {
       config.osu.bearer = res.data.access_token;
       config.osu.expires_in = res.data.expires_in;
       config.osu.date_created = Date.now();
-      await fs.writeFile("./src/config.json", JSON.stringify(config), () => {
+      await fs.writeFile(process.cwd() + "/src/config.json", JSON.stringify(config), () => {
         console.log("osu!Authorization: Success!");
         setTimeout(modules.oapiAuthorization, 1000 * res.data.expires_in);
+        return true;
       });
     })
     .catch((error) => {

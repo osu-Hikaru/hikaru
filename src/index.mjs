@@ -38,6 +38,7 @@ import getNews from "./endpoints/getNews.mjs";
 import getBeatmapSearch from "./endpoints/getBeatmapSearch.mjs";
 import getBeatmapsets from "./endpoints/getBeatmapsets.mjs";
 import getDownloadBeatmap from "./endpoints/getDownloadBeatmap.mjs";
+import getRankings from "./endpoints/getRankings.mjs";
 
 // osu!API Routes
 
@@ -90,6 +91,7 @@ export {
   getBeatmapSearch as getBeatmapSearch,
   getBeatmapsets as getBeatmapsets,
   getDownloadBeatmap as getDownloadBeatmap,
+  getRankings as getRankings,
   //-------------------------------
   oapiAuthorization as oapiAuthorization,
   oapiLazerAuthorization as oapiLazerAuthorization,

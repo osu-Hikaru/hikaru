@@ -20,10 +20,12 @@ export default async (pool, config) => {
       const channels = await conn.query(`SELECT * FROM channels`);
 
       console.log(
-        "Umineko: Successfully Initialized! Starting to listen for messages..."
+        "Umineko: Successfully Initialized! Starting to listen for messages in ~10 Seconds..."
       );
 
-      modules.umiMessageListener(conn, channels, user, config, true);
+      setTimeout(() => {
+        modules.umiMessageListener(conn, channels, user, true);
+      }, 1000 * 10);
     }
   } catch (e) {
     console.log("Umineko: Failed to initialize!");

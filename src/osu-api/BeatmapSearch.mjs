@@ -7,25 +7,26 @@ import fs from "fs";
 
 export default async (params) => {
   return new Promise(async (resolve, reject) => {
-    let config = JSON.parse(
-      await fs.readFileSync("./src/config.json", "utf-8", () => {})
-    );
+    try {
+      let config = JSON.parse(
+        await fs.readFileSync("./src/config.json", "utf-8", () => {})
+      );
 
-    axios({
-      method: "get",
-      url: `https://osu.ppy.sh/api/v2/beatmapsets/search?${params.slice(
-        0,
-        -1
-      )}`,
-      headers: {
-        Authorization: "Bearer " + config.osu.bearer,
-      },
-    })
-      .then(async (res) => {
+      axios({
+        method: "get",
+        url: `https://osu.ppy.sh/api/v2/beatmapsets/search?${params.slice(
+          0,
+          -1
+        )}`,
+        headers: {
+          Authorization: "Bearer " + config.osu.bearer,
+        },
+      }).then(async (res) => {
         resolve(res);
-      })
-      .catch(async (error) => {
-        reject(error);
       });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
   });
 };
