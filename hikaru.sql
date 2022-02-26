@@ -19,11 +19,11 @@ USE `hikaru`;
 
 -- Dumping structure for table hikaru.accounts
 CREATE TABLE IF NOT EXISTS `accounts` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL AUTO_INCREMENT,
   `username` varchar(26) NOT NULL DEFAULT '',
   `email` varchar(128) NOT NULL DEFAULT '',
   `password` varchar(64) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE KEY `email` (`email`) USING BTREE,
   UNIQUE KEY `username` (`username`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 
 -- Dumping structure for table hikaru.active_tokens
 CREATE TABLE IF NOT EXISTS `active_tokens` (
-  `id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
   `access_token` varchar(512) NOT NULL,
   `refresh_token` varchar(512) NOT NULL DEFAULT '',
   `expires_in` int(8) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `active_tokens` (
 CREATE TABLE IF NOT EXISTS `beatmaps` (
   `beatmapset_id` int(16) NOT NULL,
   `difficulty_rating` float DEFAULT NULL,
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `beatmap_id` int(11) NOT NULL AUTO_INCREMENT,
   `mode` varchar(50) DEFAULT '',
   `status` varchar(50) DEFAULT '',
   `total_length` int(11) DEFAULT 0,
@@ -73,9 +73,9 @@ CREATE TABLE IF NOT EXISTS `beatmaps` (
   `url` varchar(256) DEFAULT '0',
   `checksum` varchar(256) DEFAULT '0',
   `max_combo` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `beatmapset_id` (`beatmapset_id`,`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3367307 DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`beatmap_id`) USING BTREE,
+  UNIQUE KEY `beatmapset_id` (`beatmapset_id`,`beatmap_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3471416 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `beatmapsets` (
   `creator` varchar(32) NOT NULL,
   `favorite_count` int(11) NOT NULL DEFAULT 0,
   `hype` int(11) DEFAULT NULL,
-  `id` int(11) NOT NULL,
+  `beatmapset_id` int(11) NOT NULL,
   `nsfw` tinyint(1) NOT NULL DEFAULT 0,
   `play_count` int(11) NOT NULL DEFAULT 0,
   `source` varchar(64) DEFAULT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `beatmapsets` (
   `storyboard` tinyint(1) NOT NULL DEFAULT 0,
   `submitted_date` datetime DEFAULT NULL,
   `tags` text DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`beatmapset_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
@@ -143,9 +143,18 @@ CREATE TABLE IF NOT EXISTS `chat_presence` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table hikaru.friends
+CREATE TABLE IF NOT EXISTS `friends` (
+  `user_id` int(11) NOT NULL,
+  `friend_id` int(11) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table hikaru.groups
 CREATE TABLE IF NOT EXISTS `groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `identifier` text DEFAULT NULL,
   `name` text DEFAULT NULL,
   `short_name` tinytext DEFAULT NULL,
@@ -154,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `has_listing` tinyint(1) NOT NULL DEFAULT 0,
   `is_probationary` tinyint(1) NOT NULL DEFAULT 0,
   `colour` tinytext DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`group_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
@@ -168,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `message_content` varchar(512) DEFAULT NULL,
   `is_action` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`message_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -201,6 +210,18 @@ CREATE TABLE IF NOT EXISTS `news` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table hikaru.rankings
+CREATE TABLE IF NOT EXISTS `rankings` (
+  `user_id` int(11) DEFAULT NULL,
+  `mode` varchar(50) DEFAULT NULL,
+  `pp` int(11) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
+  `score_rank` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table hikaru.scores
 CREATE TABLE IF NOT EXISTS `scores` (
   `user_id` int(10) NOT NULL,
@@ -228,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `scores` (
   `created_at` datetime DEFAULT NULL,
   `user_best` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`score_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -237,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `avatar_url` varchar(256) DEFAULT 'https://a.hikaru.pw/1/default_av.jpg',
   `country_code` varchar(2) DEFAULT NULL,
   `country_name` varchar(128) DEFAULT NULL,
-  `id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
   `username` varchar(28) NOT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `is_bot` tinyint(1) DEFAULT 0,
@@ -259,8 +280,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `active_bm_id` int(11) DEFAULT NULL,
   `groups` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `pm_friends_only` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table hikaru.websocket
+CREATE TABLE IF NOT EXISTS `websocket` (
+  `connection_id` varchar(64) NOT NULL,
+  `connection_token` varchar(64) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`connection_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
