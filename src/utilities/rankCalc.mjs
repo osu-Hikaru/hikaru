@@ -12,9 +12,9 @@ export default async (pool) => {
     .then(async (dbRes) => {
       await dbRes.forEach((player) => {
         i++;
-        conn.query(`UPDATE users SET global_rank = ? WHERE id = ?`, [
+        conn.query(`UPDATE users SET global_rank = ? WHERE user_id = ?`, [
           i,
-          player.id,
+          player.user_id,
         ]);
       });
       conn.end();

@@ -10,7 +10,7 @@ export default async (pool, req, res) => {
 
   async function main() {
     const dbResToken = await conn
-      .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+      .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
         req.headers.authorization.split(" ")[1],
       ])
       .catch((err) => {
@@ -23,7 +23,7 @@ export default async (pool, req, res) => {
 
     await conn
       .query(`SELECT * FROM chat_presence WHERE user_id = ?`, [
-        dbResToken[0].id,
+        dbResToken[0].user_id,
       ])
       .then(async (dbResPresence) => {
         await dbResPresence.forEach(async (presence) => {
@@ -137,7 +137,7 @@ export default async (pool, req, res) => {
               new Promise(async (resolve, reject) => {
                 try {
                   const dbResUser = await conn.query(
-                    `SELECT * FROM users WHERE id = ? LIMIT 1`,
+                    `SELECT * FROM users WHERE user_id = ? LIMIT 1`,
                     [message.user_id]
                   );
                   resolve({
@@ -149,7 +149,7 @@ export default async (pool, req, res) => {
                       avatar_url: String(dbResUser[0].avatar_url),
                       country_code: String(dbResUser[0].country_code),
                       default_group: "default",
-                      id: Number(dbResUser[0].id),
+                      id: Number(dbResUser[0].user_id),
                       is_active: Boolean(dbResUser[0].is_active),
                       is_bot: Boolean(dbResUser[0].is_bot),
                       is_deleted: Boolean(dbResUser[0].is_deleted),

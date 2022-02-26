@@ -32,8 +32,8 @@ export default async (pool, req, res) => {
 
         conn
           .query(
-            `INSERT INTO active_tokens (id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
-            [dbRes[0].id, access_token, expires_in, refresh_token, new Date()]
+            `INSERT INTO active_tokens (user_id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
+            [dbRes[0].user_id, access_token, expires_in, refresh_token, new Date()]
           )
           .then((dbRes1) => {
             res.status(200);
@@ -100,7 +100,7 @@ export default async (pool, req, res) => {
                   .query(
                     `INSERT INTO active_tokens (id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
                     [
-                      dbRes[0].id,
+                      dbRes[0].user_id,
                       access_token,
                       expires_in,
                       refresh_token,

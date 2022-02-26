@@ -12,6 +12,7 @@ import rankCalc from "./utilities/rankCalc.mjs";
 import checkActiveTokens from "./utilities/checkActiveTokens.mjs";
 import ftpUpload from "./utilities/ftpUpload.mjs";
 import sqlToOsuDate from "./utilities/sqlToOsuDate.mjs";
+import importBeatmap from "./utilities/importBeatmap.mjs";
 
 // Endpoints
 
@@ -67,6 +68,7 @@ export {
   checkActiveTokens as checkActiveTokens,
   ftpUpload as ftpUpload,
   sqlToOsuDate as sqlToOsuDate,
+  importBeatmap as importBeatmap,
   //-------------------------------
   postUsers as postUsers,
   oauth as oauth,

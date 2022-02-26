@@ -39,8 +39,8 @@ export default async (pool, req, res, next) => {
           } else {
             conn
               .query(
-                `UPDATE users SET last_visit = ?, is_online = 1 WHERE id = ?`,
-                [new Date(), dbRes[0].id]
+                `UPDATE users SET last_visit = ?, is_online = 1 WHERE user_id = ?`,
+                [new Date(), dbRes[0].user_id]
               )
               .then((apiResUsers) => {
                 next();

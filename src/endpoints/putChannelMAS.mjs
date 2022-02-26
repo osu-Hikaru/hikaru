@@ -6,7 +6,7 @@ export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const url = req.originalUrl.split("/");
   const dbResToken = await conn
-    .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+    .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
@@ -20,7 +20,7 @@ export default async (pool, req, res) => {
   conn
     .query(`UPDATE chat_presence SET last_read_id = ? WHERE user_id = ?`, [
       Number(url[6]),
-      dbResToken[0].id,
+      dbResToken[0].user_id,
     ])
     .then((dbResPresence) => {
       res.status(200);

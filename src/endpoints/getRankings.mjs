@@ -82,7 +82,7 @@ export default async (pool, req, res) => {
               avatar_url: String(ranking.avatar_url),
               country_code: String(ranking.country_code),
               default_group: "default",
-              id: Number(ranking.id),
+              id: Number(ranking.user_id),
               is_active: Boolean(ranking.is_active),
               is_bot: Boolean(ranking.is_bot),
               is_deleted: Boolean(ranking.is_deleted),

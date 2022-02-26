@@ -10,10 +10,10 @@ export default async (pool, config) => {
     dbRes.forEach(async (user) => {
       if (
         new Date(user.last_visit) < Date.now() - 1000 * 60 * 5 &&
-        user.id !== config.umineko.user_id
+        user.user_id !== config.umineko.user_id
       ) {
-        await conn.query(`UPDATE users SET is_online = 0 WHERE id = ?`, [
-          user.id,
+        await conn.query(`UPDATE users SET is_online = 0 WHERE user_id = ?`, [
+          user.user_id,
         ]);
       }
     });

@@ -11,9 +11,19 @@ export default async (id, checksum) => {
       await fs.readFileSync("./src/config.json", "utf-8", () => {})
     );
 
+    let url = "https://osu.ppy.sh/api/v2/beatmaps/lookup?";
+
+    if (id !== null) {
+      url += `id=${id}&`;
+    }
+
+    if (checksum !== null) {
+      url += `checksum=${checksum}&`;
+    }
+    
     axios({
       method: "get",
-      url: `https://osu.ppy.sh/api/v2/beatmaps/lookup?id=${id}&checksum=${checksum}`,
+      url: url.slice(0, -1),
       headers: {
         Authorization: "Bearer " + config.osu.bearer,
       },

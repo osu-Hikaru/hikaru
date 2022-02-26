@@ -8,7 +8,7 @@ export default async (pool, req, res) => {
   const conn = await pool.getConnection();
 
   let map = await conn
-    .query(`SELECT * FROM beatmaps WHERE id = ? AND checksum = ? LIMIT 1`, [
+    .query(`SELECT * FROM beatmaps WHERE beatmap_id = ? AND checksum = ? LIMIT 1`, [
       req.query.id,
       req.query.checksum,
     ])
@@ -27,7 +27,7 @@ export default async (pool, req, res) => {
   }
 
   let set = await conn
-    .query(`SELECT * FROM beatmapsets WHERE id = ? LIMIT 1`, [
+    .query(`SELECT * FROM beatmapsets WHERE beatmapset_id = ? LIMIT 1`, [
       map[0].beatmapset_id,
     ])
     .catch((err) => {
@@ -39,8 +39,6 @@ export default async (pool, req, res) => {
     });
 
   if (map[0].id !== undefined) {
-    console.log(await modules.sqlToOsuDate(set[0].ranked_date));
-
     res.status(200);
     res.json({
       accuracy: Number(map[0].accuracy),
@@ -56,28 +54,28 @@ export default async (pool, req, res) => {
         can_be_hyped: Boolean(false),
         covers: {
           cover: String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/cover.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/cover.jpg?${set[0].cover_id}`
           ),
           "cover@2x": String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/cover@2x.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/cover@2x.jpg?${set[0].cover_id}`
           ),
           card: String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/card.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/card.jpg?${set[0].cover_id}`
           ),
           "card@2x": String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/card@2x.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/card@2x.jpg?${set[0].cover_id}`
           ),
           list: String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/list.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/list.jpg?${set[0].cover_id}`
           ),
           "list@2x": String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/list@2x.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/list@2x.jpg?${set[0].cover_id}`
           ),
           slimcover: String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/slimcover.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/slimcover.jpg?${set[0].cover_id}`
           ),
           "slimcover@2x": String(
-            `https://assets.ppy.sh/beatmaps/${set[0].id}/covers/slimcover@2x.jpg?${set[0].cover_id}`
+            `https://assets.ppy.sh/beatmaps/${set[0].beatmapset_id}/covers/slimcover@2x.jpg?${set[0].cover_id}`
           ),
         },
         creator: String(set[0].creator),
@@ -86,7 +84,7 @@ export default async (pool, req, res) => {
         favourite_count: Number(0),
         has_favourited: Boolean(false),
         hype: set[0].hype,
-        id: Number(set[0].id),
+        id: Number(set[0].beatmapset_id),
         is_scoreable: Boolean(true),
         last_updated: String(new Date(set[0].last_updated).toISOString()),
         legacy_thread_url: String(null),
@@ -96,7 +94,7 @@ export default async (pool, req, res) => {
         },
         nsfw: Boolean(set[0].nsfw),
         play_count: Number(0),
-        preview_url: String(`https://b.ppy.sh/preview/${set[0].id}.mp3`),
+        preview_url: String(`https://b.ppy.sh/preview/${set[0].beatmapset_id}.mp3`),
         ranked: Number(set[0].ranked),
         ranked_date: await modules.sqlToOsuDate(set[0].ranked_date),
         ratings: [],
@@ -127,7 +125,7 @@ export default async (pool, req, res) => {
         fail: [],
       },
       hit_length: Number(map[0].hit_length),
-      id: Number(map[0].id),
+      id: Number(map[0].beatmap_id),
       is_scoreable: Boolean(map[0].convert),
       last_updated: await modules.sqlToOsuDate(set[0].last_updated),
       max_combo: Number(map[0].max_combo),
@@ -156,7 +154,7 @@ export default async (pool, req, res) => {
 
     await conn
       .query(
-        `REPLACE INTO beatmaps (accuracy, ar, beatmapset_id, bpm, checksum, is_convert, count_circles, count_sliders, count_spinners, cs, deleted_at, difficulty_rating, drain, hit_length, id, is_scoreable, last_updated, max_combo, mode, mode_int, passcount, playcount, ranked, status, total_length, url, user_id, version) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        `REPLACE INTO beatmaps (accuracy, ar, beatmapset_id, bpm, checksum, is_convert, count_circles, count_sliders, count_spinners, cs, deleted_at, difficulty_rating, drain, hit_length, beatmap_id, is_scoreable, last_updated, max_combo, mode, mode_int, passcount, playcount, ranked, status, total_length, url, user_id, version) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         [
           Number(beatmap.data.accuracy),
           Number(beatmap.data.ar),
@@ -199,7 +197,7 @@ export default async (pool, req, res) => {
     if (set[0] === undefined) {
       await conn
         .query(
-          `REPLACE INTO beatmapsets (nomination_current, nomination_required, artist, artist_unicode, cover_id, creator, id, nsfw, source, status, title, title_unicode, track_id, user_id, video, download_disabled, more_information, bpm, last_updated, ranked, ranked_date, storyboard, submitted_date, tags) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          `REPLACE INTO beatmapsets (nomination_current, nomination_required, artist, artist_unicode, cover_id, creator, beatmapset_id, nsfw, source, status, title, title_unicode, track_id, user_id, video, download_disabled, more_information, bpm, last_updated, ranked, ranked_date, storyboard, submitted_date, tags) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
           [
             Number(beatmap.data.beatmapset.nominations_summary.current),
             Number(beatmap.data.beatmapset.nominations_summary.required),

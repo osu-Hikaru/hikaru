@@ -8,7 +8,7 @@ export default async (pool, req, res) => {
   let query2 = "";
 
   if (req.query.key === "id") {
-    query2 = `id`;
+    query2 = `user_id`;
   } else if (req.query.key === "username") {
     query2 = `username`;
   } else {
@@ -38,7 +38,7 @@ export default async (pool, req, res) => {
                   dbResGroups[0];
                   resolve(
                     groups.push({
-                      id: Number(dbResGroups[0].id),
+                      id: Number(dbResGroups[0].group_id),
                       identifier: String(dbResGroups[0].identifier),
                       name: String(dbResGroups[0].name),
                       short_name: String(dbResGroups[0].short_name),
@@ -70,7 +70,7 @@ export default async (pool, req, res) => {
                 avatar_url: String(dbRes1[0].avatar_url),
                 country_code: String(dbRes1[0].country_code),
                 default_group: "default",
-                id: Number(dbRes1[0].id),
+                id: Number(dbRes1[0].user_id),
                 is_active: Boolean(dbRes1[0].is_active),
                 is_bot: Boolean(dbRes1[0].is_bot),
                 is_deleted: Boolean(dbRes1[0].is_deleted),

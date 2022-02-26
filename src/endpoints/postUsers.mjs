@@ -37,8 +37,8 @@ export default async (pool, req, res) => {
             ])
             .then(async (apiRes) => {
               await conn.query(
-                `INSERT INTO users (username, id, join_date) VALUES (?, ?, ?)`,
-                [apiRes[0].username, apiRes[0].id, new Date()]
+                `INSERT INTO users (username, user_id, join_date) VALUES (?, ?, ?)`,
+                [apiRes[0].username, apiRes[0].user_id, new Date()]
               );
               res.status(200);
               res.send();

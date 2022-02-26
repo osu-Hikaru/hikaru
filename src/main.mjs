@@ -55,8 +55,18 @@ console.log(
 modules.logMariadbStats(pool);
 
 modules.oapiAuthorization().then(() => {
-  modules.oapiLazerAuthorization();
-})
+  setTimeout(() => {
+    modules.oapiLazerAuthorization().then(() => {
+      if (config.umineko.enabled === true) {
+        console.log(`Loading Umineko @ ${Date.now() - runtime}ms...`);
+
+        setTimeout(() => {
+          modules.umiInit(pool, config);
+        }, 1000);
+      }
+    });
+  }, 1000);
+});
 
 setInterval(function () {
   modules.updateUserStatus(pool, config);
@@ -73,12 +83,6 @@ setInterval(function () {
 setInterval(function () {
   modules.checkActiveTokens(pool);
 }, 1000 * 60 * 60);
-
-if (config.umineko.enabled === true) {
-  console.log(`Loading Umineko @ ${Date.now() - runtime}ms...`);
-
-  modules.umiInit(pool, config);
-}
 
 console.log(`Loading Express modules @ ${Date.now() - runtime}ms...`);
 

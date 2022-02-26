@@ -8,13 +8,13 @@ export default async (pool, req, res) => {
 
   try {
     const token = await conn.query(
-      `SELECT id FROM active_tokens WHERE access_token = ?`,
+      `SELECT user_id FROM active_tokens WHERE access_token = ?`,
       [req.headers.authorization.split(" ")[1]]
     );
 
     const user = await conn.query(
-      `SELECT * FROM users WHERE ID = ? LIMIT 1`,
-      token[0].id
+      `SELECT * FROM users WHERE user_id = ? LIMIT 1`,
+      token[0].user_id
     );
 
     const message_count = await conn.query(`SELECT count(*) FROM messages`);
@@ -81,7 +81,7 @@ export default async (pool, req, res) => {
               avatar_url: user[0].avatar_url,
               country_code: user[0].country_code,
               default_group: "default",
-              id: user[0].id,
+              id: user[0].user_id,
               is_active: Boolean(user[0].is_active),
               is_bot: Boolean(user[0].is_bot),
               is_deleted: Boolean(user[0].is_deleted),
@@ -92,7 +92,7 @@ export default async (pool, req, res) => {
               profile_colour: null,
               username: user[0].username,
             },
-            sender_id: user[0].id,
+            sender_id: user[0].user_id,
             timestamp: new Date(Date.now()).toISOString(),
           });
           conn.end();

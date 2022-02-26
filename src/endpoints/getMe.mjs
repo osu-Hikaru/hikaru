@@ -33,7 +33,7 @@ export default async (pool, req, res) => {
           return;
         } else {
           conn
-            .query(`SELECT * FROM users WHERE id=?`, [dbRes[0].id])
+            .query(`SELECT * FROM users WHERE user_id = ?`, [dbRes[0].user_id])
             .then(async (dbRes1) => {
               const groups = [];
               const promises = [];
@@ -53,7 +53,7 @@ export default async (pool, req, res) => {
                         .then((dbResGroups) => {
                           resolve(
                             groups.push({
-                              id: Number(dbResGroups[0].id),
+                              id: Number(dbResGroups[0].group_id),
                               identifier: String(dbResGroups[0].identifier),
                               name: String(dbResGroups[0].name),
                               short_name: String(dbResGroups[0].short_name),
@@ -89,7 +89,7 @@ export default async (pool, req, res) => {
                         avatar_url: String(dbRes1[0].avatar_url),
                         country_code: String(dbRes1[0].country_code),
                         default_group: "default",
-                        id: Number(dbRes1[0].id),
+                        id: Number(dbRes1[0].user_id),
                         is_active: Boolean(dbRes1[0].is_active),
                         is_bot: Boolean(dbRes1[0].is_bot),
                         is_deleted: Boolean(dbRes1[0].is_deleted),

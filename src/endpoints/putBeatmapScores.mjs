@@ -2,12 +2,14 @@
 // osu!Hikaru, a fully independent osu!Lazer Private Server backend.
 // Copyright (C) 2021 Hikaru Team <copyright@hikaru.pw>
 
+import * as modules from "../index.mjs";
+
 export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const url = req.originalUrl.split("/");
 
   const dbResToken = await conn
-    .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+    .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
@@ -18,10 +20,10 @@ export default async (pool, req, res) => {
       return;
     });
 
-  if (req.body.user.id === dbResToken[0].id) {
+  if (req.body.user.id === dbResToken[0].user_id) {
     await conn
       .query(
-        `SELECT active_id, active_bm_id, current_ruleset FROM users WHERE id = ? LIMIT 1`,
+        `SELECT active_id, active_bm_id, current_ruleset FROM users WHERE user_id = ? LIMIT 1`,
         [req.body.user.id]
       )
       .then(async (verify) => {
@@ -35,143 +37,145 @@ export default async (pool, req, res) => {
           conn.end();
           return;
         } else {
-          const playdate = new Date();
+            const playdate = new Date();
 
-          const score = await conn
-            .query(
-              `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, rank, total_score, pp, max_combo, accuracy, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-              [
-                Number(req.body.user.id),
-                Number(url[3]),
-                Number(req.body.ruleset_id),
-                Number(req.body.passed),
-                Number(req.body.statistics.Miss),
-                Number(req.body.statistics.Meh),
-                Number(req.body.statistics.Ok),
-                Number(req.body.statistics.Good),
-                Number(req.body.statistics.Great),
-                Number(req.body.statistics.Perfect),
-                Number(req.body.statistics.SmallTickMiss),
-                Number(req.body.statistics.SmallTickHit),
-                Number(req.body.statistics.LargeTickMiss),
-                Number(req.body.statistics.LargeTickHit),
-                Number(req.body.statistics.SmallBonus),
-                Number(req.body.statistics.LargeBonus),
-                String(req.body.rank),
-                Number(req.body.total_score),
-                null,
-                Number(req.body.max_combo),
-                Number(req.body.accuracy),
-                playdate,
-              ]
-            )
-            .catch((err) => {
-              console.log(err);
-              res.status(500);
-              res.send();
-              conn.end();
-              return;
-            });
+            const score = await conn
+              .query(
+                `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, rank, total_score, pp, max_combo, accuracy, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+                  Number(req.body.user.id),
+                  Number(url[3]),
+                  Number(req.body.ruleset_id),
+                  Number(req.body.passed),
+                  Number(req.body.statistics.Miss),
+                  Number(req.body.statistics.Meh),
+                  Number(req.body.statistics.Ok),
+                  Number(req.body.statistics.Good),
+                  Number(req.body.statistics.Great),
+                  Number(req.body.statistics.Perfect),
+                  Number(req.body.statistics.SmallTickMiss),
+                  Number(req.body.statistics.SmallTickHit),
+                  Number(req.body.statistics.LargeTickMiss),
+                  Number(req.body.statistics.LargeTickHit),
+                  Number(req.body.statistics.SmallBonus),
+                  Number(req.body.statistics.LargeBonus),
+                  String(req.body.rank),
+                  Number(req.body.total_score),
+                  null,
+                  Number(req.body.max_combo),
+                  Number(req.body.accuracy),
+                  playdate,
+                ]
+              )
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.end();
+                return;
+              });
 
-          const score_id = await conn.query(
-            `SELECT score_id FROM scores WHERE user_id = ? AND created_at = ? LIMIT 1`,
-            [req.body.user.id, playdate]
-          );
-
-          const user = await conn
-            .query(`SELECT * FROM users WHERE id = ? LIMIT 1`, [
-              req.body.user.id,
-            ])
-            .catch((err) => {
-              console.log(err);
-              res.status(500);
-              res.send();
-              conn.end();
-              return;
-            });
-
-          const beatmap = await conn
-            .query(`SELECT total_length FROM beatmaps WHERE id = ? LIMIT 1`, [
-              url[3],
-            ])
-            .catch((err) => {
-              console.log(err);
-              res.status(500);
-              res.send();
-              conn.end();
-              return;
-            });
-
-          let playtime = 0;
-
-          if (
-            beatmap[0].total_length >
-            Number(
-              Date.now() / 1000 - new Date(user[0].play_start).getTime() / 1000
-            )
-          ) {
-            playtime = Number(
-              Date.now() / 1000 - new Date(user[0].play_start).getTime() / 1000
+            const score_id = await conn.query(
+              `SELECT score_id FROM scores WHERE user_id = ? AND created_at = ? LIMIT 1`,
+              [req.body.user.id, playdate]
             );
-          } else {
-            playtime = beatmap[0].total_length;
-          }
 
-          await conn
-            .query(
-              `UPDATE users SET total_score = ?, playcount = ?, total_hits = ?, play_time = ? WHERE id = ?`,
-              [
-                Number(user[0].total_score) + Number(req.body.total_score),
-                Number(user[0].playcount + 1),
-                Number(req.body.statistics.Good) +
-                  Number(req.body.statistics.Great) +
-                  Number(req.body.statistics.Meh) +
-                  Number(req.body.statistics.Ok) +
+            const user = await conn
+              .query(`SELECT * FROM users WHERE user_id = ? LIMIT 1`, [
+                req.body.user.id,
+              ])
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.end();
+                return;
+              });
+
+            const beatmap = await conn
+              .query(`SELECT total_length FROM beatmaps WHERE beatmap_id = ? LIMIT 1`, [
+                url[3],
+              ])
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.end();
+                return;
+              });
+
+            let playtime = 0;
+
+            if (
+              beatmap[0].total_length >
+              Number(
+                Date.now() / 1000 -
+                  new Date(user[0].play_start).getTime() / 1000
+              )
+            ) {
+              playtime = Number(
+                Date.now() / 1000 -
+                  new Date(user[0].play_start).getTime() / 1000
+              );
+            } else {
+              playtime = beatmap[0].total_length;
+            }
+
+            await conn
+              .query(
+                `UPDATE users SET total_score = ?, playcount = ?, total_hits = ?, play_time = ? WHERE user_id = ?`,
+                [
+                  Number(user[0].total_score) + Number(req.body.total_score),
                   Number(user[0].playcount + 1),
-                Number(Number(user[0].play_time) + playtime),
-                Number(req.body.user.id),
-              ]
-            )
-            .catch((err) => {
-              console.log(err);
-              res.status(500);
-              res.send();
-              conn.end();
-              return;
-            });
+                  Number(req.body.statistics.Good) +
+                    Number(req.body.statistics.Great) +
+                    Number(req.body.statistics.Meh) +
+                    Number(req.body.statistics.Ok) +
+                    Number(user[0].playcount + 1),
+                  Number(Number(user[0].play_time) + playtime),
+                  Number(req.body.user.id),
+                ]
+              )
+              .catch((err) => {
+                console.log(err);
+                res.status(500);
+                res.send();
+                conn.end();
+                return;
+              });
 
-          conn.end();
-          res.status(200);
-          res.send({
-            accuracy: Number(req.body.accuracy),
-            beatmap_id: Number(url[3]),
-            build_id: 6100,
-            ended_at: new Date(Date.now()).toISOString(),
-            id: Number(score_id),
-            max_combo: Number(req.body.max_combo),
-            mods: [],
-            passed: Boolean(req.body.passed),
-            rank: String(req.body.rank),
-            ruleset_id: Number(req.body.ruleset_id),
-            started_at: new Date(user[0].play_start).toISOString(),
-            statistics: {
-              Good: Number(req.body.statistics.Good),
-              Great: Number(req.body.statistics.Great),
-              LargeBonus: Number(req.body.statistics.LargeBonus),
-              LargeTickHit: Number(req.body.statistics.LargeTickHit),
-              LargeTickMiss: Number(req.body.statistics.LargeTickMiss),
-              Meh: Number(req.body.statistics.Meh),
-              Miss: Number(req.body.statistics.Miss),
-              Ok: Number(req.body.statistics.Ok),
-              Perfect: Number(req.body.statistics.Perfect),
-              SmallBonus: Number(req.body.statistics.SmallBonus),
-              SmallTickHit: Number(req.body.statistics.SmallTickHit),
-              SmallTickMiss: Number(req.body.statistics.SmallTickMiss),
-            },
-            total_score: Number(req.body.total_score),
-            user_id: Number(req.body.user.id),
-          });
-        }
+            conn.end();
+            res.status(200);
+            res.send({
+              accuracy: Number(req.body.accuracy),
+              beatmap_id: Number(url[3]),
+              build_id: 6100,
+              ended_at: new Date(Date.now()).toISOString(),
+              id: Number(score_id),
+              max_combo: Number(req.body.max_combo),
+              mods: [],
+              passed: Boolean(req.body.passed),
+              rank: String(req.body.rank),
+              ruleset_id: Number(req.body.ruleset_id),
+              started_at: new Date(user[0].play_start).toISOString(),
+              statistics: {
+                Good: Number(req.body.statistics.Good),
+                Great: Number(req.body.statistics.Great),
+                LargeBonus: Number(req.body.statistics.LargeBonus),
+                LargeTickHit: Number(req.body.statistics.LargeTickHit),
+                LargeTickMiss: Number(req.body.statistics.LargeTickMiss),
+                Meh: Number(req.body.statistics.Meh),
+                Miss: Number(req.body.statistics.Miss),
+                Ok: Number(req.body.statistics.Ok),
+                Perfect: Number(req.body.statistics.Perfect),
+                SmallBonus: Number(req.body.statistics.SmallBonus),
+                SmallTickHit: Number(req.body.statistics.SmallTickHit),
+                SmallTickMiss: Number(req.body.statistics.SmallTickMiss),
+              },
+              total_score: Number(req.body.total_score),
+              user_id: Number(req.body.user.id),
+            });
+          }
       });
   } else {
     conn.end();

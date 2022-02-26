@@ -7,7 +7,7 @@ export default async (pool, req, res) => {
   const url = req.originalUrl.split("/");
 
   const dbResToken = await conn
-    .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+    .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
@@ -18,11 +18,11 @@ export default async (pool, req, res) => {
       return;
     });
 
-  if (url[7] === dbResToken.id) {
+  if (url[7] === dbResToken.user_id) {
     await conn
       .query(
         `INSERT INTO chat_presence (user_id, channel_id, can_message) VALUES (?,?,?)`,
-        [Number(dbResToken[0].id), Number(url[4]), Number(true)]
+        [Number(dbResToken[0].user_id), Number(url[4]), Number(true)]
       )
       .then(async (dbResChatPresence) => {
         await conn
