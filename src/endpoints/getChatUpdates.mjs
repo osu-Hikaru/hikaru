@@ -10,20 +10,20 @@ export default async (pool, req, res) => {
 
   async function main() {
     const dbResToken = await conn
-      .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+      .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
         req.headers.authorization.split(" ")[1],
       ])
       .catch((err) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
 
     await conn
       .query(`SELECT * FROM chat_presence WHERE user_id = ?`, [
-        dbResToken[0].id,
+        dbResToken[0].user_id,
       ])
       .then(async (dbResPresence) => {
         await dbResPresence.forEach(async (presence) => {
@@ -39,7 +39,7 @@ export default async (pool, req, res) => {
                     console.log(err);
                     res.status(500);
                     res.send();
-                    conn.close();
+                    conn.end();
                     return;
                   });
                 const dbChannelLast = await conn
@@ -51,7 +51,7 @@ export default async (pool, req, res) => {
                     console.log(err);
                     res.status(500);
                     res.send();
-                    conn.close();
+                    conn.end();
                     return;
                   });
 
@@ -65,7 +65,7 @@ export default async (pool, req, res) => {
                     console.log(err);
                     res.status(500);
                     res.send();
-                    conn.close();
+                    conn.end();
                     return;
                   });
 
@@ -84,14 +84,14 @@ export default async (pool, req, res) => {
                 let data = {
                   channel_id: Number(presence.channel_id),
                   current_user_attributes: {
-                    can_message: Boolean(presence.can_message.readInt8()),
+                    can_message: Boolean(presence.can_message),
                     last_read_id: Number(presence.last_read_id),
                   },
                   description: String(dbResChannels[0].description),
                   icon: String(dbResChannels[0].icon),
                   last_message_id: Number(last_message_id),
                   last_read_id: presence.last_read_id,
-                  moderated: Boolean(dbResChannels[0].moderated.readInt8()),
+                  moderated: Boolean(dbResChannels[0].moderated),
                   name: String(dbResChannels[0].name),
                   type: String(dbResChannels[0].type),
                   users: users,
@@ -100,8 +100,8 @@ export default async (pool, req, res) => {
                 await presences.push(data);
 
                 resolve(data);
-              } catch (e) {
-                reject(e);
+              } catch (err) {
+                reject(err);
               }
             })
           );
@@ -111,7 +111,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
 
@@ -137,19 +137,19 @@ export default async (pool, req, res) => {
               new Promise(async (resolve, reject) => {
                 try {
                   const dbResUser = await conn.query(
-                    `SELECT * FROM users WHERE id = ? LIMIT 1`,
+                    `SELECT * FROM users WHERE user_id = ? LIMIT 1`,
                     [message.user_id]
                   );
                   resolve({
                     channel_id: Number(message.channel_id),
                     content: String(message.message_content),
-                    is_action: Boolean(message.is_action.readInt8()),
+                    is_action: Boolean(message.is_action),
                     message_id: Number(message.message_id),
                     sender: {
                       avatar_url: String(dbResUser[0].avatar_url),
                       country_code: String(dbResUser[0].country_code),
                       default_group: "default",
-                      id: Number(dbResUser[0].id),
+                      id: Number(dbResUser[0].user_id),
                       is_active: Boolean(dbResUser[0].is_active),
                       is_bot: Boolean(dbResUser[0].is_bot),
                       is_deleted: Boolean(dbResUser[0].is_deleted),
@@ -163,8 +163,8 @@ export default async (pool, req, res) => {
                     sender_id: String(dbResUser[0].id),
                     timestamp: new Date(message.timestamp).toISOString(),
                   });
-                } catch (e) {
-                  reject(e);
+                } catch (err) {
+                  reject(err);
                 }
               })
             );
@@ -174,7 +174,7 @@ export default async (pool, req, res) => {
           console.log(err);
           res.status(500);
           res.send();
-          conn.close();
+          conn.end();
           return;
         });
     });
@@ -192,19 +192,19 @@ export default async (pool, req, res) => {
             await conn
               .query(
                 `UPDATE chat_presence SET last_read_id = ? WHERE channel_id = ? AND user_id = ?`,
-                [pre.last_message_id, msg.channel_id, Number(msg.sender_id)]
+                [pre.last_message_id, msg.channel_id, Number(msg.sender.id)]
               )
               .catch((err) => {
                 console.log(err);
                 res.status(500);
                 res.send();
-                conn.close();
+                conn.end();
                 return;
               });
           }
         });
       });
-      conn.close();
+      conn.end();
       res.status(200);
       res.json({ messages: messages, presence: presences, silences: [] });
     })
@@ -212,7 +212,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };

@@ -18,7 +18,7 @@ export default async (pool, req, res) => {
   );
 
   scores.forEach(async (score) => {
-    let user = await conn.query(`SELECT * FROM users WHERE id = ? LIMIT 1`, [
+    let user = await conn.query(`SELECT * FROM users WHERE user_id = ? LIMIT 1`, [
       score.user_id,
     ]);
 
@@ -46,7 +46,7 @@ export default async (pool, req, res) => {
         avatar_url: String(user[0].avatar_url),
         country_code: String(user[0].country_code),
         default_group: "default",
-        id: Number(user[0].id),
+        id: Number(user[0].user_id),
         is_active: Boolean(user[0].is_active),
         is_bot: Boolean(user[0].is_bot),
         is_deleted: Boolean(user[0].is_deleted),
@@ -77,7 +77,7 @@ export default async (pool, req, res) => {
     if (i === scores.length) {
       res.status(200);
       res.json(response);
-      conn.close();
+      conn.end();
     } else {
       setTimeout(sendResult, 200);
     }

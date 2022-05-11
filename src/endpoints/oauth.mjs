@@ -26,14 +26,14 @@ export default async (pool, req, res) => {
             console.log(err);
             res.status(500);
             res.send();
-            conn.close();
+            conn.end();
             return;
           });
 
         conn
           .query(
-            `INSERT INTO active_tokens (id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
-            [dbRes[0].id, access_token, expires_in, refresh_token, new Date()]
+            `INSERT INTO active_tokens (user_id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
+            [dbRes[0].user_id, access_token, expires_in, refresh_token, new Date()]
           )
           .then((dbRes1) => {
             res.status(200);
@@ -43,13 +43,13 @@ export default async (pool, req, res) => {
               refresh_token: refresh_token,
               token_type: "Bearer",
             });
-            conn.close();
+            conn.end();
           })
           .catch((err) => {
             console.log(err);
             res.status(500);
             res.send();
-            conn.close();
+            conn.end();
             return;
           });
       })
@@ -57,7 +57,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
   } else if (req.body.username && req.body.password) {
@@ -76,7 +76,7 @@ export default async (pool, req, res) => {
             message:
               "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
           });
-          conn.close();
+          conn.end();
           return;
         } else {
           bcrypt.compare(
@@ -87,7 +87,7 @@ export default async (pool, req, res) => {
                 console.log(err);
                 res.status(500);
                 res.send();
-                conn.close();
+                conn.end();
                 return;
               }
 
@@ -98,9 +98,9 @@ export default async (pool, req, res) => {
 
                 conn
                   .query(
-                    `INSERT INTO active_tokens (id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
+                    `INSERT INTO active_tokens (user_id, access_token, expires_in, refresh_token, created_at) VALUES (?, ?, ?, ?, ?)`,
                     [
-                      dbRes[0].id,
+                      dbRes[0].user_id,
                       access_token,
                       expires_in,
                       refresh_token,
@@ -115,13 +115,13 @@ export default async (pool, req, res) => {
                       refresh_token: refresh_token,
                       token_type: "Bearer",
                     });
-                    conn.close();
+                    conn.end();
                   })
                   .catch((err) => {
                     console.log(err);
                     res.status(500);
                     res.send();
-                    conn.close();
+                    conn.end();
                     return;
                   });
               } else {
@@ -134,7 +134,7 @@ export default async (pool, req, res) => {
                   message:
                     "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
                 });
-                conn.close();
+                conn.end();
                 return;
               }
             }
@@ -144,7 +144,7 @@ export default async (pool, req, res) => {
   } else {
     res.status(403);
     res.json({ message: "No authorization provided." });
-    conn.close();
+    conn.end();
     return;
   }
 };

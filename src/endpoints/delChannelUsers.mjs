@@ -6,30 +6,30 @@ export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const url = req.originalUrl.split("/");
   const dbResToken = await conn
-    .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+    .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
-  if (url[7] === dbResToken.id) {
+  if (url[7] === dbResToken.user_id) {
     await conn
       .query(`DELETE FROM chat_presence WHERE user_id = ? AND channel_id = ?`, [
-        Number(dbResToken[0].id),
+        Number(dbResToken[0].user_id),
         Number(url[4]),
       ])
       .then(async (dbResChatPresence) => {
-        conn.close();
+        conn.end();
         res.status(200);
         res.send();
       });
   } else {
-    conn.close();
+    conn.end();
     res.status(403);
     res.send();
   }

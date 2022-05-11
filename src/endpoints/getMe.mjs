@@ -8,7 +8,7 @@ export default async (pool, req, res) => {
   if (req.headers.authorization === undefined) {
     res.status(401);
     res.send();
-    conn.close();
+    conn.end();
     return;
   } else {
     await conn
@@ -29,11 +29,11 @@ export default async (pool, req, res) => {
             message:
               "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.",
           });
-          conn.close();
+          conn.end();
           return;
         } else {
           conn
-            .query(`SELECT * FROM users WHERE id=?`, [dbRes[0].id])
+            .query(`SELECT * FROM users WHERE user_id = ?`, [dbRes[0].user_id])
             .then(async (dbRes1) => {
               const groups = [];
               const promises = [];
@@ -53,7 +53,7 @@ export default async (pool, req, res) => {
                         .then((dbResGroups) => {
                           resolve(
                             groups.push({
-                              id: Number(dbResGroups[0].id),
+                              id: Number(dbResGroups[0].group_id),
                               identifier: String(dbResGroups[0].identifier),
                               name: String(dbResGroups[0].name),
                               short_name: String(dbResGroups[0].short_name),
@@ -89,7 +89,7 @@ export default async (pool, req, res) => {
                         avatar_url: String(dbRes1[0].avatar_url),
                         country_code: String(dbRes1[0].country_code),
                         default_group: "default",
-                        id: Number(dbRes1[0].id),
+                        id: Number(dbRes1[0].user_id),
                         is_active: Boolean(dbRes1[0].is_active),
                         is_bot: Boolean(dbRes1[0].is_bot),
                         is_deleted: Boolean(dbRes1[0].is_deleted),
@@ -201,14 +201,14 @@ export default async (pool, req, res) => {
 
                       res.status(200);
                       res.json(response);
-                      conn.close();
+                      conn.end();
                       return;
                     })
                     .catch((err) => {
                       console.log(err);
                       res.status(500);
                       res.send();
-                      conn.close();
+                      conn.end();
                       return;
                     });
                 } else {
@@ -221,7 +221,7 @@ export default async (pool, req, res) => {
               console.log(err);
               res.status(500);
               res.send();
-              conn.close();
+              conn.end();
               return;
             });
         }
@@ -230,7 +230,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       });
   }

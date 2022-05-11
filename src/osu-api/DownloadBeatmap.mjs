@@ -18,13 +18,6 @@ export default (id, pool) => {
       await fs.readFileSync("./src/config.json", "utf-8", () => {})
     );
 
-    if (
-      Number(Date.now()) >
-      Number(config.lazer.date_created) + Number(config.lazer.expires_in)
-    ) {
-      await modules.oapiLazerAuthorization();
-    }
-
     if (config.mirror.mirror_enabled === true) {
       await conn
         .query(`SELECT * FROM mirror WHERE id = ? LIMIT 1`, [id])
@@ -60,12 +53,12 @@ export default (id, pool) => {
               CD: mirror_map.CD,
               ET: mirror_map.ETag,
             });
-            conn.close();
+            conn.end();
           });
         })
         .catch((err) => {
           console.log("Beatmap download from mirror failed!");
-          conn.close();
+          conn.end();
           reject(err);
         });
     } else {
@@ -109,11 +102,11 @@ export default (id, pool) => {
                   ]
                 )
                 .then(() => {
-                  conn.close();
+                  conn.end();
                   console.log("DB Insert succeeded! Transferring...");
                 })
                 .catch((err) => {
-                  conn.close();
+                  conn.end();
                   console.log("DB Insert Failed! Cancelling...");
                   console.log(err);
                 });
@@ -143,12 +136,7 @@ export default (id, pool) => {
           });
         })
         .catch(async (error) => {
-          if (error.status === 401) {
-            await modules.oapiLazerAuthorization();
-            resolve(await modules.oapiDownloadBeatmap(id));
-          } else {
-            reject(error);
-          }
+          reject(error);
         });
     }
   });

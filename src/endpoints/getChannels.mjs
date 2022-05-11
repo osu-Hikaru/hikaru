@@ -15,13 +15,13 @@ export default async (pool, req, res) => {
 
       res.status(200);
       res.json(message);
-      conn.close();
+      conn.end();
     })
     .catch((err) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };

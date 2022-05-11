@@ -5,34 +5,36 @@
 import * as modules from "../index.mjs";
 
 export default async (pool, req, res) => {
-  let params = "";
-  let i = 0;
+  try {
+    let params = "";
+    let i = 0;
 
-  Object.keys(req.query).forEach((qparam) => {
-    params += `${qparam}=${req.query[qparam]}&`;
-    i++;
-  });
+    Object.keys(req.query).forEach((qparam) => {
+      params += `${qparam}=${req.query[qparam]}&`;
+      i++;
+    });
 
-  async function returnMaps() {
-    if ((i = Object.keys(req.query).length)) {
-      console.log(`Finished loop. Params: ${params}`);
-      await modules
-        .oapiBeatmapSearch(params)
-        .then((apiRes) => {
-          console.log(apiRes.data.beatmapsets);
-          res.status(200);
-          res.json(apiRes.data);
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(500);
-          res.json("Internal Server Error.");
-          return;
-        });
-    } else {
-      setTimeout(returnMaps, 500);
+    async function returnMaps() {
+      if ((i = Object.keys(req.query).length)) {
+        console.log(`Finished loop. Params: ${params}`);
+        await modules
+          .oapiBeatmapSearch(params)
+          .then((apiRes) => {
+            console.log(apiRes.data.beatmapsets);
+            res.status(200);
+            res.json(apiRes.data);
+          })
+      } else {
+        setTimeout(returnMaps, 500);
+      }
     }
+
+    returnMaps();
+  } catch (e) {
+    console.log(e)
+    res.status(500)
+    res.json("Internal Server Error.");
+
   }
 
-  returnMaps();
 };

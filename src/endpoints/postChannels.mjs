@@ -5,14 +5,14 @@
 export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const dbResToken = await conn
-    .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+    .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
@@ -20,9 +20,9 @@ export default async (pool, req, res) => {
     .query(
       `SELECT * FROM channels WHERE target_1 = ? AND target_2 = ? OR target_2 = ? AND target_1 = ? LIMIT 1`,
       [
-        dbResToken[0].id,
+        dbResToken[0].user_id,
         req.body.target_id,
-        dbResToken[0].id,
+        dbResToken[0].user_id,
         req.body.target_id,
       ]
     )
@@ -55,7 +55,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };

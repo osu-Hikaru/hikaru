@@ -12,7 +12,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     }
 
@@ -21,7 +21,7 @@ export default async (pool, req, res) => {
         console.log(err);
         res.status(500);
         res.send();
-        conn.close();
+        conn.end();
         return;
       }
 
@@ -37,12 +37,12 @@ export default async (pool, req, res) => {
             ])
             .then(async (apiRes) => {
               await conn.query(
-                `INSERT INTO users (username, id, join_date) VALUES (?, ?, ?)`,
-                [apiRes[0].username, apiRes[0].id, new Date()]
+                `INSERT INTO users (username, user_id, join_date) VALUES (?, ?, ?)`,
+                [apiRes[0].username, apiRes[0].user_id, new Date()]
               );
               res.status(200);
               res.send();
-              conn.close();
+              conn.end();
               return;
             });
         })
@@ -57,7 +57,7 @@ export default async (pool, req, res) => {
             message:
               "The provided username or email is already in use. Please change it before attempting to register again.",
           });
-          conn.close();
+          conn.end();
           return;
         });
     });

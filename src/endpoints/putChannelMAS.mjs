@@ -6,21 +6,21 @@ export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const url = req.originalUrl.split("/");
   const dbResToken = await conn
-    .query(`SELECT id FROM active_tokens WHERE access_token = ?`, [
+    .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
       req.headers.authorization.split(" ")[1],
     ])
     .catch((err) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 
   conn
     .query(`UPDATE chat_presence SET last_read_id = ? WHERE user_id = ?`, [
       Number(url[6]),
-      dbResToken[0].id,
+      dbResToken[0].user_id,
     ])
     .then((dbResPresence) => {
       res.status(200);
@@ -30,7 +30,7 @@ export default async (pool, req, res) => {
       console.log(err);
       res.status(500);
       res.send();
-      conn.close();
+      conn.end();
       return;
     });
 };
