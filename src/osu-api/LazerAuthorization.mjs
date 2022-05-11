@@ -5,11 +5,15 @@
 import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
+import * as modules from "../index.mjs";
+import process from "process";
 
-export default () => {
-  return new Promise(async (resolve, reject) => {
+export default async () => {
+  try {
+    console.log("Running osu!LazerAuthorization...");
+
     let config = JSON.parse(
-      await fs.readFileSync("./src/config.json", "utf-8", () => {})
+      await fs.readFileSync("./src/config.json", "utf-8", () => { })
     );
     const data = new FormData();
 
@@ -35,12 +39,18 @@ export default () => {
         config.lazer.bearer = res.data.access_token;
         config.lazer.expires_in = res.data.expires_in;
         config.lazer.date_created = Date.now();
-        await fs.writeFile("./src/config.json", JSON.stringify(config), () => {
-          resolve(res);
+        await fs.writeFile(process.cwd() + "/src/config.json", JSON.stringify(config), () => {
+          console.log("osu!LazerAuthorization: Success!");
+          setTimeout(modules.oapiLazerAuthorization, 1000 * res.data.expires_in);
         });
       })
       .catch((error) => {
-        reject(error);
+        console.log("osu!LazerAuthorization: Failure! Retrying in 10 seconds...");
+        console.log(error);
+        setTimeout(modules.oapiLazerAuthorization, 1000 * 10);
       });
-  });
+  } catch (e) {
+    console.log(e)
+  }
+
 };
