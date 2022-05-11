@@ -4,7 +4,6 @@
 
 import axios from "axios";
 import fs from "fs";
-import * as modules from "../index.mjs";
 
 export default async (id, checksum) => {
   return new Promise(async (resolve, reject) => {
@@ -12,16 +11,19 @@ export default async (id, checksum) => {
       await fs.readFileSync("./src/config.json", "utf-8", () => {})
     );
 
-    if (
-      Number(Date.now()) >
-      Number(config.osu.date_created) + Number(config.osu.expires_in)
-    ) {
-      await modules.oapiAuthorization();
+    let url = "https://osu.ppy.sh/api/v2/beatmaps/lookup?";
+
+    if (id !== null) {
+      url += `id=${id}&`;
     }
 
+    if (checksum !== null) {
+      url += `checksum=${checksum}&`;
+    }
+    
     axios({
       method: "get",
-      url: `https://osu.ppy.sh/api/v2/beatmaps/lookup?id=${id}&checksum=${checksum}`,
+      url: url.slice(0, -1),
       headers: {
         Authorization: "Bearer " + config.osu.bearer,
       },
@@ -30,12 +32,7 @@ export default async (id, checksum) => {
         resolve(res);
       })
       .catch(async (error) => {
-        if (error.status === 401) {
-          await modules.oapiAuthorization();
-          resolve(await modules.oapiGetBeatmap(id, checksum));
-        } else {
-          reject(error);
-        }
+        reject(error);
       });
   });
 };
