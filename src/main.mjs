@@ -58,6 +58,21 @@ console.log(
     Date.now() - runtime
   }ms...`
 );
+modules.logMariadbStats(pool);
+
+modules.oapiAuthorization().then(() => {
+  setTimeout(() => {
+    modules.oapiLazerAuthorization().then(() => {
+      if (config.umineko.enabled === true) {
+        console.log(`Loading Umineko @ ${Date.now() - runtime}ms...`);
+
+        setTimeout(() => {
+          modules.umiInit(pool, config);
+        }, 1000);
+      }
+    });
+  }, 1000);
+});
 
 modules.logMariadbStats(pool);
 
