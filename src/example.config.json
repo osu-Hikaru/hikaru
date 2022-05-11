@@ -32,5 +32,12 @@
     "bearer": "",
     "expires_in": 0,
     "date_created": 0
+  },
+  "umineko": {
+    "user_id": 3,
+    "last_read": 0,
+    "enabled": true,
+    "listen_interval": 1,
+    "prefix": "!"
   }
 }
