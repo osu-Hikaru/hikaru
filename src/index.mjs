@@ -12,6 +12,7 @@ import rankCalc from "./utilities/rankCalc.mjs";
 import checkActiveTokens from "./utilities/checkActiveTokens.mjs";
 import ftpUpload from "./utilities/ftpUpload.mjs";
 import sqlToOsuDate from "./utilities/sqlToOsuDate.mjs";
+import importBeatmap from "./utilities/importBeatmap.mjs";
 
 // Endpoints
 
@@ -38,6 +39,7 @@ import getNews from "./endpoints/getNews.mjs";
 import getBeatmapSearch from "./endpoints/getBeatmapSearch.mjs";
 import getBeatmapsets from "./endpoints/getBeatmapsets.mjs";
 import getDownloadBeatmap from "./endpoints/getDownloadBeatmap.mjs";
+import getRankings from "./endpoints/getRankings.mjs";
 
 // osu!API Routes
 
@@ -47,6 +49,13 @@ import oapiGetBeatmap from "./osu-api/GetBeatmap.mjs";
 import oapiBeatmapSearch from "./osu-api/BeatmapSearch.mjs";
 import oapiGetBeatmapset from "./osu-api/GetBeatmapset.mjs";
 import oapiDownloadBeatmap from "./osu-api/DownloadBeatmap.mjs";
+
+// Umineko
+
+import umiInit from "./umineko/init.mjs";
+import umiMessageListener from "./umineko/messageListener.mjs";
+import umiRoll from "./umineko/roll.mjs";
+import umiUptime from "./umineko/uptime.mjs";
 
 // Imports
 
@@ -59,6 +68,7 @@ export {
   checkActiveTokens as checkActiveTokens,
   ftpUpload as ftpUpload,
   sqlToOsuDate as sqlToOsuDate,
+  importBeatmap as importBeatmap,
   //-------------------------------
   postUsers as postUsers,
   oauth as oauth,
@@ -83,6 +93,7 @@ export {
   getBeatmapSearch as getBeatmapSearch,
   getBeatmapsets as getBeatmapsets,
   getDownloadBeatmap as getDownloadBeatmap,
+  getRankings as getRankings,
   //-------------------------------
   oapiAuthorization as oapiAuthorization,
   oapiLazerAuthorization as oapiLazerAuthorization,
@@ -90,4 +101,9 @@ export {
   oapiBeatmapSearch as oapiBeatmapSearch,
   oapiGetBeatmapset as oapiGetBeatmapset,
   oapiDownloadBeatmap as oapiDownloadBeatmap,
+  //-------------------------------
+  umiInit as umiInit,
+  umiMessageListener as umiMessageListener,
+  umiRoll as umiRoll,
+  umiUptime as umiUptime,
 };
