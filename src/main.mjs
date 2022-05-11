@@ -4,6 +4,8 @@
 
 const runtime = Date.now();
 
+console.log(`Starting Hikaru...`);
+
 import express from "express";
 import morgan from "morgan";
 import multer from "multer";
@@ -16,9 +18,13 @@ import * as bodyparser from "body-parser";
 const api = express();
 const upload = multer();
 
+console.log(`Created Express @ ${Date.now() - runtime}ms...`);
+
 const config = JSON.parse(
   await fs.readFileSync("./src/config.json", "utf-8", () => {})
 );
+
+console.log(`Loaded config @ ${Date.now() - runtime}ms...`);
 
 const pool = await mariadb.createPool({
   host: config.mariadb.host,
@@ -26,6 +32,7 @@ const pool = await mariadb.createPool({
   password: config.mariadb.password,
   database: config.mariadb.database,
   connectionLimit: config.mariadb.connectionLimit,
+  idleTimeout: 60,
 });
 
 if (config.mariadb.dbDebug === true) {
@@ -52,8 +59,24 @@ console.log(
   }ms...`
 );
 
+modules.logMariadbStats(pool);
+
+modules.oapiAuthorization().then(() => {
+  setTimeout(() => {
+    modules.oapiLazerAuthorization().then(() => {
+      if (config.umineko.enabled === true) {
+        console.log(`Loading Umineko @ ${Date.now() - runtime}ms...`);
+
+        setTimeout(() => {
+          modules.umiInit(pool, config);
+        }, 1000);
+      }
+    });
+  }, 1000);
+});
+
 setInterval(function () {
-  modules.updateUserStatus(pool);
+  modules.updateUserStatus(pool, config);
 }, 1000 * 60 * 5);
 
 setInterval(function () {
@@ -68,7 +91,7 @@ setInterval(function () {
   modules.checkActiveTokens(pool);
 }, 1000 * 60 * 60);
 
-console.log(`Loading Express modules @ ${Date.now() - runtime}ms...`);
+console.log(`Loading Express Modules @ ${Date.now() - runtime}ms...`);
 
 api.use(morgan("dev"));
 api.use(bodyparser.default.json());
@@ -169,6 +192,10 @@ api.get("/v2/beatmapsets/search", async (req, res) => {
   modules.getBeatmapSearch(pool, req, res);
 });
 
+api.get("/v2/rankings/*/*", async (req, res) => {
+  modules.getRankings(pool, req, res);
+});
+
 api.all("*", (req, res) => {
   res.status(404);
   res.json({ message: "Not found." });
@@ -178,7 +205,7 @@ console.log(`Starting to Listen for requests @ ${Date.now() - runtime}ms...`);
 
 api.listen(config.express.port, () => {
   console.log(
-    `Startup complete!\nPort: ${config.express.port}\nRuntime: ${
+    `Startup complete!\nPort: ${config.express.port}\nStartup Time: ${
       Date.now() - runtime
     }ms`
   );
