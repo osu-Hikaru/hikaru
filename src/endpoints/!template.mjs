@@ -6,9 +6,9 @@ export default async (pool, req, res) => {
   try {
     res.status(200);
     res.json({});
-  } catch (e) {
+  } catch (err) {
     res.status(500);
     res.json({});
-    console.log(e);
+    console.log(err);
   }
 };

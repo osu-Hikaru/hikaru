@@ -30,8 +30,8 @@ export default async (pool, req, res) => {
     }
 
     returnMaps();
-  } catch (e) {
-    console.log(e)
+  } catch (err) {
+    console.log(err)
     res.status(500)
     res.json("Internal Server Error.");
 

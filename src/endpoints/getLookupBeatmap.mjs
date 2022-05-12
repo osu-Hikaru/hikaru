@@ -128,7 +128,7 @@ export default async (pool, req, res) => {
       id: Number(map[0].beatmap_id),
       is_scoreable: Boolean(map[0].convert),
       last_updated: await modules.sqlToOsuDate(set[0].last_updated),
-      max_combo: Number(map[0].max_combo),
+      max_combo: Number(map[0].new_max_combo),
       mode: String(map[0].mode),
       mode_int: Number(map[0].mode_int),
       passcount: Number(map[0].passcount),
@@ -154,7 +154,7 @@ export default async (pool, req, res) => {
 
     await conn
       .query(
-        `REPLACE INTO beatmaps (accuracy, ar, beatmapset_id, bpm, checksum, is_convert, count_circles, count_sliders, count_spinners, cs, deleted_at, difficulty_rating, drain, hit_length, beatmap_id, is_scoreable, last_updated, max_combo, mode, mode_int, passcount, playcount, ranked, status, total_length, url, user_id, version) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        `REPLACE INTO beatmaps (accuracy, ar, beatmapset_id, bpm, checksum, is_convert, count_circles, count_sliders, count_spinners, cs, deleted_at, difficulty_rating, drain, hit_length, beatmap_id, is_scoreable, last_updated, max_combo, new_max_combo, mode, mode_int, passcount, playcount, ranked, status, total_length, url, user_id, version) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         [
           Number(beatmap.data.accuracy),
           Number(beatmap.data.ar),
@@ -174,6 +174,7 @@ export default async (pool, req, res) => {
           Boolean(beatmap.data.is_scoreable),
           new Date(beatmap.data.last_updated),
           Number(beatmap.data.max_combo),
+          Number(beatmap.data.max_combo - beatmap.data.count_sliders),
           String(beatmap.data.mode),
           Number(beatmap.data.mode_int),
           Number(0),
@@ -318,7 +319,7 @@ export default async (pool, req, res) => {
       id: Number(beatmap.data.id),
       is_scoreable: Boolean(beatmap.data.convert),
       last_updated: String(beatmap.data.last_updated),
-      max_combo: Number(beatmap.data.max_combo),
+      max_combo: Number(beatmap.data.new_max_combo),
       mode: String(beatmap.data.mode),
       mode_int: Number(beatmap.data.mode_int),
       passcount: Number(0),

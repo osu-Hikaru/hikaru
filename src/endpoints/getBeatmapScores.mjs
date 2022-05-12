@@ -18,28 +18,41 @@ export default async (pool, req, res) => {
   );
 
   scores.forEach(async (score) => {
-    let user = await conn.query(`SELECT * FROM users WHERE user_id = ? LIMIT 1`, [
-      score.user_id,
-    ]);
+    let user = await conn.query(
+      `SELECT * FROM users WHERE user_id = ? LIMIT 1`,
+      [score.user_id]
+    );
+
+    let mods = [];
+    JSON.parse(score.mods).forEach((mod) => {
+      mods.push(mod.acronym);
+    });
 
     response.scores.push({
       accuracy: Number(score.accuracy),
       beatmap_id: Number(score.beatmap_id),
       build_id: Number(1),
-      ended_at: await modules.sqlToOsuDate(score.created_at),
+      created_at: await modules.sqlToOsuDate(score.created_at),
       id: Number(score.score_id),
       max_combo: Number(score.max_combo),
-      mods: [],
+      mods: mods,
       passed: Boolean(score.passed),
       rank: String(score.rank),
       ruleset_id: Number(score.ruleset_id),
-      started_at: await modules.sqlToOsuDate(score.created_at),
       statistics: {
-        count_katu: Number(score.count_good),
-        count_300: Number(score.count_great),
-        count_50: Number(score.count_meh),
-        count_miss: Number(score.count_miss),
-        count_100: Number(score.count_ok),
+        good: Number(score.count_good),
+        great: Number(score.count_great),
+        meh: Number(score.count_meh),
+        miss: Number(score.count_miss),
+        ok: Number(score.count_ok),
+        large_tick_hit: Number(score.count_LTH),
+        large_tick_miss: Number(score.count_LTM),
+        small_tick_hit: Number(score.count_STH),
+        small_tick_miss: Number(score.count_STM),
+        small_bonus: Number(score.count_SB),
+        large_bonus: Number(score.count_LB),
+        ignore_miss: Number(score.count_IM),
+        ignore_hit: Number(score.count_IH),
         Perfect: Number(score.perfect),
       },
       user: {
@@ -82,5 +95,6 @@ export default async (pool, req, res) => {
       setTimeout(sendResult, 200);
     }
   }
+
   sendResult();
 };

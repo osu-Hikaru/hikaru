@@ -8,6 +8,8 @@ export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const url = req.originalUrl.split("/");
 
+  console.log(req.body)
+
   const dbResToken = await conn
     .query(`SELECT user_id FROM active_tokens WHERE access_token = ?`, [
       req.headers.authorization.split(" ")[1],
@@ -40,12 +42,13 @@ export default async (pool, req, res) => {
 
         const score = await conn
           .query(
-            `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, count_IM, count_IH, rank, total_score, pp, max_combo, accuracy, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            `INSERT INTO scores (user_id, beatmap_id, ruleset_id, passed, mods, count_miss, count_meh, count_ok, count_good, count_great, perfect, count_STM, count_STH, count_LTM, count_LTH, count_SB, count_LB, count_IM, count_IH, rank, total_score, pp, max_combo, accuracy, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
               Number(dbResToken[0].user_id),
               Number(url[3]),
               Number(req.body.ruleset_id),
               Number(req.body.passed),
+              JSON.stringify(req.body.mods),
               Number(req.body.statistics.miss),
               Number(req.body.statistics.meh),
               Number(req.body.statistics.ok),
@@ -154,7 +157,7 @@ export default async (pool, req, res) => {
           ended_at: new Date(Date.now()).toISOString(),
           id: Number(score_id),
           max_combo: Number(req.body.max_combo),
-          mods: [],
+          mods: req.body.mods,
           passed: Boolean(req.body.passed),
           rank: String(req.body.rank),
           ruleset_id: Number(req.body.ruleset_id),

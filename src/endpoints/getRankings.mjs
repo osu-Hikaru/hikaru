@@ -109,7 +109,6 @@ export default async (pool, req, res) => {
 
         async function checkDone() {
           if (cursor === rankings.length) {
-            console.log(response);
             res.status(200);
             res.json(response);
             conn.end();
