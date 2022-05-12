@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         202.61.206.242
--- Server version:               10.3.31-MariaDB-0+deb10u1 - Debian 10
+-- Server version:               10.6.7-MariaDB-3 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             11.3.0.6295
 -- --------------------------------------------------------
@@ -13,11 +13,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for hikaru
-CREATE DATABASE IF NOT EXISTS `hikaru` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `hikaru`;
+-- Dumping database structure for hikarudev
+CREATE DATABASE IF NOT EXISTS `hikarudev` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `hikarudev`;
 
--- Dumping structure for table hikaru.accounts
+-- Dumping structure for table hikarudev.accounts
 CREATE TABLE IF NOT EXISTS `accounts` (
   `user_id` int(10) NOT NULL AUTO_INCREMENT,
   `username` varchar(26) NOT NULL DEFAULT '',
@@ -26,11 +26,11 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE KEY `email` (`email`) USING BTREE,
   UNIQUE KEY `username` (`username`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.active_tokens
+-- Dumping structure for table hikarudev.active_tokens
 CREATE TABLE IF NOT EXISTS `active_tokens` (
   `user_id` int(10) NOT NULL,
   `access_token` varchar(512) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `active_tokens` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.beatmaps
+-- Dumping structure for table hikarudev.beatmaps
 CREATE TABLE IF NOT EXISTS `beatmaps` (
   `beatmapset_id` int(16) NOT NULL,
   `difficulty_rating` float DEFAULT NULL,
@@ -73,13 +73,14 @@ CREATE TABLE IF NOT EXISTS `beatmaps` (
   `url` varchar(256) DEFAULT '0',
   `checksum` varchar(256) DEFAULT '0',
   `max_combo` int(11) DEFAULT NULL,
+  `new_max_combo` int(11) DEFAULT NULL,
   PRIMARY KEY (`beatmap_id`) USING BTREE,
   UNIQUE KEY `beatmapset_id` (`beatmapset_id`,`beatmap_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3471416 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.beatmapsets
+-- Dumping structure for table hikarudev.beatmapsets
 CREATE TABLE IF NOT EXISTS `beatmapsets` (
   `artist` varchar(128) DEFAULT NULL,
   `artist_unicode` varchar(128) NOT NULL,
@@ -117,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `beatmapsets` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.channels
+-- Dumping structure for table hikarudev.channels
 CREATE TABLE IF NOT EXISTS `channels` (
   `channel_id` int(11) NOT NULL,
   `description` varchar(1024) DEFAULT NULL,
@@ -132,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `channels` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.chat_presence
+-- Dumping structure for table hikarudev.chat_presence
 CREATE TABLE IF NOT EXISTS `chat_presence` (
   `user_id` int(11) NOT NULL,
   `channel_id` int(11) NOT NULL,
@@ -143,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `chat_presence` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.friends
+-- Dumping structure for table hikarudev.friends
 CREATE TABLE IF NOT EXISTS `friends` (
   `user_id` int(11) NOT NULL,
   `friend_id` int(11) NOT NULL,
@@ -152,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `friends` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.groups
+-- Dumping structure for table hikarudev.groups
 CREATE TABLE IF NOT EXISTS `groups` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `identifier` text DEFAULT NULL,
@@ -168,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.messages
+-- Dumping structure for table hikarudev.messages
 CREATE TABLE IF NOT EXISTS `messages` (
   `channel_id` int(3) DEFAULT NULL,
   `message_id` int(3) NOT NULL AUTO_INCREMENT,
@@ -177,11 +178,11 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `message_content` varchar(512) DEFAULT NULL,
   `is_action` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`message_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.mirror
+-- Dumping structure for table hikarudev.mirror
 CREATE TABLE IF NOT EXISTS `mirror` (
   `id` int(11) NOT NULL,
   `LM` datetime DEFAULT NULL,
@@ -194,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `mirror` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.news
+-- Dumping structure for table hikarudev.news
 CREATE TABLE IF NOT EXISTS `news` (
   `author` varchar(32) NOT NULL DEFAULT 'Hikaru Team',
   `edit_url` varchar(512) DEFAULT NULL,
@@ -210,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `news` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.rankings
+-- Dumping structure for table hikarudev.rankings
 CREATE TABLE IF NOT EXISTS `rankings` (
   `user_id` int(11) DEFAULT NULL,
   `mode` varchar(50) DEFAULT NULL,
@@ -222,12 +223,13 @@ CREATE TABLE IF NOT EXISTS `rankings` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.scores
+-- Dumping structure for table hikarudev.scores
 CREATE TABLE IF NOT EXISTS `scores` (
   `user_id` int(10) NOT NULL,
   `score_id` int(10) NOT NULL AUTO_INCREMENT,
   `beatmap_id` int(11) DEFAULT NULL,
   `ruleset_id` int(10) NOT NULL DEFAULT 0,
+  `mods` longtext NOT NULL DEFAULT '[]',
   `passed` tinyint(1) DEFAULT NULL,
   `count_miss` int(8) DEFAULT NULL,
   `count_meh` int(8) DEFAULT NULL,
@@ -241,6 +243,8 @@ CREATE TABLE IF NOT EXISTS `scores` (
   `count_LTH` int(8) DEFAULT NULL,
   `count_SB` int(8) DEFAULT NULL,
   `count_LB` int(8) DEFAULT NULL,
+  `count_IM` int(8) DEFAULT NULL,
+  `count_IH` int(8) DEFAULT NULL,
   `rank` varchar(2) DEFAULT NULL,
   `total_score` int(7) DEFAULT NULL,
   `pp` float DEFAULT NULL,
@@ -249,11 +253,11 @@ CREATE TABLE IF NOT EXISTS `scores` (
   `created_at` datetime DEFAULT NULL,
   `user_best` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`score_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.users
+-- Dumping structure for table hikarudev.users
 CREATE TABLE IF NOT EXISTS `users` (
   `avatar_url` varchar(256) DEFAULT 'https://a.hikaru.pw/1/default_av.jpg',
   `country_code` varchar(2) DEFAULT NULL,
@@ -286,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table hikaru.websocket
+-- Dumping structure for table hikarudev.websocket
 CREATE TABLE IF NOT EXISTS `websocket` (
   `connection_id` varchar(64) NOT NULL,
   `connection_token` varchar(64) NOT NULL,
