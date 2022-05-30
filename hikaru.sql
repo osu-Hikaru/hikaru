@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `message_content` varchar(512) DEFAULT NULL,
   `is_action` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`message_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -223,6 +223,17 @@ CREATE TABLE IF NOT EXISTS `rankings` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table hikarudev.ruleset_descriptors
+CREATE TABLE IF NOT EXISTS `ruleset_descriptors` (
+  `ruleset_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ruleset_safe_name` varchar(64) DEFAULT NULL,
+  `ruleset_name` varchar(64) DEFAULT NULL,
+  `ruleset_description` text DEFAULT NULL,
+  PRIMARY KEY (`ruleset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table hikarudev.scores
 CREATE TABLE IF NOT EXISTS `scores` (
   `user_id` int(10) NOT NULL,
@@ -253,7 +264,39 @@ CREATE TABLE IF NOT EXISTS `scores` (
   `created_at` datetime DEFAULT NULL,
   `user_best` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`score_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table hikarudev.scores_0
+CREATE TABLE IF NOT EXISTS `scores_0` (
+  `user_id` int(16) NOT NULL,
+  `score_id` int(16) NOT NULL AUTO_INCREMENT,
+  `beatmap_id` int(16) NOT NULL,
+  `passed` tinyint(1) NOT NULL DEFAULT 0,
+  `mods` text NOT NULL DEFAULT '[]',
+  `count_miss` int(16) NOT NULL DEFAULT 0,
+  `count_meh` int(16) NOT NULL DEFAULT 0,
+  `count_ok` int(16) NOT NULL DEFAULT 0,
+  `count_great` int(16) NOT NULL DEFAULT 0,
+  `perfect` tinyint(1) NOT NULL DEFAULT 0,
+  `count_STM` int(16) NOT NULL DEFAULT 0,
+  `count_STH` int(16) NOT NULL DEFAULT 0,
+  `count_LTM` int(16) NOT NULL DEFAULT 0,
+  `count_LTH` int(16) NOT NULL DEFAULT 0,
+  `count_SB` int(16) NOT NULL DEFAULT 0,
+  `count_LB` int(16) NOT NULL DEFAULT 0,
+  `count_IM` int(16) NOT NULL DEFAULT 0,
+  `count_IH` int(16) NOT NULL DEFAULT 0,
+  `rank` varchar(2) NOT NULL DEFAULT 'D',
+  `total_score` int(16) NOT NULL DEFAULT 0,
+  `pp` int(16) DEFAULT NULL,
+  `max_combo` int(16) NOT NULL DEFAULT 0,
+  `accuracy` double NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `user_best` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`score_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
