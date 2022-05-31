@@ -2,6 +2,8 @@
 // osu!Hikaru, a fully independent osu!Lazer Private Server backend.
 // Copyright (C) 2021 Hikaru Team <copyright@hikaru.pw>
 
+// TODO: Major rewrite of basically every SQL Statement
+
 const runtime = Date.now();
 
 console.log(`Starting Hikaru...`);

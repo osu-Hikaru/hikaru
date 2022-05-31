@@ -31,20 +31,13 @@ export default async (pool, req, res) => {
           [req.body.user.username, req.body.user.user_email, hash]
         )
         .then(async () => {
-          await conn
-            .query(`SELECT * FROM accounts WHERE username = ?`, [
-              req.body.user.username,
-            ])
-            .then(async (apiRes) => {
-              await conn.query(
-                `INSERT INTO users (username, user_id, join_date) VALUES (?, ?, ?)`,
-                [apiRes[0].username, apiRes[0].user_id, new Date()]
-              );
-              res.status(200);
-              res.send();
-              conn.end();
-              return;
-            });
+          await conn.query(`SELECT * FROM accounts WHERE username = ?`, [
+            req.body.user.username,
+          ]);
+          res.status(200);
+          res.send();
+          conn.end();
+          return;
         })
         .catch((err) => {
           console.log(err);
