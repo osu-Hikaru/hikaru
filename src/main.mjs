@@ -110,12 +110,12 @@ api.post("/token", upload.none(), async (req, res) => {
   modules.oauth(pool, req, res);
 });
 
-api.get("/v2/me", async (req, res) => {
-  modules.getMe(pool, req, res);
-});
-
 api.all("*", async (req, res, next) => {
   modules.allRoutes(pool, req, res, next);
+});
+
+api.get("/v2/me", async (req, res) => {
+  modules.getMe(pool, req, res);
 });
 
 api.get("/v2/users/*/*", async (req, res) => {
