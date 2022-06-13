@@ -26,8 +26,6 @@ export default async (pool, req, res) => {
       Number(getUserID[0].user_id),
     ]);
 
-    console.log(mode);
-
     const userMode = await conn.query(
       `SELECT * FROM users_? WHERE user_id = ?`,
       [Number(mode.mode_int), Number(userObj[0].user_id)]

@@ -118,8 +118,8 @@ api.get("/v2/me", async (req, res) => {
   modules.getMe(pool, req, res);
 });
 
-api.get("/v2/users/*/*", async (req, res) => {
-  modules.getUsers(pool, req, res);
+api.get("/v2/users/*/*/*", async (req, res) => {
+  modules.getUsersRoute(pool, req, res);
 });
 
 api.get("/v2/chat/updates", async (req, res) => {

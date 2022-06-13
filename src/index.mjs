@@ -19,7 +19,7 @@ import resolveModeByName from "./utilities/resolveModeByName.mjs";
 
 import postUsers from "./endpoints/postUsers.mjs";
 import oauth from "./endpoints/oauth.mjs";
-import getUsers from "./endpoints/getUsers.mjs";
+import getUsersRoute from "./endpoints/getUsers/route.mjs";
 import getMe from "./endpoints/getMe.mjs";
 import allRoutes from "./endpoints/allRoutes.mjs";
 import getChatUpdates from "./endpoints/getChatUpdates.mjs";
@@ -74,7 +74,7 @@ export {
   //-------------------------------
   postUsers as postUsers,
   oauth as oauth,
-  getUsers as getUsers,
+  getUsersRoute as getUsersRoute,
   getMe as getMe,
   allRoutes as allRoutes,
   getChatUpdates as getChatUpdates,

@@ -2,11 +2,114 @@
 // osu!Hikaru, a fully independent osu!Lazer Private Server backend.
 // Copyright (C) 2021 Hikaru Team <copyright@hikaru.pw>
 
-import * as modules from "../index.mjs";
+// TODO:_Implement like everything
+
+import * as modules from "../../index.mjs";
 
 export default async (pool, req, res) => {
   const conn = await pool.getConnection();
   const url = req.originalUrl.split("/");
+  const user_id = url[3];
+
+  try {
+    switch (url[4].split("?")[0]) {
+      default:
+        res.status(404);
+        res.send();
+        conn.end();
+        break;
+      case "kudosu":
+        res.status(404);
+        res.send();
+        conn.end();
+        break;
+      case "recent_activity":
+        res.status(404);
+        res.send();
+        conn.end();
+        break;
+      case "scores":
+        switch (url[5].split("?")[0]) {
+          default:
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "first":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "best":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "pinned":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "recent":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+        }
+      case "beatmapsets":
+        switch (url[5].split("?")[0]) {
+          default:
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "most_played":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "graveyard":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "pending":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "guest":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "loved":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "ranked":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+          case "favourite":
+            res.status(404);
+            res.send();
+            conn.end();
+            break;
+        }
+        break;
+    }
+  } catch (err) {
+    res.status(500);
+    res.json({});
+    console.log(err);
+    conn.end();
+    return;
+  }
+
+  /* LEGACY CODE
   let req_type = "user_id";
 
   try {
@@ -212,5 +315,5 @@ export default async (pool, req, res) => {
     res.send();
     conn.end();
     return;
-  }
+  } */
 };
