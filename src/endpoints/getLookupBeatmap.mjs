@@ -237,6 +237,65 @@ export default async (pool, req, res) => {
         return;
       });
 
+      console.log(beatmap.data)
+
+      /*res.json({
+        beatmapset_id: Number(beatmap.data.beatmapset_id),
+        difficulty_rating: Number(beatmap.data.difficulty_rating),
+        id: Number(beatmap.data.id),
+        mode: String(beatmap.data.mode),
+        status: String(beatmap.data.status),
+        total_length: Number(beatmap.data.total_length),
+        user_id: Number(1),
+        version: String(beatmap.data.version),
+        accuracy: Number(beatmap.data.accuracy),
+        ar: Number(beatmap.data.ar),
+        bpm: Number(beatmap.data.bpm),
+        convert: Boolean(beatmap.data.convert),
+        count_circles: Number(beatmap.data.count_circles),
+        count_sliders: Number(beatmap.data.count_sliders),
+        count_spinners: Number(beatmap.data.count_spinners),
+        cs: Number(beatmap.data.cs),
+        deleted_at: null ? null : String(beatmap.data.deleted_at),
+        drain: Number(beatmap.data.drain),
+        hit_length: Number(beatmap.data.hit_length),
+        is_scoreable: Boolean(beatmap.data.is_scoreable),
+        last_updated: String(
+          new Date(beatmap.data.beatmapset.last_updated).toISOString()
+        ).replace(".000Z", "+00:00"),
+        mode_int: Number(beatmap.data.mode_int),
+        passcount: Number(0),
+        playcount: Number(0),
+        ranked: Number(beatmap.data.ranked),
+        url: String(beatmap.data.url),
+        checksum: String(beatmap.data.checksum),
+        beatmapset: {
+          artist: String(beatmap.data.artist),
+          artist_unicode: String(beatmap.data.artist_unicode),
+          covers: beatmap.data.covers,
+          creator: String(beatmap.data.creator),
+          favourite_count: beatmap.data.favourite_count,
+          hype: null ? null : String(beatmap.data.hype),
+          id: Number(beatmap.data.id),
+          nsfw: Boolean(beatmap.data.nsfw),
+          offset: Number(beatmap.data.offset),
+          play_count: Number(beatmap.data.play_count),
+          preview_url: String(beatmap.data.preview_url),
+          source: String(beatmap.data.source),
+          spotlight: Boolean(beatmap.data.spotlight),
+          status: String(beatmap.data.status),
+          title: String(beatmap.data.title),
+          title_unicode: String(beatmap.data.title_unicode),
+          track_id: null ? null : Number(beatmap.data.track_id),
+          user_id: Number(1),
+          video: Boolean(beatmap.data.video)
+
+        }
+
+      })*/
+
+
+
     conn.end();
     res.status(200);
     res.json({
@@ -249,9 +308,9 @@ export default async (pool, req, res) => {
           download_disabled: Boolean(
             beatmap.data.beatmapset.availability.download_disabled
           ),
-          more_information: String(
-            beatmap.data.beatmapset.availability.more_information
-          ),
+          more_information: null
+            ? null
+            : String(beatmap.data.beatmapset.availability.more_information),
         },
         bpm: Number(beatmap.data.beatmapset.bpm),
         can_be_hyped: Boolean(false),
@@ -277,21 +336,23 @@ export default async (pool, req, res) => {
         is_scoreable: Boolean(true),
         last_updated: String(
           new Date(beatmap.data.beatmapset.last_updated).toISOString()
-        ),
-        legacy_thread_url: String(null),
+        ).replace(".000Z", "+00:00"),
+        legacy_thread_url: null,
         nominations_summary: {
           current: beatmap.data.beatmapset.nominations_summary.current,
           required: beatmap.data.beatmapset.nominations_summary.required,
         },
         nsfw: Boolean(beatmap.data.beatmapset.nsfw),
+        offset: Number(0),
         play_count: Number(0),
         preview_url: String(
-          `https://b.ppy.sh/preview/${beatmap.data.beatmapset.id}.mp3`
+          `//b.ppy.sh/preview/${beatmap.data.beatmapset.id}.mp3`
         ),
         ranked: Number(beatmap.data.beatmapset.ranked),
         ranked_date: String(beatmap.data.beatmapset.ranked_date),
         ratings: [],
         source: String(beatmap.data.beatmapset.source),
+        spotlight: false,
         status: String(beatmap.data.beatmapset.status),
         storyboard: Boolean(beatmap.data.beatmapset.storyboard),
         submitted_date: String(beatmap.data.beatmapset.submitted_date),
@@ -310,7 +371,9 @@ export default async (pool, req, res) => {
       count_sliders: Number(beatmap.data.count_sliders),
       count_spinners: Number(beatmap.data.count_spinners),
       cs: Number(beatmap.data.cs),
-      deleted_at: String(beatmap.data.deleted_at),
+      deleted_at: null
+      ? null
+      : String(beatmap.data.deleted_at),
       difficulty_rating: Number(beatmap.data.difficulty_rating),
       drain: Number(beatmap.data.drain),
       failtimes: {
@@ -319,9 +382,11 @@ export default async (pool, req, res) => {
       },
       hit_length: Number(beatmap.data.hit_length),
       id: Number(beatmap.data.id),
-      is_scoreable: Boolean(beatmap.data.convert),
+      is_scoreable: Boolean(true),
       last_updated: String(beatmap.data.last_updated),
-      max_combo: Number(beatmap.data.new_max_combo),
+      max_combo: null
+      ? null
+      : Number(beatmap.data.new_max_combo),
       mode: String(beatmap.data.mode),
       mode_int: Number(beatmap.data.mode_int),
       passcount: Number(0),

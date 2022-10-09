@@ -166,8 +166,8 @@ api.put("/v2/beatmaps/*/solo/scores/*", async (req, res) => {
   modules.putBeatmapScores(pool, req, res);
 });
 
-api.get("/v2/beatmaps/*/scores", (req, res) => {
-  modules.getBeatmapScores(pool, req, res);
+api.get("/v2/beatmaps/*/solo-scores", (req, res) => {
+  modules.getBeatmapSoloScores(pool, req, res);
 });
 
 api.get("/v2/beatmaps/lookup", (req, res) => {

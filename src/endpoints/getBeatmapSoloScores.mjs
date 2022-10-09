@@ -48,20 +48,35 @@ export default async (pool, req, res) => {
 
       let mods = [];
       JSON.parse(score.mods).forEach((mod) => {
-        mods.push(mod.acronym);
+        mods.push({ acronym: mod.acronym, settings: {} });
       });
 
       response.scores.push({
         accuracy: Number(score.accuracy),
         beatmap_id: Number(score.beatmap_id),
-        build_id: Number(1),
-        created_at: await modules.sqlToOsuDate(score.created_at),
+        best_id: null, // TODO: Implement
+        build_id: Number(1), // TODO: Implement
+        current_user_attributes: {
+          pin: null, // TODO: Implement
+        }, // TODO: Implement
+        // created_at: await modules.sqlToOsuDate(score.created_at), TODO: Deprecated
         id: Number(score.score_id),
+        legacy_perfect: null, // TODO: Implement
+        legacy_score_id: null, // TODO: Implement
+        legacy_total_score: null, // TODO: Implement
         max_combo: Number(score.max_combo),
+        maximum_statistics: {} /* {
+            "great": 945, // TODO: Implement
+            "large_tick_hit": 483, // TODO: Implement
+            "small_tick_hit": 435 // TODO: Implement
+        }, // TODO: Implement */,
         mods: mods,
         passed: Boolean(score.passed),
+        pp: 0, // TODO: Implement
         rank: String(score.rank),
+        replay: false, // TODO: Implement
         ruleset_id: Number(args.mode_int),
+        started_at: "2022-10-09T17:52:39+00:00", // TODO: Implement
         statistics: {
           great: Number(score.count_great),
           meh: Number(score.count_meh),
@@ -77,9 +92,21 @@ export default async (pool, req, res) => {
           ignore_hit: Number(score.count_IH),
           Perfect: Number(score.perfect),
         },
+        total_score: Number(score.total_score), // TODO: Implement
+        type: "solo_score", // TODO: Implement
         user: {
           avatar_url: String(user[0].avatar_url),
-          country_code: String(user[0].country_code),
+          country: {
+            code: String(user[0].country_code),
+            name: String(user[0].country_name),
+          },
+          country_code: String(user[0].country_code), // TODO: Legacy?
+
+          cover: {
+            custom_url: null,
+            url: "https://a.hikaru.pw/1/default_cv.jpg",
+            id: null,
+          },
           default_group: "default",
           id: Number(user[0].user_id),
           is_active: Boolean(user[0].is_active),
@@ -91,17 +118,7 @@ export default async (pool, req, res) => {
           pm_friends_only: Boolean(user[0].is_supporter),
           profile_colour: null,
           username: String(user[0].username),
-          country: {
-            code: String(user[0].country_code),
-            name: String(user[0].country_name),
-          },
-          cover: {
-            custom_url: null,
-            url: "https://a.hikaru.pw/1/default_cv.jpg",
-            id: null,
-          },
         },
-        score: Number(score.total_score),
         user_id: Number(score.user_id),
       });
 
@@ -112,7 +129,6 @@ export default async (pool, req, res) => {
       if (i === scores.length) {
         res.status(200);
         res.json(response);
-        console.log(response);
         conn.end();
       } else {
         setTimeout(sendResult, 200);

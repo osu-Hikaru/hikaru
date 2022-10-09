@@ -33,7 +33,7 @@ import getMessages from "./endpoints/getMessages.mjs";
 import postChannels from "./endpoints/postChannels.mjs";
 import postChannelMessages from "./endpoints/postChannelMessages.mjs";
 import putBeatmapScores from "./endpoints/putBeatmapScores.mjs";
-import getBeatmapScores from "./endpoints/getBeatmapScores.mjs";
+import getBeatmapSoloScores from "./endpoints/getBeatmapSoloScores.mjs";
 import postBeatmapScores from "./endpoints/postBeatmapScores.mjs";
 import getLookupBeatmap from "./endpoints/getLookupBeatmap.mjs";
 import getNews from "./endpoints/getNews.mjs";
@@ -88,7 +88,7 @@ export {
   postChannels as postChannels,
   postChannelMessages as postChannelMessages,
   putBeatmapScores as putBeatmapScores,
-  getBeatmapScores as getBeatmapScores,
+  getBeatmapSoloScores as getBeatmapSoloScores,
   postBeatmapScores as postBeatmapScores,
   getLookupBeatmap as getLookupBeatmap,
   getNews as getNews,
