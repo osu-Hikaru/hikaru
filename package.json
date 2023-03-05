@@ -1,0 +1,17 @@
+{
+  "name": "osu-lazer-server",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/run.mjs",
+  "scripts": {
+    "test": "node src/run.mjs"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.17.1",
+    "mariadb": "^3.0.0",
+    "winston": "^3.8.2"
+  }
+}

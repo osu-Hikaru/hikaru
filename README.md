@@ -1,4 +1,4 @@
-# Hikaru Server
+# Hikaru Backend Framework
 
 ## ATTENTION
 
