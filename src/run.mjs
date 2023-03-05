@@ -39,10 +39,13 @@ const databaseInstance = await resolver.resolveDict(
 );
 
 export const database = new databaseInstance();
+global.database = database;
 
 // Create Express Instance
+
 const apiInstance = await resolver.resolveDict(
   "modules.express.class.apiInstance"
 );
 
 export const api = new apiInstance();
+global.api = api;

@@ -29,4 +29,13 @@ export default class {
       "Hello from MariaDB! We have successfully authenticated!"
     );
   };
+
+  getPool = () => {
+    process.emitWarning(
+      "getPool is simply a function to retain compatibility with old, not yet converted functions. " +
+        "Consider switching to the new query methods, as this will cease to work in the near future.",
+      "DeprecationWarning"
+    );
+    return this.#pool;
+  };
 }

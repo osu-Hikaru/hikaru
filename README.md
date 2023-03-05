@@ -15,7 +15,7 @@ This is an independent Fan project made for education purposes only. Please chec
 - [ ] Accounts
 - - [ ] Registration
 - - [ ] Sign-In
-- - [ ] Session Storage
+- - [x] Session Storage
 - [ ] Submissions
 - - [ ] Send & Store
 - - [ ] Global Leaderboard
