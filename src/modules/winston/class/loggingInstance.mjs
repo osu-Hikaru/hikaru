@@ -10,7 +10,17 @@ export default class {
   constructor() {
     this.#instance = winston.createLogger({
       level: "debug",
-      levels: winston.config.syslog.levels,
+      levels: {
+        emerg: 0,
+        alert: 1,
+        crit: 2,
+        morgan: 3,
+        error: 3,
+        warning: 4,
+        notice: 5,
+        info: 6,
+        debug: 7,
+      },
       format: winston.format.json(),
       defaultMeta: { service: "user-service" },
       transports: [
@@ -24,6 +34,8 @@ export default class {
         new winston.transports.File({ filename: "./src/logs/combined.log" }),
       ],
     });
+
+    this.notice("logger", "Hello World!");
   }
 
   /**

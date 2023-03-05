@@ -18,14 +18,14 @@ export default class {
         configFiles.forEach((file) => {
           if (file.split(".").length >= 3) {
             dotenv.config({ path: process.cwd() + "/src/env/" + file });
-            logger.info(
+            logger.notice(
               "dotenv",
               "Imported config from " + process.cwd() + "/src/env/" + file
             );
           }
         });
       } else {
-        dotenv.config({ path: path });
+        dotenv.notice({ path: path });
         logger.info("dotenv", "Imported config from " + path);
       }
     } catch (e) {

@@ -1,0 +1,46 @@
+// Licensed under GPL v3 - Check Repository Root for full License notice.
+// osu!Hikaru, a fully independent osu!Lazer Private Server backend.
+// Copyright (C) 2023 Hikaru Team <copyright@hikaru.pw>
+
+import express from "express";
+import morgan from "morgan";
+
+const logger = global.logger;
+
+export default class {
+  #instance;
+
+  constructor() {
+    this.#instance = express();
+
+    if (process.env.MORGAN_ENABLED === "true") {
+      this.#instance.use(morgan(process.env.MORGAN_FORMAT));
+
+      logger.notice("morgan", "Hello from Morgan! We are initiated with the " + process.env.MORGAN_FORMAT + " format!")
+    }
+
+    this.#loadBaseRoutes();
+
+    this.#startListen();
+  }
+
+  #loadBaseRoutes = () => {
+    this.#instance.all("*", (req, res, next) => {
+      res.status(404);
+      res.send();
+    });
+  };
+
+  #startListen = () => {
+    this.#instance.listen(process.env.EXPRESS_PORT, () => {
+      logger.notice(
+        "express",
+        `Hello from Express! We have initiated ${
+          this.#instance._router.stack.length
+        } routes and are listening for requests on port ${
+          process.env.EXPRESS_PORT
+        }!`
+      );
+    });
+  };
+}

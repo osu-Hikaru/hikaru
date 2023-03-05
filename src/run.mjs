@@ -22,8 +22,6 @@ const loggingInstance = await resolver.resolveDict(
 export const logger = new loggingInstance();
 global.logger = logger;
 
-logger.notice("logger", "Hello World!");
-
 // Create Config Instance
 
 const configInstance = await resolver.resolveDict(
@@ -33,3 +31,18 @@ const configInstance = await resolver.resolveDict(
 export const config = new configInstance();
 
 config.load();
+
+// Create Database Instance
+
+const databaseInstance = await resolver.resolveDict(
+  "modules.mariadb.class.databaseInstance"
+);
+
+export const database = new databaseInstance();
+
+// Create Express Instance
+const apiInstance = await resolver.resolveDict(
+  "modules.express.class.apiInstance"
+);
+
+export const api = new apiInstance();
