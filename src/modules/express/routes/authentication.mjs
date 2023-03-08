@@ -4,15 +4,23 @@
 
 const logger = global.logger;
 const resolver = global.resolver;
-const database = global.database;
 
 export default (expressInstance) => {
   logger.info("express-routes", "Loading Authentication routes...");
 
-  expressInstance.post("/oauth/token", async (req, res) => {
+  expressInstance.all("/v2/*", async (req, res, next) => {
+    const endpoint = await resolver.resolveDict("api.client.v2.validateJWT");
+    endpoint.ALL(req, res, next);
+  });
+
+  expressInstance.all("/", async (req, res, next) => {
+    const endpoint = await resolver.resolveDict("api.client.oauth");
+    endpoint.POST(req, res);
+  });
+
+  expressInstance.post("/token", async (req, res) => {
     const endpoint = await resolver.resolveDict("api.client.oauth.token");
-    const pool = database.getPool();
-    endpoint(pool, req, res);
+    endpoint.POST(req, res);
   });
 
   logger.info("express-routes", "Loaded Authentication routes!");

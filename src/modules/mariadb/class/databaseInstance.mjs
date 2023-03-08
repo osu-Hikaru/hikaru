@@ -38,4 +38,13 @@ export default class {
     );
     return this.#pool;
   };
+
+  runQuery = async (query, params) => {
+    const conn = await this.#pool.getConnection();
+    const result = await conn.query(query, params);
+
+    conn.end();
+
+    return result;
+  };
 }

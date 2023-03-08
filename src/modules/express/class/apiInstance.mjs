@@ -25,8 +25,6 @@ export default class {
           " format!"
       );
     }
-
-    this.#loadBaseRoutes();
     this.#loadCustomRoutes();
     this.#startListen();
   }
@@ -46,12 +44,37 @@ export default class {
     );
 
     authenticationRoutes(this.#instance);
+
+    // Developer
+
+    const developerRoutes = await resolver.resolveDict(
+      "modules.express.routes.developer"
+    );
+
+    developerRoutes(this.#instance);
+
+    // System
+
+    const systemRoutes = await resolver.resolveDict(
+      "modules.express.routes.system"
+    );
+
+    systemRoutes(this.#instance);
+
+    // Userdata
+
+    const userdataRoutes = await resolver.resolveDict(
+      "modules.express.routes.userdata"
+    );
+
+    userdataRoutes(this.#instance);
   };
 
   #startListen = () => {
     logger.notice("express", "Awaiting startup delay...");
 
     setTimeout(() => {
+      this.#loadBaseRoutes();
       this.#instance.listen(process.env.EXPRESS_PORT, () => {
         logger.notice(
           "express",

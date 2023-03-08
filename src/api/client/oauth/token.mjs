@@ -6,12 +6,12 @@ import fs from "node:fs/promises";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-export default async (pool, req, res) => {
-  const conn = await pool.getConnection();
+const database = global.database;
 
+export const POST = async (req, res) => {
   try {
     if (req.fields.username && req.fields.password) {
-      const checkUser = await conn.query(
+      const checkUser = await database.runQuery(
         `SELECT * FROM accounts WHERE username = ? LIMIT 1`,
         [String(req.fields.username)]
       );
@@ -19,7 +19,6 @@ export default async (pool, req, res) => {
       if (checkUser[0] === undefined) {
         res.status(400);
         res.send();
-        conn.end();
         return;
       } else {
         const compareResult = await bcrypt.compareSync(
@@ -44,26 +43,22 @@ export default async (pool, req, res) => {
             refresh_token: null,
             token_type: "Bearer",
           });
-          conn.end();
           return;
         } else {
           res.status(400);
           res.send();
-          conn.end();
           return;
         }
       }
     } else {
       res.status(403);
       res.json({ message: "No authorization provided." });
-      conn.end();
       return;
     }
   } catch (err) {
     console.log(err);
     res.status(500);
     res.send();
-    conn.end();
     return;
   }
 };
