@@ -45,6 +45,14 @@ export default class {
 
     authenticationRoutes(this.#instance);
 
+      // Beatmaps
+
+    const beatmapRoutes = await resolver.resolveDict(
+      "modules.express.routes.beatmaps"
+    );
+
+    beatmapRoutes(this.#instance);
+
     // Developer
 
     const developerRoutes = await resolver.resolveDict(

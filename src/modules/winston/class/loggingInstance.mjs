@@ -16,7 +16,7 @@ export default class {
         crit: 2,
         morgan: 3,
         error: 3,
-        warning: 4,
+        warn: 4,
         notice: 5,
         info: 6,
         debug: 7,

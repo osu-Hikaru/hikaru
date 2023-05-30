@@ -49,3 +49,13 @@ const apiInstance = await resolver.resolveDict(
 
 export const api = new apiInstance();
 global.api = api;
+
+// Create Lazer Instance
+
+const lazerInstance = await resolver.resolveDict(
+  "modules.lazerAPI.class.lazerInstance"
+);
+
+export const lazer = new lazerInstance();
+global.lazer = lazer;
+
