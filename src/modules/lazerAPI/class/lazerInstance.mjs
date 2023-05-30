@@ -87,12 +87,12 @@ export default class {
     }
   }
 
-  async getBeatmap(id, checksum) {
+  async getBeatmap(id, filename, checksum) {
     let getBeatmapFunction = await resolver.resolveDict(
       "modules.lazerAPI.routes.getBeatmap"
     );
 
-    return await getBeatmapFunction(this.getLazerAuthToken(), id, checksum);
+    return await getBeatmapFunction(this.getLazerAuthToken(), id, filename, checksum);
   }
 
   getLazerAuthToken() {

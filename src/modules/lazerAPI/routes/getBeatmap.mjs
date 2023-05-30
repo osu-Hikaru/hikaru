@@ -7,10 +7,10 @@ import axios from "axios";
 const logger = global.logger;
 const resolver = global.resolver;
 
-export default async (lazerToken, id, checksum) => {
+export default async (lazerToken, id, filename, checksum) => {
   logger.debug(
     "lazertap",
-    "Looking up beatmap... ID: " + id + " | Checksum: " + checksum
+    "Looking up beatmap... ID: " + id + " | Filename: " + filename + " | Checksum: " + checksum
   );
 
   return new Promise(async (resolve, reject) => {
@@ -19,6 +19,10 @@ export default async (lazerToken, id, checksum) => {
 
       if (id !== null) {
         url += `id=${id}&`;
+      }
+
+      if (filename !== null) {
+        url += `filename=${filename}&`;
       }
 
       if (checksum !== null) {

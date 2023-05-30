@@ -6,7 +6,7 @@ const lazer = global.lazer;
 
 export const GET = async (req, res) => {
   try {
-    const beatmapData = await lazer.getBeatmap(req.query.id, req.query.checksum);
+    const beatmapData = await lazer.getBeatmap(req.query.id, req.query.filename, req.query.checksum);
 
     res.status(200);
     res.send(beatmapData.data);
