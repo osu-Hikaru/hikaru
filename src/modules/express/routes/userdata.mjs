@@ -18,5 +18,10 @@ export default (expressInstance) => {
     endpoint.GET(req, res);
   });
 
+  expressInstance.get("/v2/notifications", async (req, res) => {
+    const endpoint = await resolver.resolveDict("api.client.v2.notifications");
+    endpoint.GET(req, res);
+  });
+
   logger.info("express-routes", "Loaded userdata routes!");
 };
