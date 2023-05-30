@@ -42,7 +42,7 @@ export default class {
   generateSQLInsertQuery = (tableName, jsonObj) => {
     const fields = Object.keys(jsonObj);
     const values = Object.values(jsonObj).map((value) =>
-      typeof value === "string" && Date.parse(value)
+      typeof value === "string" && /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)$/gm.test(value)
         ? this.formatDate(new Date(value))
         : value
     );
