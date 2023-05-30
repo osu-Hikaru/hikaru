@@ -13,12 +13,12 @@ export default (expressInstance) => {
     endpoint.ALL(req, res, next);
   });
 
-  expressInstance.all("/", async (req, res, next) => {
+  expressInstance.all("/users", async (req, res, next) => {
     const endpoint = await resolver.resolveDict("api.client.users");
     endpoint.POST(req, res);
   });
 
-  expressInstance.post("/token", async (req, res) => {
+  expressInstance.post("/oauth/token", async (req, res) => {
     const endpoint = await resolver.resolveDict("api.client.oauth.token");
     endpoint.POST(req, res);
   });
