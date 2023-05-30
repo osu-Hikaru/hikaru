@@ -26,6 +26,24 @@ export const GET = async (req, res) => {
             username: null,
           },
         },
+        {
+          url: "https://a.hikaru.pw/seasonals/s_1.jpg",
+          user: {
+            avatar_url: null,
+            country_code: null,
+            default_group: "default",
+            id: null,
+            is_active: false,
+            is_bot: false,
+            is_deleted: false,
+            is_online: false,
+            is_supporter: false,
+            last_visit: null,
+            pm_friends_only: false,
+            profile_colour: null,
+            username: null,
+          },
+        },
       ],
     });
   } catch (e) {
