@@ -14,7 +14,7 @@ export default (expressInstance) => {
   });
 
   expressInstance.all("/", async (req, res, next) => {
-    const endpoint = await resolver.resolveDict("api.client.oauth");
+    const endpoint = await resolver.resolveDict("api.client.users");
     endpoint.POST(req, res);
   });
 
