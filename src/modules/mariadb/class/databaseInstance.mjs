@@ -39,6 +39,33 @@ export default class {
     return this.#pool;
   };
 
+  generateSQLInsertQuery = (tableName, jsonObj) => {
+    const fields = Object.keys(jsonObj);
+    const values = Object.values(jsonObj).map((value) =>
+      typeof value === "string" && Date.parse(value)
+        ? this.formatDate(new Date(value))
+        : value
+    );
+
+    const placeholders = fields.map(() => "?").join(",");
+    const fieldsWithBackticks = fields.map((field) => `\`${field}\``).join(",");
+
+    const query = `INSERT INTO ${tableName} (${fieldsWithBackticks}) VALUES (${placeholders})`;
+
+    return { query, values };
+  };
+
+  formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hour = String(date.getHours()).padStart(2, "0");
+    const minute = String(date.getMinutes()).padStart(2, "0");
+    const second = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+  };
+
   runQuery = async (query, params) => {
     const conn = await this.#pool.getConnection();
     const result = await conn.query(query, params);

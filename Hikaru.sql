@@ -35,38 +35,35 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 -- Dumping structure for table hikarudev.beatmaps
 CREATE TABLE IF NOT EXISTS `beatmaps` (
   `beatmapset_id` int(16) NOT NULL,
-  `difficulty_rating` float DEFAULT NULL,
-  `beatmap_id` int(11) NOT NULL AUTO_INCREMENT,
-  `mode` varchar(50) DEFAULT '',
-  `status` varchar(50) DEFAULT '',
-  `total_length` int(11) DEFAULT 0,
-  `user_id` int(11) DEFAULT 0,
-  `version` varchar(256) DEFAULT '0',
-  `accuracy` float DEFAULT 0,
-  `cs` float DEFAULT 0,
-  `ar` float DEFAULT 0,
-  `bpm` float DEFAULT 0,
-  `is_convert` bit(1) DEFAULT b'0',
-  `count_circles` int(11) DEFAULT 0,
-  `count_sliders` int(11) DEFAULT 0,
-  `count_spinners` int(11) DEFAULT 0,
-  `deleted_at` datetime DEFAULT '0000-00-00 00:00:00',
-  `drain` int(11) DEFAULT 0,
-  `hit_length` int(11) DEFAULT 0,
-  `is_scoreable` bit(1) DEFAULT b'0',
-  `last_updated` datetime DEFAULT '0000-00-00 00:00:00',
-  `mode_int` tinyint(4) DEFAULT 0,
-  `passcount` int(11) DEFAULT 0,
-  `playcount` int(11) DEFAULT 0,
-  `ranked` tinyint(2) DEFAULT 0,
-  `url` varchar(256) DEFAULT '0',
-  `checksum` varchar(256) DEFAULT '0',
-  `max_combo` int(11) DEFAULT NULL,
-  `new_max_combo` int(11) DEFAULT NULL,
-  PRIMARY KEY (`beatmap_id`) USING BTREE,
-  UNIQUE KEY `beatmapset_id` (`beatmapset_id`,`beatmap_id`,`mode`) USING BTREE,
-  CONSTRAINT `FK_beatmaps_beatmapsets` FOREIGN KEY (`beatmapset_id`) REFERENCES `beatmapsets` (`beatmapset_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3817222 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `difficulty_rating` float NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mode` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `total_length` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `version` varchar(256) NOT NULL,
+  `accuracy` float NOT NULL,
+  `ar` float NOT NULL,
+  `bpm` float NOT NULL,
+  `convert` int(1) NOT NULL,
+  `count_circles` int(11) NOT NULL,
+  `count_sliders` int(11) NOT NULL,
+  `count_spinners` int(11) NOT NULL,
+  `cs` float NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  `drain` int(11) NOT NULL,
+  `hit_length` int(11) NOT NULL,
+  `is_scoreable` int(11) NOT NULL,
+  `last_updated` datetime NOT NULL,
+  `mode_int` int(11) NOT NULL,
+  `passcount` int(11) NOT NULL,
+  `playcount` int(11) NOT NULL,
+  `ranked` tinyint(2) NOT NULL,
+  `url` varchar(256) NOT NULL,
+  `checksum` varchar(256) NOT NULL,
+  `max_combo` int(11) NOT NULL,
+  PRIMARY KEY (`id`,`checksum`)
+) ENGINE=InnoDB AUTO_INCREMENT=4043321 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
@@ -145,9 +142,7 @@ CREATE TABLE IF NOT EXISTS `friends` (
   `user_id` int(11) NOT NULL,
   `friend_id` int(11) NOT NULL,
   PRIMARY KEY (`user_id`),
-  KEY `FK_friends_users_2` (`friend_id`),
-  CONSTRAINT `FK_friends_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_friends_users_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `FK_friends_users_2` (`friend_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
@@ -271,10 +266,7 @@ CREATE TABLE IF NOT EXISTS `scores` (
   PRIMARY KEY (`score_id`),
   KEY `FK_scores_users` (`user_id`),
   KEY `FK_scores_beatmaps` (`beatmap_id`),
-  KEY `FK_scores_ruleset_descriptors` (`ruleset_id`),
-  CONSTRAINT `FK_scores_beatmaps` FOREIGN KEY (`beatmap_id`) REFERENCES `beatmaps` (`beatmap_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_scores_ruleset_descriptors` FOREIGN KEY (`ruleset_id`) REFERENCES `rulesets` (`ruleset_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_scores_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `FK_scores_ruleset_descriptors` (`ruleset_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
@@ -286,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `country_code` varchar(2) DEFAULT '',
   `country_name` varchar(128) DEFAULT '',
   `user_id` int(10) NOT NULL,
-  `username` char(28) DEFAULT NULL,
+  `username` char(28) NOT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `is_bot` tinyint(1) DEFAULT 0,
   `is_deleted` tinyint(1) DEFAULT 0,
@@ -303,8 +295,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `groups` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE KEY `username` (`username`),
-  CONSTRAINT `FK_users_accounts` FOREIGN KEY (`user_id`) REFERENCES `accounts` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `FK_users_accounts_2` FOREIGN KEY (`username`) REFERENCES `accounts` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `FK_users_accounts` FOREIGN KEY (`user_id`) REFERENCES `accounts` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
