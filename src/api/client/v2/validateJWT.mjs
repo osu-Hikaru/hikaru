@@ -17,7 +17,7 @@ export const ALL = async (req, res, next) => {
         {},
         async (err, decoded) => {
           if (err) {
-            logger.error(err);
+            logger.error("express", err);
             res.status(403);
             res.send();
             return;
@@ -41,7 +41,7 @@ export const ALL = async (req, res, next) => {
     res.status(500);
     res.send();
 
-    logger.error(err);
+    logger.error("express", err);
 
     return;
   }

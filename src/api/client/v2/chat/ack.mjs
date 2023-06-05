@@ -11,7 +11,7 @@ export const POST = async (req, res) => {
     res.status(200);
     res.json({Silences: []});
   } catch (err) {
-    logger.error(err);
+    logger.error("express", err);
   } finally {
   }
 };

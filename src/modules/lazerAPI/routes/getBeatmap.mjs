@@ -8,7 +8,7 @@ const database = global.database;
 const logger = global.logger;
 
 export default async (lazerToken, id, filename, checksum) => {
-  logger.debug(
+  logger.info(
     "lazertap",
     "Looking up beatmap... ID: " +
       id +
@@ -26,7 +26,7 @@ export default async (lazerToken, id, filename, checksum) => {
       );
 
       if (dbResult[0] !== undefined) {
-        logger.debug("lazertap", "Returning Database record...");
+        logger.info("lazertap", "Returning Database record...");
 
         let returnRecord = { data: dbResult[0] };
 

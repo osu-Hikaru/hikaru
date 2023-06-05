@@ -20,7 +20,7 @@ export const GET = async (req, res) => {
     res.status(200);
     res.json(responseMessage);
   } catch (err) {
-    logger.error(err);
+    logger.error("express", err);
   } finally {
   }
 };

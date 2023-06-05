@@ -74,7 +74,7 @@ export const GET = async (req, res) => {
     res.status(500);
     res.send();
 
-    logger.error(err);
+    logger.error("express", err);
 
     return;
   }

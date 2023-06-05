@@ -11,7 +11,7 @@ export const GET = async (req, res) => {
     res.status(200);
     res.send([]);
   } catch (err) {
-    logger.error(err);
+    logger.error("express", err);
   } finally {
   }
 };

@@ -57,7 +57,7 @@ export default class {
             }
           });
         } catch (err) {
-          logger.error(err);
+          logger.error("express", err);
 
           reject(err);
         }
