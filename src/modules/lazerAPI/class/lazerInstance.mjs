@@ -104,6 +104,14 @@ export default class {
     return await getBeatmapsetFunction(this.getLazerAuthToken(), id);
   }
 
+  async getBeatmapsetDownload(id) {
+    let getBeatmapsetDownloadFunction = await resolver.resolveDict(
+      "modules.lazerAPI.routes.getBeatmapsetDownload"
+    );
+
+    return await getBeatmapsetDownloadFunction(this.getLazerAuthToken(), id);
+  }
+
   async getBeatmapListing(qs) {
     let getBeatmapFunction = await resolver.resolveDict(
       "modules.lazerAPI.routes.getBeatmapListing"

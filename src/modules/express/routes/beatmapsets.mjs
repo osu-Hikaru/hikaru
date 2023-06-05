@@ -15,6 +15,11 @@ export default (expressInstance) => {
     endpoint.GET(req, res);
   });
 
+  expressInstance.get("/v2/beatmapsets/*/download", async (req, res, next) => {
+    const endpoint = await resolver.resolveDict("api.client.v2.beatmapsets.download");
+    endpoint.GET(req, res);
+  });
+
   expressInstance.get("/v2/beatmapsets/*", async (req, res, next) => {
     const endpoint = await resolver.resolveDict("api.client.v2.beatmapsets");
     endpoint.GET(req, res);
