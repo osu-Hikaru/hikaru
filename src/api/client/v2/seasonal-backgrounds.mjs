@@ -2,6 +2,10 @@
 // osu!Hikaru, a fully independent osu!Lazer Private Server backend.
 // Copyright (C) 2023 Hikaru Team <copyright@hikaru.pw>
 
+// TODO: Unfinished endpoint
+
+const logger = global.logger;
+
 export const GET = async (req, res) => {
   try {
     res.status(200);
@@ -46,8 +50,13 @@ export const GET = async (req, res) => {
         },
       ],
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    res.status(500);
+    res.send();
+
+    logger.error(err);
+
+    return;
   } finally {
   }
 };

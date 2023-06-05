@@ -6,6 +6,7 @@ import fs from "node:fs/promises";
 import jwt from "jsonwebtoken";
 
 const database = global.database;
+const logger = global.logger;
 
 export const ALL = async (req, res, next) => {
   try {
@@ -16,7 +17,7 @@ export const ALL = async (req, res, next) => {
         {},
         async (err, decoded) => {
           if (err) {
-            console.log(err);
+            logger.error(err);
             res.status(403);
             res.send();
             return;
@@ -37,9 +38,11 @@ export const ALL = async (req, res, next) => {
       );
     }
   } catch (err) {
-    console.log(err);
     res.status(500);
     res.send();
+
+    logger.error(err);
+
     return;
   }
 };

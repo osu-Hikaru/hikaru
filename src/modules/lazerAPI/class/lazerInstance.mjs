@@ -32,7 +32,7 @@ export default class {
   }
 
   #authorizeLazer() {
-    logger.debug("lazertap", "Authorizing Lazer...");
+    logger.info("lazertap", "Authorizing Lazer...");
 
     const data = new FormData();
 
@@ -56,7 +56,7 @@ export default class {
         data: data,
       })
         .then(async (res) => {
-          logger.debug("lazertap", "Authorization success!");
+          logger.info("lazertap", "Authorization success!");
 
           this.#lazerAuthorizationToken = res.data.access_token;
           this.#lazerTokenExpiry = res.data.expires_in;
@@ -76,8 +76,6 @@ export default class {
             "Authorization failed! Retrying in 10 Seconds..."
           );
 
-          console.log(err);
-
           setTimeout(() => {
             this.#authorizeLazer();
           }, 1000 * 10);
@@ -92,7 +90,12 @@ export default class {
       "modules.lazerAPI.routes.getBeatmap"
     );
 
-    return await getBeatmapFunction(this.getLazerAuthToken(), id, filename, checksum);
+    return await getBeatmapFunction(
+      this.getLazerAuthToken(),
+      id,
+      filename,
+      checksum
+    );
   }
 
   getLazerAuthToken() {

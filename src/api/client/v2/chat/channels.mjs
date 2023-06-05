@@ -2,7 +2,10 @@
 // osu!Hikaru, a fully independent osu!Lazer Private Server backend.
 // Copyright (C) 2023 Hikaru Team <copyright@hikaru.pw>
 
+// TODO: Experimental endpoint
+
 const database = global.database;
+const logger = global.logger;
 
 export const GET = async (req, res) => {
   try {
@@ -16,8 +19,8 @@ export const GET = async (req, res) => {
 
     res.status(200);
     res.json(responseMessage);
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    logger.error(err);
   } finally {
   }
 };

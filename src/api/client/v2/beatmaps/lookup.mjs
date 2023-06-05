@@ -4,6 +4,7 @@
 
 const database = global.database;
 const lazer = global.lazer;
+const logger = global.logger;
 
 export const GET = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ export const GET = async (req, res) => {
       req.query.filename,
       req.query.checksum
     );
-    
+
     if (beatmapData.type === "api") {
       let insertObj = beatmapData.data;
 
@@ -29,8 +30,13 @@ export const GET = async (req, res) => {
 
     res.status(200);
     res.send(beatmapData.data);
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    res.status(500);
+    res.send();
+
+    logger.error(err);
+
+    return;
   } finally {
   }
 };

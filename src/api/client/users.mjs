@@ -5,6 +5,7 @@
 import bcrypt from "bcrypt";
 
 const database = global.database;
+const logger = global.logger;
 
 export const POST = async (req, res) => {
   try {
@@ -49,9 +50,11 @@ export const POST = async (req, res) => {
       return;
     }
   } catch (err) {
-    console.log(err);
     res.status(500);
     res.send();
+
+    logger.error(err);
+
     return;
   }
 };
