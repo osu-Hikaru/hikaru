@@ -36,11 +36,6 @@ export const POST = async (req, res) => {
         ]
       );
 
-      await database.runQuery(
-        `INSERT INTO users (user_id, username) VALUES (?, ?)`,
-        [Number(newUser.insertId), String(req.fields["user[username]"])]
-      );
-
       res.status(200);
       res.send();
       return;

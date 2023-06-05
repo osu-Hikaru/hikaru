@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 CREATE TABLE IF NOT EXISTS `beatmaps` (
   `beatmapset_id` int(16) NOT NULL,
   `difficulty_rating` float NOT NULL,
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `mode` varchar(50) NOT NULL,
   `status` varchar(50) NOT NULL,
   `total_length` int(11) NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `beatmaps` (
   `checksum` varchar(256) NOT NULL,
   `max_combo` int(11) NOT NULL,
   PRIMARY KEY (`id`,`checksum`)
-) ENGINE=InnoDB AUTO_INCREMENT=4043321 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
@@ -209,6 +209,20 @@ CREATE TABLE IF NOT EXISTS `news` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table hikarudev.playactivity
+CREATE TABLE IF NOT EXISTS `playactivity` (
+  `score_id` int(11) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `beatmap_id` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `ruleset_id` int(4) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `score_id` (`score_id`),
+  CONSTRAINT `FK_playactivity_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table hikarudev.rankings
 CREATE TABLE IF NOT EXISTS `rankings` (
   `user_id` int(11) DEFAULT NULL,
@@ -237,37 +251,36 @@ CREATE TABLE IF NOT EXISTS `rulesets` (
 
 -- Dumping structure for table hikarudev.scores
 CREATE TABLE IF NOT EXISTS `scores` (
-  `score_id` int(11) NOT NULL AUTO_INCREMENT,
+  `score_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `beatmap_id` int(11) NOT NULL,
   `ruleset_id` int(11) NOT NULL,
-  `passed` int(1) NOT NULL,
-  `mods` longtext NOT NULL CHECK (json_valid(`mods`)),
-  `miss` int(11) NOT NULL DEFAULT 0,
-  `meh` int(11) NOT NULL DEFAULT 0,
-  `ok` int(11) NOT NULL DEFAULT 0,
-  `good` int(11) NOT NULL DEFAULT 0,
-  `great` int(11) NOT NULL DEFAULT 0,
-  `perfect` int(1) NOT NULL,
-  `small_tick_miss` int(11) NOT NULL DEFAULT 0,
-  `small_tick_hit` int(11) NOT NULL DEFAULT 0,
-  `large_tick_miss` int(11) NOT NULL DEFAULT 0,
-  `large_tick_hit` int(11) NOT NULL DEFAULT 0,
-  `small_bonus` int(11) NOT NULL DEFAULT 0,
-  `large_bonus` int(11) NOT NULL DEFAULT 0,
-  `ignore_miss` int(11) NOT NULL DEFAULT 0,
-  `ignore_hit` int(11) NOT NULL DEFAULT 0,
-  `rank` char(2) NOT NULL,
-  `total_score` int(16) NOT NULL DEFAULT 0,
+  `passed` int(1) DEFAULT NULL,
+  `mods` longtext DEFAULT NULL,
+  `miss` int(11) DEFAULT NULL,
+  `meh` int(11) DEFAULT NULL,
+  `ok` int(11) DEFAULT NULL,
+  `good` int(11) DEFAULT NULL,
+  `great` int(11) DEFAULT NULL,
+  `perfect` int(1) DEFAULT NULL,
+  `small_tick_miss` int(11) DEFAULT NULL,
+  `small_tick_hit` int(11) DEFAULT NULL,
+  `large_tick_miss` int(11) DEFAULT NULL,
+  `large_tick_hit` int(11) DEFAULT NULL,
+  `large_bonus` int(11) DEFAULT NULL,
+  `small_bonus` int(11) DEFAULT NULL,
+  `ignore_miss` int(11) DEFAULT NULL,
+  `ignore_hit` int(11) DEFAULT NULL,
+  `rank` char(2) DEFAULT NULL,
+  `total_score` int(16) DEFAULT NULL,
   `pp` float DEFAULT NULL,
-  `max_combo` int(6) NOT NULL DEFAULT 0,
-  `created_at` bigint(20) NOT NULL DEFAULT unix_timestamp(),
-  `accuracy` float NOT NULL DEFAULT 0,
+  `max_combo` int(6) DEFAULT NULL,
+  `created_at` bigint(20) DEFAULT NULL,
+  `accuracy` float DEFAULT NULL,
   PRIMARY KEY (`score_id`),
   KEY `FK_scores_users` (`user_id`),
-  KEY `FK_scores_beatmaps` (`beatmap_id`),
-  KEY `FK_scores_ruleset_descriptors` (`ruleset_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `FK_scores_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
@@ -302,16 +315,31 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Dumping structure for table hikarudev.websocket
 CREATE TABLE IF NOT EXISTS `websocket` (
-  `connection_id` varchar(64) NOT NULL,
-  `connection_token` varchar(64) NOT NULL,
+  `connection_id` varchar(32) NOT NULL,
+  `connection_token` varchar(32) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `type` varchar(50) DEFAULT NULL,
+  `connection_type` varchar(50) NOT NULL,
+  `pending` int(1) NOT NULL DEFAULT 1,
+  `expiry` datetime NOT NULL,
+  `active` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`connection_id`),
   KEY `FK_websocket_accounts` (`user_id`),
   CONSTRAINT `FK_websocket_accounts` FOREIGN KEY (`user_id`) REFERENCES `accounts` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
+
+-- Dumping structure for trigger hikarudev.new_account_user
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER new_account_user
+AFTER INSERT ON accounts
+FOR EACH ROW
+BEGIN
+  INSERT INTO users (user_id, username) VALUES (NEW.user_id, NEW.username);
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
