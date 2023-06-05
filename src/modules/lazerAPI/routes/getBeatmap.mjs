@@ -133,7 +133,7 @@ export default async (lazerToken, id, filename, checksum) => {
     } catch (err) {
       reject(err);
 
-      logger.error("express", err);
+      logger.error("lazertap", err);
     }
   });
 };

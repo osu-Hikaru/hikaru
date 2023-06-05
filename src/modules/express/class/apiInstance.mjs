@@ -53,6 +53,14 @@ export default class {
 
     beatmapRoutes(this.#instance);
 
+    // Beatmapsets
+
+    const beatmapsetsRoutes = await resolver.resolveDict(
+      "modules.express.routes.beatmapsets"
+    );
+
+    beatmapsetsRoutes(this.#instance);
+
     // Chat
 
     const chatRoutes = await resolver.resolveDict(

@@ -11,7 +11,6 @@ const resolver = global.resolver;
 export default class {
   #lazerAuthorizationToken;
   #lazerTokenExpiry;
-  #lazerTokenCreationDate;
   #lazerAvailable = undefined;
 
   constructor() {
@@ -60,7 +59,6 @@ export default class {
 
           this.#lazerAuthorizationToken = res.data.access_token;
           this.#lazerTokenExpiry = res.data.expires_in;
-          this.#lazerTokenCreationDate = Date.now();
 
           this.#lazerAvailable = true;
 
@@ -96,6 +94,14 @@ export default class {
       filename,
       checksum
     );
+  }
+
+  async getBeatmapListing(qs) {
+    let getBeatmapFunction = await resolver.resolveDict(
+      "modules.lazerAPI.routes.getBeatmapListing"
+    );
+
+    return await getBeatmapFunction(this.getLazerAuthToken(), qs);
   }
 
   getLazerAuthToken() {
