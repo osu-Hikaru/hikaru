@@ -18,11 +18,26 @@ export default async (lazerToken, id, filename, checksum) => {
       checksum
   );
 
+  let queryParameters = {};
+
+  if (id !== undefined) {
+    queryParameters.id = id;
+  }
+
+  if (checksum !== undefined) {
+    queryParameters.checksum = checksum;
+  }
+
   return new Promise(async (resolve, reject) => {
     try {
+      const selectQuery = database.generateSQLSelectQuery(
+        "beatmaps",
+        queryParameters
+      );
+
       let dbResult = await database.runQuery(
-        "SELECT * FROM beatmaps WHERE id = ? AND checksum = ? ORDER BY `last_updated` ASC LIMIT 1",
-        [Number(id), String(checksum)]
+        selectQuery.query + " ORDER BY `last_updated` ASC LIMIT 1",
+        selectQuery.values
       );
 
       if (dbResult[0] !== undefined) {
@@ -83,7 +98,7 @@ export default async (lazerToken, id, filename, checksum) => {
 
         resolve(returnRecord);
       } else {
-        logger.debug("lazertap", "Fetching from API...");
+        logger.info("lazertap", "Fetching from API...");
 
         let url = "https://osu.ppy.sh/api/v2/beatmaps/lookup?";
 
@@ -115,6 +130,10 @@ export default async (lazerToken, id, filename, checksum) => {
             reject(error);
           });
       }
-    } catch (e) {}
+    } catch (err) {
+      reject(err);
+
+      logger.error("express", err);
+    }
   });
 };
