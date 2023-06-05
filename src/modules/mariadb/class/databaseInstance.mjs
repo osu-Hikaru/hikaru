@@ -30,15 +30,6 @@ export default class {
     );
   };
 
-  getPool = () => {
-    process.emitWarning(
-      "getPool is simply a function to retain compatibility with old, not yet converted functions. " +
-        "Consider switching to the new query methods, as this will cease to work in the near future.",
-      "DeprecationWarning"
-    );
-    return this.#pool;
-  };
-
   generateSQLSelectQuery = (tableName, jsonObj) => {
     const fields = Object.keys(jsonObj);
     const values = Object.values(jsonObj).map((value) =>
