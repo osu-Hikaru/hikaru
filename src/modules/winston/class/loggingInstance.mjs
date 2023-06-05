@@ -9,7 +9,6 @@ export default class {
 
   constructor() {
     this.#instance = winston.createLogger({
-      level: "debug",
       levels: {
         emerg: 0,
         alert: 1,
@@ -20,38 +19,27 @@ export default class {
         notice: 5,
         info: 6,
         debug: 7,
-        silly: 8,
       },
       format: winston.format.json(),
       defaultMeta: { service: "user-service" },
       transports: [
         new winston.transports.Console({
           format: winston.format.simple(),
+          level: "info",
         }),
         new winston.transports.File({
           filename: "./src/logs/error.log",
           level: "error",
         }),
-        new winston.transports.File({ filename: "./src/logs/combined.log" }),
+        new winston.transports.File({
+          filename: "./src/logs/combined.log",
+          level: "debug",
+        }),
       ],
     });
 
     this.notice("logger", "Hello World!");
   }
-
-  /**
-   * @description Writes a log message.
-   * @param {string} level
-   * @param {string} worker
-   * @param {string} message
-   */
-  log = async (level, worker, message) => {
-    this.#instance.log(level, "[" + worker.toUpperCase() + "] " + message);
-
-    if (level === "emerg") {
-      process.exit(-1);
-    }
-  };
 
   /**
    * @description Writes an error message with severity "FATAL" and exists the process.
@@ -124,14 +112,5 @@ export default class {
    */
   debug = async (worker, message) => {
     this.#instance.debug("[" + worker.toUpperCase() + "] " + message);
-  };
-
-  /**
-   * @description Writes an error message with severity "SILLY" .
-   * @param {string} worker
-   * @param {string} message
-   */
-  silly = async (worker, message) => {
-    this.#instance.silly("[" + worker.toUpperCase() + "] " + message);
   };
 }

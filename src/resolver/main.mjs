@@ -23,11 +23,10 @@ export default class {
   };
 
   resolveDict = async (search) => {
-    logger.log("silly", "resolver", "Got function request " + search);
+    logger.debug("resolver", "Got function request " + search);
     return new Promise(async (resolve, reject) => {
       if (this.#dictionary[search] !== undefined) {
-        logger.log(
-          "silly",
+        logger.debug(
           "resolver",
           "Resolved function request " + search + " from cache"
         );
@@ -45,8 +44,7 @@ export default class {
           }
 
           import(importString.slice(0, -1) + ".mjs").then((mod) => {
-            logger.log(
-              "silly",
+            logger.debug(
               "resolver",
               "Resolved function request " + search + " per import."
             );
@@ -58,8 +56,10 @@ export default class {
               resolve(mod);
             }
           });
-        } catch (e) {
-          reject(e);
+        } catch (err) {
+          logger.error(err);
+
+          reject(err);
         }
       }
     });
