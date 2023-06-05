@@ -20,6 +20,7 @@ export default class {
         notice: 5,
         info: 6,
         debug: 7,
+        silly: 8,
       },
       format: winston.format.json(),
       defaultMeta: { service: "user-service" },
@@ -123,5 +124,14 @@ export default class {
    */
   debug = async (worker, message) => {
     this.#instance.debug("[" + worker.toUpperCase() + "] " + message);
+  };
+
+  /**
+   * @description Writes an error message with severity "SILLY" .
+   * @param {string} worker
+   * @param {string} message
+   */
+  silly = async (worker, message) => {
+    this.#instance.silly("[" + worker.toUpperCase() + "] " + message);
   };
 }

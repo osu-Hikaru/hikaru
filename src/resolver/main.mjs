@@ -23,11 +23,11 @@ export default class {
   };
 
   resolveDict = async (search) => {
-    logger.debug("resolver", "Got function request " + search);
-    console.log(this.#dictionary[search]);
+    logger.log("silly", "resolver", "Got function request " + search);
     return new Promise(async (resolve, reject) => {
       if (this.#dictionary[search] !== undefined) {
-        logger.debug(
+        logger.log(
+          "silly",
           "resolver",
           "Resolved function request " + search + " from cache"
         );
@@ -45,7 +45,8 @@ export default class {
           }
 
           import(importString.slice(0, -1) + ".mjs").then((mod) => {
-            logger.debug(
+            logger.log(
+              "silly",
               "resolver",
               "Resolved function request " + search + " per import."
             );
