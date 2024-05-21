@@ -1,16 +1,17 @@
 {
-  "name": "hikaru",
-  "version": "1.0.0",
+  "name": "backend",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
+  "license": "GPLv3",
   "type": "module",
   "scripts": {
     "prisma": "npx prisma db pull && npx prisma generate",
-    "dev": "PORT=45678 nodemon --watch src/** --ext ts,json --exec \"node --loader ts-node/esm src/index.ts\""
+    "dev": "node dev.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
-  "license": "GPLV3",
   "dependencies": {
     "@prisma/client": "5.14.0",
     "bcrypt": "^5.1.1",
