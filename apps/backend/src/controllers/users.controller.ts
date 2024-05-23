@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import { User } from "../models/user.model.js";
+import { Account } from "../models/account.model.js";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const formData = req.body;
-    const contextUser = new User(
+    const contextUser = new Account(
       null,
       formData.user.username,
       formData.user.user_email
@@ -22,8 +22,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await contextUser
       .registerUser(formData.user.password)
-      .then((user) => {
-        console.log(user);
+      .then((account) => {
         res.status(200).send();
       })
       .catch((err) => {

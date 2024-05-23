@@ -7,7 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
+model web {
+  setting String @id @db.VarChar(128)
+  value   String @db.VarChar(128)
+}
+
+model accounts {
   id       Int    @id @default(autoincrement())
   username String @db.VarChar(16)
   password String @db.Char(60)
