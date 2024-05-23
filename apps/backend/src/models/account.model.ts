@@ -80,6 +80,9 @@ export class Account {
           .then((account: accounts) => {
             this.id = account.id;
             resolve(account.password);
+          })
+          .catch((e) => {
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -91,18 +94,32 @@ export class Account {
     return new Promise(async (resolve, reject) => {
       try {
         const dbService = DbService.getInstance();
-        dbService
-          .getClient()
-          .accounts.create({
+
+        const account = await dbService.getClient().$transaction(async (tx) => {
+          const account = await tx.accounts.create({
             data: {
               username: this.username,
               email: this.user_email,
               password: await this.hashPassword(password),
             },
-          })
-          .then((account: accounts) => {
-            resolve(new Account(account.id, account.username, account.email));
           });
+
+          if (account.id === undefined) {
+            throw new Error("Account ID is undefined");
+          }
+
+          const user = await tx.users.create({
+            data: {
+              account_id: account.id,
+            },
+          });
+
+          return account;
+        });
+
+        this.id = account.id;
+
+        resolve(this);
       } catch (e) {
         reject(e);
       }
