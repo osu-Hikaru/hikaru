@@ -17,4 +17,12 @@ model accounts {
   username String @db.VarChar(16)
   password String @db.Char(60)
   email    String @db.VarChar(128)
+  users    users?
+}
+
+model users {
+  account_id   Int       @id @default(autoincrement())
+  country_code String?   @db.Char(2)
+  join_date    DateTime? @default(now()) @db.Timestamp(6)
+  accounts     accounts  @relation(fields: [account_id], references: [id], onUpdate: NoAction, map: "users_account_id_seq")
 }

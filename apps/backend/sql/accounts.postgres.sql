@@ -1,7 +1,7 @@
 -- Table: dev.accounts
 
 /* DANGER */
-DROP TABLE IF EXISTS dev.accounts;
+DROP TABLE IF EXISTS dev.accounts CASCADE;
 DROP SEQUENCE IF EXISTS dev.accounts_id_seq;
 /* DANGER */
 
