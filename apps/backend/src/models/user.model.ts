@@ -18,7 +18,7 @@ export class User {
   private account_history: Array<any> = [];
   private active_tournament_banner: any | null = null;
   private active_tournament_banners: Array<any> = [];
-  private avatar_url: string = "";
+  private avatar_url: string = "https://a.hikaru.pw/default.png";
   private badges: Array<any> = [];
   private beatmap_playcounts_count: number = 0;
   private comments_count: number = 0;
@@ -34,7 +34,7 @@ export class User {
   private groups: Array<string> = [];
   private guest_beatmapset_count: number = 0;
   private has_supported: boolean = false;
-  private id: number;
+  private id: number = 1;
   private interests: string = "";
   private is_active: boolean = true;
   private is_bot: boolean = false;
@@ -59,7 +59,7 @@ export class User {
   private pm_friends_only: boolean = false;
   private post_count: number = 0;
   private previous_usernames: Array<string> = [];
-  private profile_colour: string = "";
+  private profile_colour: null = null;
   private profile_order: Array<string> = [];
   private rankHistory: RankHistory = new RankHistory();
   private rank_highest: RankHighest = new RankHighest();
@@ -83,15 +83,25 @@ export class User {
   private username: string = "";
   private website: string = "";
 
-  constructor(id: number) {
-    this.id = id;
-  }
+  constructor() {}
 
-  getId(): Number {
+  getId(): number {
     return this.id;
   }
 
-  fetchUser(): Promise<User> {
+  setId(id: number): void {
+    this.id = Number(id);
+  }
+
+  getUsername(): string {
+    return this.username;
+  }
+
+  setUsername(username: string): void {
+    this.username = username;
+  }
+
+  fetchUserById(id: number): Promise<User> {
     return new Promise((resolve, reject) => {
       const dbService = DbService.getInstance();
 
@@ -99,7 +109,36 @@ export class User {
         .getClient()
         .users.findFirstOrThrow({
           where: {
-            account_id: Number(this.id),
+            accounts: {
+              id: Number(id),
+            },
+          },
+          include: { accounts: true },
+        })
+        .then((user: UserWithAccount) => {
+          this.username = user.accounts.username;
+          this.countryCode = user.country_code ?? "";
+          this.join_date = user.join_date ?? new Date();
+          this.rank_highest.setUpdatedAt(user.join_date ?? new Date());
+          resolve(this);
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    });
+  }
+
+  fetchUserByUsername(username: string): Promise<User> {
+    return new Promise((resolve, reject) => {
+      const dbService = DbService.getInstance();
+
+      dbService
+        .getClient()
+        .users.findFirstOrThrow({
+          where: {
+            accounts: {
+              username: username,
+            },
           },
           include: { accounts: true },
         })
@@ -161,7 +200,7 @@ export class User {
     pm_friends_only: boolean;
     post_count: number;
     previous_usernames: Array<string>;
-    profile_colour: string;
+    profile_colour: null;
     profile_order: Array<string>;
     rankHistory: Object;
     rank_highest: Object;

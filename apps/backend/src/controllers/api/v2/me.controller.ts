@@ -4,9 +4,10 @@ import { User } from "../../../models/user.model.js";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const contextUser = new User(req.body.jwt.sub);
+    const contextUser = new User();
+    contextUser.setId(req.body.jwt.sub);
 
-    await contextUser.fetchUser();
+    await contextUser.fetchUserById(contextUser.getId());
 
     res.status(200).json(contextUser.getObject());
   } catch (e) {
