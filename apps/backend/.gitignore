@@ -1,2 +1,5 @@
+.env
+development.env
+
 dist/
 examples/

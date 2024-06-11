@@ -10,6 +10,5 @@ nodemon({
   script: path.join(__dirname, "src/index.ts"),
   watch: path.join(__dirname, "src/**"),
   ext: "ts,json",
-  exec: `node --loader ts-node/esm ${path.join(__dirname, "src/index.ts")}`,
-  env: { PORT: "45678" },
+  exec: `node --env-file=development.env --loader ts-node/esm ${path.join(__dirname, "src/index.ts")}`
 });
