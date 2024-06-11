@@ -38,4 +38,5 @@ router.use("*", (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 });
+
 router.use("/v2", v2Router);
