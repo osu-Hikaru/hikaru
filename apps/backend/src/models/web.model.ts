@@ -1,12 +1,12 @@
-import { web } from "@prisma/client";
+import { DatabaseModel } from "./model";
 
-import DbService from "../services/db.service.js";
-
-export class WebSetting {
+export class WebSetting extends DatabaseModel {
   private setting: string;
   private value: string | null;
 
   constructor(setting: string, value: string | null = null) {
+    super();
+
     this.setting = setting;
     this.value = value;
   }
@@ -21,9 +21,7 @@ export class WebSetting {
 
   public fetchSetting(setting: string = this.setting): Promise<WebSetting> {
     return new Promise((resolve, reject) => {
-      const dbService = DbService.getInstance();
-
-      dbService
+      this.databaseService
         .getClient()
         .web.findFirstOrThrow({
           where: {
@@ -46,9 +44,7 @@ export class WebSetting {
     value: string
   ): Promise<WebSetting> {
     return new Promise((resolve, reject) => {
-      const dbService = DbService.getInstance();
-
-      dbService
+      this.databaseService
         .getClient()
         .web.update({
           where: {

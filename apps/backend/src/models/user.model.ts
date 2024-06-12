@@ -1,5 +1,3 @@
-import DbService from "../services/db.service.js";
-
 import { Country } from "../classes/country.class.js";
 import { Cover } from "../classes/cover.class.js";
 import { Kudosu } from "../classes/kudosu.class.js";
@@ -9,12 +7,13 @@ import { Statistics } from "../classes/statistics.class.js";
 import { StatisticsRulesets } from "../classes/statistics_rulesets.class.js";
 
 import { Prisma } from "@prisma/client";
+import { DatabaseModel } from "./model.js";
 
 type UserWithAccount = Prisma.usersGetPayload<{
   include: { accounts: true };
 }>;
 
-export class User {
+export class User extends DatabaseModel {
   private account_history: Array<any> = [];
   private active_tournament_banner: any | null = null;
   private active_tournament_banners: Array<any> = [];
@@ -83,7 +82,9 @@ export class User {
   private username: string = "";
   private website: string = "";
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getId(): number {
     return this.id;
@@ -103,9 +104,7 @@ export class User {
 
   fetchUserById(id: number): Promise<User> {
     return new Promise((resolve, reject) => {
-      const dbService = DbService.getInstance();
-
-      dbService
+      this.databaseService
         .getClient()
         .users.findFirstOrThrow({
           where: {
@@ -130,9 +129,7 @@ export class User {
 
   fetchUserByUsername(username: string): Promise<User> {
     return new Promise((resolve, reject) => {
-      const dbService = DbService.getInstance();
-
-      dbService
+      this.databaseService
         .getClient()
         .users.findFirstOrThrow({
           where: {

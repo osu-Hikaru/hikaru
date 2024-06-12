@@ -2,7 +2,11 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 import { DuplicateEntry } from "../errors/database.error.js";
 
+import DatabaseService from "../services/db.service.js";
+
 export class DatabaseModel {
+  protected databaseService: DatabaseService = DatabaseService.getInstance();
+
   constructor() {}
 
   identifyErrorType(error: any) {

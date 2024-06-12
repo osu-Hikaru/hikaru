@@ -1,25 +1,25 @@
 import { PrismaClient } from "@prisma/client";
 
-export default class DbService {
+export default class DatabaseService {
   private static prismaClient: PrismaClient;
-  private static instance: DbService;
+  private static instance: DatabaseService;
 
   private constructor() {
-    if (!DbService.instance) {
-      DbService.instance = this;
-      DbService.prismaClient = new PrismaClient();
+    if (!DatabaseService.instance) {
+      DatabaseService.instance = this;
+      DatabaseService.prismaClient = new PrismaClient();
     }
-    return DbService.instance;
+    return DatabaseService.instance;
   }
 
-  public static getInstance(): DbService {
-    if (!DbService.instance) {
-      DbService.instance = new DbService();
+  public static getInstance(): DatabaseService {
+    if (!DatabaseService.instance) {
+      DatabaseService.instance = new DatabaseService();
     }
-    return DbService.instance;
+    return DatabaseService.instance;
   }
 
   public getClient(): PrismaClient {
-    return DbService.prismaClient;
+    return DatabaseService.prismaClient;
   }
 }

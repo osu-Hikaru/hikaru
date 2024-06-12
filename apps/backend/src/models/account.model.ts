@@ -4,8 +4,6 @@ import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import { accounts } from "@prisma/client";
 import { DatabaseModel } from "./model.js";
 
-import DbService from "../services/db.service.js";
-
 export class Account extends DatabaseModel {
   private id: number | null;
   private username: string;
@@ -71,8 +69,7 @@ export class Account extends DatabaseModel {
   private getPassword(): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
-        const dbService = DbService.getInstance();
-        dbService
+        this.databaseService
           .getClient()
           .accounts.findFirstOrThrow({
             where: {
@@ -95,29 +92,29 @@ export class Account extends DatabaseModel {
   public registerUser(password: string): Promise<Account> {
     return new Promise(async (resolve, reject) => {
       try {
-        const dbService = DbService.getInstance();
+        const account = await this.databaseService
+          .getClient()
+          .$transaction(async (tx) => {
+            const account = await tx.accounts.create({
+              data: {
+                username: this.username,
+                email: this.user_email,
+                password: await this.hashPassword(password),
+              },
+            });
 
-        const account = await dbService.getClient().$transaction(async (tx) => {
-          const account = await tx.accounts.create({
-            data: {
-              username: this.username,
-              email: this.user_email,
-              password: await this.hashPassword(password),
-            },
+            if (account.id === undefined) {
+              throw new Error("Account ID is undefined");
+            }
+
+            const user = await tx.users.create({
+              data: {
+                account_id: account.id,
+              },
+            });
+
+            return account;
           });
-
-          if (account.id === undefined) {
-            throw new Error("Account ID is undefined");
-          }
-
-          const user = await tx.users.create({
-            data: {
-              account_id: account.id,
-            },
-          });
-
-          return account;
-        });
 
         this.id = account.id;
 
