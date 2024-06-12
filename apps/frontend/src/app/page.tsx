@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { LiveClock } from "@/components/custom/liveclock";
+import { LiveClock } from "@/components/ui/live-clock";
 
 export default function Page() {
   const [data, setData] = useState({ motd: "Fetching data...", uptime: null });
