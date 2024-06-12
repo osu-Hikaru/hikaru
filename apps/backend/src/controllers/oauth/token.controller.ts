@@ -8,7 +8,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     if (
-      (process.env.CLIENT_ID ?? 0) !== Number(formData.client_id) ||
+      (Number(process.env.CLIENT_ID) ?? 0) !== Number(formData.client_id) ||
       (process.env.CLIENT_SECRET ?? "") !== formData.client_secret ||
       !formData.username ||
       !formData.password
