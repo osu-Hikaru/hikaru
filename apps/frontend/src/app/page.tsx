@@ -1,53 +1,51 @@
-"use server";
+"use client";
 
-import { cookies } from "next/headers";
-
+import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 import { LiveClock } from "@/components/custom/liveclock";
 
-async function getData() {
-  const cookieStore = cookies();
-  const jwt = cookieStore.get("jwt");
+export default function Page() {
+  const [data, setData] = useState({ motd: "Fetching data...", uptime: null });
 
-  if (!jwt) {
-    return {
-      message: "Welcome to Hikaru! Please login to continue.",
-      uptime: null,
-    };
-  }
+  async function fetchData() {
+    const jwt = Cookies.get("jwt");
 
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/api/v2/web/meta",
-    {
+    if (!jwt) {
+      setData({
+        motd: "Welcome to Hikaru! Please login to continue.",
+        uptime: null,
+      });
+      return;
+    }
+
+    const res = await fetch("/api/v2/web/meta", {
       method: "GET",
       credentials: "include",
       headers: {
         Accept: "application/json",
-        authorization: "Bearer " + jwt.value,
+        authorization: "Bearer " + jwt,
       },
-    }
-  );
+    });
 
-  if (!res.ok) {
-    if (res.status === 403) {
-      return {
-        message: "Welcome to Hikaru! Please login to continue.",
+    if (!res.ok) {
+      setData({
+        motd: "Welcome to Hikaru! Please login to continue.",
         uptime: null,
-      };
+      });
+      return;
     }
 
-    throw new Error("Failed to fetch data");
+    const parsedResult = await res.json();
+    setData({ motd: parsedResult.motd, uptime: parsedResult.uptime });
   }
 
-  const parsedResult = await res.json();
-  return { message: "Welcome to Hikaru!", uptime: parsedResult.uptime };
-}
-
-export default async function Page() {
-  const data = await getData();
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="text-center">
-      <p>{data.message}</p>
+      <p>{data.motd}</p>
       <br />
       {data.uptime !== null && (
         <>
