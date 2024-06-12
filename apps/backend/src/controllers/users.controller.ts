@@ -20,7 +20,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         next(err);
       });
   } catch (e) {
-    console.error(`Error: ${e}`);
     next(e);
   }
 };
