@@ -41,3 +41,33 @@ export const login = async (
       };
     });
 };
+
+export const register = async (
+  username: string,
+  email: string,
+  password: string
+): Promise<ToastProps> => {
+  const formData = new FormData();
+
+  formData.append("user[username]", username);
+  formData.append("user[user_email]", email);
+  formData.append("user[password]", password);
+
+  return fetch("/users", {
+    method: "POST",
+    body: formData,
+  }).then((response) => {
+    if (!response.ok) {
+      return {
+        title: "Something went wrong.",
+        description: "Please try again later.",
+        variant: "destructive",
+      };
+    }
+
+    return {
+      title: "Successfully registered.",
+      description: "You may now login.",
+    };
+  });
+};
