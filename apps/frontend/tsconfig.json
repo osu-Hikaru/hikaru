@@ -27,10 +27,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "dist/types/**/*.ts",
-    "src/app/login/page.tsx.disabled",
-    "src/app/manage/page.tsx.disabled",
+    "src/app/login/page.tsx",
+    "src/app/manage/page.tsx",
     "src/app/register/page.tsx",
-    "src/app/_app.tsx.disabled"
+    "src/app/_app.tsx"
   ],
   "exclude": ["node_modules"]
 }

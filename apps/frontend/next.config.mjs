@@ -7,10 +7,6 @@ const nextConfig = {
         source: "/(.*)",
         headers: [
           {
-            key: "Access-Control-Allow-Origin",
-            value: process.env.NEXT_PUBLIC_BACKEND_URL,
-          },
-          {
             key: "Access-Control-Allow-Methods",
             value: "GET,OPTIONS,POST,PUT,DELETE,PATCH",
           },

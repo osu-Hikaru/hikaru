@@ -9,14 +9,14 @@ datasource db {
 
 model web {
   setting String @id @db.VarChar(128)
-  value   String @db.VarChar(128)
+  value   String @db.VarChar(4096)
 }
 
 model accounts {
   id       Int    @id @default(autoincrement())
-  username String @db.VarChar(16)
+  username String @unique(map: "Usernames") @db.VarChar(16)
   password String @db.Char(60)
-  email    String @db.VarChar(128)
+  email    String @unique(map: "Email") @db.VarChar(128)
   users    users?
 }
 
