@@ -56,18 +56,27 @@ export const register = async (
   return fetch("/users", {
     method: "POST",
     body: formData,
-  }).then((response) => {
-    if (!response.ok) {
-      return {
-        title: "Something went wrong.",
-        description: "Please try again later.",
-        variant: "destructive",
-      };
-    }
+  }).then(async (response) => {
+    const jsonData = await response.json();
 
-    return {
-      title: "Successfully registered.",
-      description: "You may now login.",
-    };
+    switch (response.status) {
+      case 200:
+        return {
+          title: "Successfully registered.",
+          description: "You may now login.",
+        };
+      case 409:
+        return {
+          title: jsonData.message,
+          description: "Please try again.",
+          variant: "destructive",
+        };
+      default:
+        return {
+          title: "Something went wrong.",
+          description: "Please try again later.",
+          variant: "destructive",
+        };
+    }
   });
 };

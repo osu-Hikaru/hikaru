@@ -2,15 +2,17 @@ import { createHash } from "node:crypto";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 
 import { accounts } from "@prisma/client";
+import { DatabaseModel } from "./model.js";
 
 import DbService from "../services/db.service.js";
 
-export class Account {
+export class Account extends DatabaseModel {
   private id: number | null;
   private username: string;
   private user_email: string;
 
   constructor(id: number | null, username: string, user_email: string) {
+    super();
     this.id = id;
     this.username = username;
     this.user_email = user_email;
@@ -120,8 +122,8 @@ export class Account {
         this.id = account.id;
 
         resolve(this);
-      } catch (e) {
-        reject(e);
+      } catch (err) {
+        reject(this.identifyErrorType(err));
       }
     });
   }

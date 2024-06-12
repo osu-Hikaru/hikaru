@@ -34,9 +34,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
-  console.error(`Error: ${err.message}`, err.stack);
-  res.status(statusCode).json({ message: err.message });
-  return;
+
+  if (err.handled) {
+    console.error(`Handled Error: ${err.message}`);
+    res.status(statusCode).json({ message: err.message });
+    return;
+  } else {
+    console.error(`Error: ${err.message}`, err.stack);
+    res.status(statusCode).json({ message: err.message });
+    return;
+  }
 });
 
 app.listen(process.env.PORT, () => {
