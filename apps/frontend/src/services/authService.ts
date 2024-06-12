@@ -68,7 +68,7 @@ export const register = async (
       case 409:
         return {
           title: jsonData.message,
-          description: "Please try again.",
+          description: "Change your details and try again.",
           variant: "destructive",
         };
       default:

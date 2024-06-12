@@ -14,7 +14,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     await contextUser
       .registerUser(formData.user.password)
       .then((account) => {
-        res.status(200).send();
+        res.status(200).json({});
       })
       .catch((err) => {
         next(err);

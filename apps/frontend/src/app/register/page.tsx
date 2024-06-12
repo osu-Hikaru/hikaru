@@ -23,8 +23,8 @@ export default function PageRegister() {
   const { toast } = useToast();
   const formSchema = z.object({
     username: z.string().min(3).max(16),
-    password: z.string().min(8),
     email: z.string().email(),
+    password: z.string().min(8),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
