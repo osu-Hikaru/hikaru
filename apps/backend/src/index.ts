@@ -2,13 +2,10 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
-import { BridgePPY } from "./services/bridgePPY.service.js";
-
 import { router as oauthRouter } from "./routes/oauth.route.js";
 import { router as usersRouter } from "./routes/users.route.js";
 import { router as apiRouter } from "./routes/api.route.js";
 
-BridgePPY.getInstance();
 const app: Express = express();
 app.use(morgan("dev"));
 app.use(cookieParser());
