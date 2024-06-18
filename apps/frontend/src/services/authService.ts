@@ -32,8 +32,8 @@ export const login = async (
         throw new Error("Invalid token type.");
       }
     })
-    .catch((error) => {
-      console.error(`Error: ${error}`);
+    .catch((e) => {
+      console.error(`Error: ${e}`);
       return {
         title: "Something went wrong.",
         description: "Please try again later.",

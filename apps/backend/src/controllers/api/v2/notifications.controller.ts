@@ -9,7 +9,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         notifications: [],
       });
   } catch (e) {
-    console.error(`Error: ${e}`);
     next(e);
   }
 };

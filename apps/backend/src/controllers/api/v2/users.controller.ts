@@ -28,7 +28,6 @@ export const get = async (
         break;
     }
   } catch (e) {
-    console.error(`Error: ${e}`);
     next(e);
   }
 };

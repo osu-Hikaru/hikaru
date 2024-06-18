@@ -11,7 +11,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     res.status(200).json(contextUser.getObject());
   } catch (e) {
-    console.error(`Error: ${e}`);
     next(e);
   }
 };

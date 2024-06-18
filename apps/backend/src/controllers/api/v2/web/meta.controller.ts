@@ -7,7 +7,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.status(200).json({ motd: motd, uptime: process.uptime() });
   } catch (e) {
-    console.error(`Error: ${e}`);
     next(e);
   }
 };

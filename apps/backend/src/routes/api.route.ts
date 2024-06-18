@@ -33,9 +33,7 @@ router.use("*", (req: Request, res: Response, next: NextFunction) => {
       }
     }
   } catch (e) {
-    console.error(`Error: ${e}`);
-    res.status(500).json({ message: "Internal server error." });
-    return;
+    next(e);
   }
 });
 

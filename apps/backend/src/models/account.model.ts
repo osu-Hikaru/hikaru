@@ -44,14 +44,7 @@ export class Account extends DatabaseModel {
   }
 
   public async validatePassword(password: string): Promise<boolean> {
-    try {
-      const userPassword = await this.getPassword();
-
-      return this.comparePassword(password, userPassword);
-    } catch (e) {
-      console.error(`Error: ${e}`);
-      return false;
-    }
+    return this.comparePassword(password, await this.getPassword());
   }
 
   public getId(): string {

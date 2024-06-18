@@ -1,4 +1,4 @@
-import { DatabaseModel } from "./model";
+import { DatabaseModel } from "./model.js";
 
 export class WebSetting extends DatabaseModel {
   private setting: string;

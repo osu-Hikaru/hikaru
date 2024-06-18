@@ -2,11 +2,15 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
+import { LoggerService } from "./services/logger.service.js";
+
 import { router as oauthRouter } from "./routes/oauth.route.js";
 import { router as usersRouter } from "./routes/users.route.js";
 import { router as apiRouter } from "./routes/api.route.js";
 
+const logger = LoggerService.getInstance().getLogger();
 const app: Express = express();
+
 app.use(morgan("dev"));
 app.use(cookieParser());
 
@@ -36,16 +40,16 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
 
   if (err.handled) {
-    console.error(`Handled Error: ${err.message}`);
+    logger.info(`Handled Error: ${err.message}`);
     res.status(statusCode).json({ message: err.message });
     return;
   } else {
-    console.error(`Error: ${err.message}`, err.stack);
+    logger.error(`Error: ${err.message}`, err.stack);
     res.status(statusCode).json({ message: err.message });
     return;
   }
 });
 
 app.listen(process.env.PORT, () => {
-  console.log("Server is running on port " + process.env.PORT);
+  logger.info("Server is running on port " + process.env.PORT);
 });

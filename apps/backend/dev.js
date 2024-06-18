@@ -10,5 +10,5 @@ nodemon({
   script: path.join(__dirname, "src/index.ts"),
   watch: path.join(__dirname, "src/**"),
   ext: "ts,json",
-  exec: `node --env-file=development.env --loader ts-node/esm ${path.join(__dirname, "src/index.ts")}`
+  exec: `node --trace-warnings --env-file=development.env --loader ts-node/esm ${path.join(__dirname, "src/index.ts")} | pino-pretty`
 });
