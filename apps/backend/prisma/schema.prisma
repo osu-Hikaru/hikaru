@@ -21,8 +21,19 @@ model accounts {
 }
 
 model users {
-  account_id   Int       @id @default(autoincrement())
-  country_code String?   @db.Char(2)
-  join_date    DateTime? @default(now()) @db.Timestamp(6)
-  accounts     accounts  @relation(fields: [account_id], references: [id], map: "users_account_id_seq")
+  account_id           Int                    @id @default(autoincrement())
+  country_code         String?                @db.Char(2)
+  join_date            DateTime?              @default(now()) @db.Timestamp(6)
+  seasonal_backgrounds seasonal_backgrounds[]
+  accounts             accounts               @relation(fields: [account_id], references: [id], map: "users_account_id_seq")
+}
+
+model seasonal_backgrounds {
+  internal_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  url         String   @db.VarChar(512)
+  user        Int      @default(1)
+  expiry      DateTime @db.Timestamp(6)
+  users       users    @relation(fields: [user], references: [account_id])
+
+  @@map("seasonal-backgrounds")
 }
