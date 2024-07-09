@@ -1,8 +1,9 @@
+import { DatabaseModel } from "../models/model.js";
 import { GradeCounts } from "./grade_counts.class.js";
 import { Level } from "./level.class.js";
 import { Rank } from "./rank.class.js";
 
-export class Statistics {
+export class Statistics extends DatabaseModel {
   public count_100: number = 0;
   public count_300: number = 0;
   public count_50: number = 0;
@@ -25,7 +26,9 @@ export class Statistics {
   public total_hits: number = 0;
   public total_score: number = 0;
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getCount100(): number {
     return this.count_100;
@@ -193,53 +196,5 @@ export class Statistics {
 
   setTotalScore(score: number): void {
     this.total_score = score;
-  }
-
-  getObject(): {
-    count_100: number;
-    count_300: number;
-    count_50: number;
-    count_miss: number;
-    country_rank: number;
-    global_rank: number;
-    global_rank_exp: null;
-    grade_counts: Object;
-    hit_accuracy: number;
-    is_ranked: boolean;
-    level: Object;
-    maximum_combo: number;
-    play_count: number;
-    play_time: number;
-    pp: number;
-    pp_exp: number;
-    rank: Object;
-    ranked_score: number;
-    replays_watched_by_others: number;
-    total_hits: number;
-    total_score: number;
-  } {
-    return {
-      count_100: this.count_100,
-      count_300: this.count_300,
-      count_50: this.count_50,
-      count_miss: this.count_miss,
-      country_rank: this.country_rank,
-      global_rank: this.global_rank,
-      global_rank_exp: this.global_rank_exp,
-      grade_counts: this.grade_counts.getObject(),
-      hit_accuracy: this.hit_accuracy,
-      is_ranked: this.is_ranked,
-      level: this.level.getObject(),
-      maximum_combo: this.maximum_combo,
-      play_count: this.play_count,
-      play_time: this.play_time,
-      pp: this.pp,
-      pp_exp: this.pp_exp,
-      rank: this.rank.getObject(),
-      ranked_score: this.ranked_score,
-      replays_watched_by_others: this.replays_watched_by_others,
-      total_hits: this.total_hits,
-      total_score: this.total_score,
-    };
   }
 }

@@ -1,8 +1,12 @@
-export class Level {
+import { DatabaseModel } from "../models/model.js";
+
+export class Level extends DatabaseModel {
   public current: number = 0;
   public progress: number = 0;
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getCurrent(): number {
     return this.current;
@@ -18,15 +22,5 @@ export class Level {
 
   setProgress(progress: number): void {
     this.progress = progress;
-  }
-
-  getObject(): {
-    current: number;
-    progress: number;
-  } {
-    return {
-      current: this.current,
-      progress: this.progress,
-    };
   }
 }

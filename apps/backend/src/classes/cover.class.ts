@@ -1,9 +1,13 @@
-export class Cover {
+import { DatabaseModel } from "../models/model.js";
+
+export class Cover extends DatabaseModel {
   public custom_url: string = "";
   public id: null | number = null;
   public url: string = "";
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getCustomUrl(): string {
     return this.custom_url;
@@ -27,17 +31,5 @@ export class Cover {
 
   setUrl(url: string): void {
     this.url = url;
-  }
-
-  getObject(): {
-    custom_url: string;
-    id: null | number;
-    url: string;
-  } {
-    return {
-      custom_url: this.custom_url,
-      id: this.id,
-      url: this.url,
-    };
   }
 }

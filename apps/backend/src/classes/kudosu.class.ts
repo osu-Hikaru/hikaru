@@ -1,8 +1,12 @@
-export class Kudosu {
+import { DatabaseModel } from "../models/model.js";
+
+export class Kudosu extends DatabaseModel {
   private available: number = 0;
   private total: number = 0;
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getAvailable(): number {
     return this.available;
@@ -18,15 +22,5 @@ export class Kudosu {
 
   setTotal(total: number): void {
     this.total = total;
-  }
-
-  getObject(): {
-    available: number;
-    total: number;
-  } {
-    return {
-      available: this.available,
-      total: this.total,
-    };
   }
 }

@@ -1,8 +1,12 @@
-export class Country {
+import { DatabaseModel } from "../models/model.js";
+
+export class Country extends DatabaseModel {
   public countryName: string = "";
   public countryCode: string = "";
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getCountryName(): string {
     return this.countryName;
@@ -18,15 +22,5 @@ export class Country {
 
   setCountryCode(countryCode: string): void {
     this.countryCode = countryCode;
-  }
-
-  getObject(): {
-    countryName: string;
-    countryCode: string;
-  } {
-    return {
-      countryName: this.countryName,
-      countryCode: this.countryCode,
-    };
   }
 }

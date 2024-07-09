@@ -1,8 +1,12 @@
-export class RankHighest {
+import { DatabaseModel } from "../models/model.js";
+
+export class RankHighest extends DatabaseModel {
   public rank: number = 0;
   public updated_at: Date = new Date();
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getRank(): number {
     return this.rank;
@@ -18,15 +22,5 @@ export class RankHighest {
 
   setUpdatedAt(updated_at: Date): void {
     this.updated_at = updated_at;
-  }
-
-  getObject(): {
-    rank: number;
-    updated_at: string;
-  } {
-    return {
-      rank: this.rank,
-      updated_at: this.updated_at.toISOString(),
-    };
   }
 }

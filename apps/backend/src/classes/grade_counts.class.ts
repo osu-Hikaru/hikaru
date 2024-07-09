@@ -1,11 +1,15 @@
-export class GradeCounts {
+import { DatabaseModel } from "../models/model.js";
+
+export class GradeCounts extends DatabaseModel {
   public a: number = 0;
   public s: number = 0;
   public sh: number = 0;
   public ss: number = 0;
   public ssh: number = 0;
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getA(): number {
     return this.a;
@@ -45,21 +49,5 @@ export class GradeCounts {
 
   setSsh(ssh: number): void {
     this.ssh = ssh;
-  }
-
-  getObject(): {
-    a: number;
-    s: number;
-    sh: number;
-    ss: number;
-    ssh: number;
-  } {
-    return {
-      a: this.a,
-      s: this.s,
-      sh: this.sh,
-      ss: this.ss,
-      ssh: this.ssh,
-    };
   }
 }

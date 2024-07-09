@@ -1,7 +1,11 @@
-export class Rank {
+import { DatabaseModel } from "../models/model.js";
+
+export class Rank extends DatabaseModel {
   public country: number = 0;
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   getCountry(): number {
     return this.country;
@@ -9,13 +13,5 @@ export class Rank {
 
   setCountry(country: number): void {
     this.country = country;
-  }
-
-  getObject(): {
-    country: number;
-  } {
-    return {
-      country: this.country,
-    };
   }
 }
