@@ -111,6 +111,16 @@ export class User extends DatabaseModel {
     return this.package(this);
   }
 
+  public getGroups(): Group[] {
+    let groups = this.groups;
+
+    if (!this._ready || groups instanceof Promise) {
+      throw new Error("User not ready");
+    } else {
+      return groups;
+    }
+  }
+
   private fetchAccountData(parameter: string | number): Promise<Account> {
     return new Promise(async (resolve, reject) => {
       const account: Account = new Account();
