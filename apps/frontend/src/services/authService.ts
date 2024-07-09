@@ -1,9 +1,13 @@
-import { ToastProps } from "@radix-ui/react-toast";
+interface ResponseToast {
+  title: string,
+  description: string,
+  variant?: "default" | "destructive" | null | undefined
+}
 
 export const login = async (
   username: string,
   password: string
-): Promise<ToastProps> => {
+): Promise<ResponseToast> => {
   const formData = new FormData();
 
   formData.append("client_id", process.env.NEXT_PUBLIC_CLIENT_ID ?? "");
@@ -46,7 +50,7 @@ export const register = async (
   username: string,
   email: string,
   password: string
-): Promise<ToastProps> => {
+): Promise<ResponseToast> => {
   const formData = new FormData();
 
   formData.append("user[username]", username);
@@ -63,7 +67,7 @@ export const register = async (
       case 200:
         return {
           title: "Successfully registered.",
-          description: "You may now login.",
+          description: "You are being automatically logged in...",
         };
       case 409:
         return {

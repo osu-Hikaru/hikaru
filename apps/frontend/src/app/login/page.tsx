@@ -37,6 +37,12 @@ export default function PageLogin() {
   const onSubmit = form.handleSubmit((data: z.infer<typeof formSchema>) => {
     login(data.username, data.password).then((responseToast) => {
       toast(responseToast);
+
+      if (responseToast.variant !== "destructive") {
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 3000);
+      }
     });
   });
 

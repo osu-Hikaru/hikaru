@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
-import { register } from "@/services/authService";
+import { register, login } from "@/services/authService";
 
 export default function PageRegister() {
   const { toast } = useToast();
@@ -37,9 +37,23 @@ export default function PageRegister() {
   });
 
   const onSubmit = form.handleSubmit((data: z.infer<typeof formSchema>) => {
-    register(data.username, data.email, data.password).then((responseToast) => {
-      toast(responseToast);
-    });
+    register(data.username, data.email, data.password).then(
+      (responseToastRegistration) => {
+        toast(responseToastRegistration);
+
+        if (responseToastRegistration.variant !== "destructive") {
+          login(data.username, data.password).then((responseToastLogin) => {
+            toast(responseToastLogin);
+
+            if (responseToastLogin.variant !== "destructive") {
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 3000);
+            }
+          });
+        }
+      }
+    );
   });
 
   return (
