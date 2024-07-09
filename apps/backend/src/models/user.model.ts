@@ -1,3 +1,6 @@
+import { DatabaseModel } from "./model.js";
+
+import { Account } from "./account.model.js";
 import { Country } from "../classes/country.class.js";
 import { Cover } from "../classes/cover.class.js";
 import { Group } from "../classes/group.class.js";
@@ -5,14 +8,7 @@ import { Kudosu } from "../classes/kudosu.class.js";
 import { RankHistory } from "../classes/rankHistory.class.js";
 import { RankHighest } from "../classes/rank_highest.class.js";
 import { Statistics } from "../classes/statistics.class.js";
-
-import { Prisma } from "@prisma/client";
-import { DatabaseModel } from "./model.js";
 import { StatisticsRulesets } from "../classes/statisticsRuleset.class.js";
-
-type UserWithAccount = Prisma.usersGetPayload<{
-  include: { accounts: true };
-}>;
 
 export class User extends DatabaseModel {
   private account_history: Array<any> = [];
@@ -83,337 +79,63 @@ export class User extends DatabaseModel {
   private username: string = "";
   private website: string = "";
 
+  private _ready: boolean = false;
+
   constructor() {
     super();
   }
 
-  fetchUserById(id: number): Promise<User> {
-    return new Promise((resolve, reject) => {
-      this._databaseService
-        .getClient()
-        .users.findFirstOrThrow({
-          where: {
-            accounts: {
-              id: Number(id),
-            },
-          },
-          include: { accounts: true },
-        })
-        .then((user: UserWithAccount) => {
-          this.username = user.accounts.username;
-          this.countryCode = user.country_code ?? "";
-          this.join_date = user.join_date ?? new Date();
-          this.rank_highest.setUpdatedAt(user.join_date ?? new Date());
-          resolve(Object.assign({}, this));
-        })
-        .catch((e) => {
-          reject(e);
-        });
+  public init(parameter: string | number): Promise<User> {
+    return new Promise(async (resolve, reject) => {
+      const account = await this.fetchAccountData(parameter);
+
+      this.id = account.getId();
+      this.username = account.getUsername();
+
+      await this.fetchUserData(this.id);
+
+      this._ready = true;
+
+      resolve(this);
     });
   }
 
-  fetchUserByUsername(username: string): Promise<User> {
-    return new Promise((resolve, reject) => {
-      this._databaseService
-        .getClient()
-        .users.findFirstOrThrow({
-          where: {
-            accounts: {
-              username: username,
-            },
-          },
-          include: { accounts: true },
-        })
-        .then((user: UserWithAccount) => {
-          this.username = user.accounts.username;
-          this.countryCode = user.country_code ?? "";
-          this.join_date = user.join_date ?? new Date();
-          this.rank_highest.setUpdatedAt(user.join_date ?? new Date());
-          resolve(Object.assign({}, this));
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    });
-  }
-
-  getObject(): string {
+  public getObject(): string {
     return this.package(this);
   }
 
-  getAccountHistory(): Array<any> {
-    return this.account_history;
-  }
-
-  getActiveTournamentBanner(): any | null {
-    return this.active_tournament_banner;
-  }
-
-  getActiveTournamentBanners(): Array<any> {
-    return this.active_tournament_banners;
-  }
-
-  getAvatarUrl(): string {
-    return this.avatar_url;
-  }
-
-  getBadges(): Array<any> {
-    return this.badges;
-  }
-
-  getBeatmapPlaycountsCount(): number {
-    return this.beatmap_playcounts_count;
-  }
-
-  getCommentsCount(): number {
-    return this.comments_count;
-  }
-
-  getCountry(): Country {
-    return this.country;
-  }
-
-  getCountryCode(): string {
-    return this.countryCode;
-  }
-
-  getCover(): Cover {
-    return this.cover;
-  }
-
-  getCoverUrl(): string {
-    return this.cover_url;
-  }
-
-  getDefaultGroup(): string {
-    return this.default_group;
-  }
-
-  getDiscord(): string {
-    return this.discord;
-  }
-
-  getFavoriteBeatmapsetCount(): number {
-    return this.favorite_beatmapset_count;
-  }
-
-  getFollowerCount(): number {
-    return this.follower_count;
-  }
-
-  getGraveyardBeatmapsetCount(): number {
-    return this.graveyard_beatmapset_count;
-  }
-
-  getGroups(): Array<Group> {
-    return this.groups;
-  }
-
-  getGuestBeatmapsetCount(): number {
-    return this.guest_beatmapset_count;
-  }
-
-  getHasSupported(): boolean {
-    return this.has_supported;
-  }
-
-  getId(): number {
-    return this.id;
-  }
-
-  getInterests(): string {
-    return this.interests;
-  }
-
-  getIsActive(): boolean {
-    return this.is_active;
-  }
-
-  getIsBot(): boolean {
-    return this.is_bot;
-  }
-
-  getIsDeleted(): boolean {
-    return this.is_deleted;
-  }
-
-  getIsOnline(): boolean {
-    return this.is_online;
-  }
-
-  getIsSupporter(): boolean {
-    return this.is_supporter;
-  }
-
-  getJoinDate(): Date {
-    return this.join_date;
-  }
-
-  getKudosu(): Kudosu {
-    return this.kudosu;
-  }
-
-  getLastVisit(): string {
-    return this.last_visit;
-  }
-
-  getLocation(): string {
-    return this.location;
-  }
-
-  getLovedBeatmapsetCount(): number {
-    return this.loved_beatmapset_count;
-  }
-
-  getMappingFollowerCount(): number {
-    return this.mapping_follower_count;
-  }
-
-  getMaxBlocks(): number {
-    return this.max_blocks;
-  }
-
-  getMaxFriends(): number {
-    return this.max_friends;
-  }
-
-  getMonthlyPlaycounts(): Array<any> {
-    return this.monthly_playcounts;
-  }
-
-  getNominatedBeatmapsetCount(): number {
-    return this.nominated_beatmapset_count;
-  }
-
-  getOccupation(): string | null {
-    return this.occupation;
-  }
-
-  getPage(): Object {
-    return this.page;
-  }
-
-  getPendingBeatmapsetCount(): number {
-    return this.pending_beatmapset_count;
-  }
-
-  getPlaymode(): string {
-    return this.playmode;
-  }
-
-  getPlaystyle(): Array<string> {
-    return this.playstyle;
-  }
-
-  getPmFriendsOnly(): boolean {
-    return this.pm_friends_only;
-  }
-
-  getPostCount(): number {
-    return this.post_count;
-  }
-
-  getPreviousUsernames(): Array<string> {
-    return this.previous_usernames;
-  }
-
-  getProfileColour(): null {
-    return this.profile_colour;
-  }
-
-  getProfileOrder(): Array<string> {
-    return this.profile_order;
-  }
-
-  getRankHistory(): RankHistory {
-    return this.rankHistory;
-  }
-
-  getRankHighest(): RankHighest {
-    return this.rank_highest;
-  }
-
-  getRank_History(): RankHistory {
-    return this.rank_history;
-  }
-
-  getRankedAndApprovedBeatmapsetCount(): number {
-    return this.ranked_and_approved_beatmapset_count;
-  }
-
-  getRankedBeatmapsetCount(): number {
-    return this.ranked_beatmapset_count;
-  }
-
-  getReplaysWatchedCounts(): Array<any> {
-    return this.replays_watched_counts;
-  }
-
-  getScoresBestCount(): number {
-    return this.scores_best_count;
-  }
-
-  getScoresFirstCount(): number {
-    return this.scores_first_count;
-  }
-
-  getScoresPinnedCount(): number {
-    return this.scores_pinned_count;
-  }
-
-  getScoresRecentCount(): number {
-    return this.scores_recent_count;
-  }
-
-  getSessionVerified(): boolean {
-    return this.session_verified;
-  }
-
-  getStatistics(): Statistics {
-    return this.statistics;
-  }
-
-  getStatisticsRulesets(): StatisticsRulesets {
-    return this.statistics_rulesets;
-  }
-
-  getSupportLevel(): number {
-    return this.support_level;
-  }
-
-  getTitle(): string {
-    return this.title;
-  }
-
-  getTitleUrl(): string {
-    return this.title_url;
-  }
-
-  getTwitter(): string {
-    return this.twitter;
-  }
-
-  getUnrankedBeatmapsetCount(): number {
-    return this.unranked_beatmapset_count;
-  }
-
-  getUserAchievements(): Array<any> {
-    return this.user_achievements;
-  }
-
-  getUsername(): string {
-    return this.username;
-  }
-
-  getWebsite(): string {
-    return this.website;
-  }
-
-  setId(id: number): void {
-    this.id = Number(id);
-  }
-
-  setUsername(username: string): void {
-    this.username = username;
+  private fetchAccountData(parameter: string | number): Promise<Account> {
+    return new Promise(async (resolve, reject) => {
+      const account: Account = new Account();
+      resolve(account.fetchAccountData(parameter));
+    });
+  }
+
+  private fetchUserData(id: number): Promise<User> {
+    return new Promise(async (resolve, reject) => {
+      const dbService = this._databaseService.getClient();
+      const user = await dbService.users.findFirstOrThrow({
+        where: {
+          accounts: {
+            id: Number(id),
+          },
+        },
+      });
+
+      Object.keys(user).forEach((key) => {
+        if (this.isValidKey(key, this)) {
+          (this as any)[key] = (user as any)[key];
+        }
+      });
+
+      resolve(this);
+    });
+  }
+
+  private isValidKey(
+    key: string | number | symbol,
+    instance: any
+  ): key is keyof typeof instance {
+    return key in instance;
   }
 }

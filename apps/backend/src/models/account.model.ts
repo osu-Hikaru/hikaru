@@ -5,15 +5,12 @@ import { accounts } from "@prisma/client";
 import { DatabaseModel } from "./model.js";
 
 export class Account extends DatabaseModel {
-  private id: number | null;
-  private username: string;
-  private user_email: string;
+  private id: number | undefined;
+  private username: string | undefined;
+  private user_email: string | undefined;
 
-  constructor(id: number | null, username: string, user_email: string) {
+  constructor() {
     super();
-    this.id = id;
-    this.username = username;
-    this.user_email = user_email;
   }
 
   private comparePassword(password: string, hashedPassword: string): boolean {
@@ -66,6 +63,41 @@ export class Account extends DatabaseModel {
     });
   }
 
+  public async fetchAccountData(search: number | string): Promise<Account> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let account;
+        const dbService = this._databaseService.getClient();
+
+        if (typeof search === "number") {
+          account = await dbService.accounts.findFirst({
+            where: {
+              id: search,
+            },
+          });
+        } else {
+          account = await dbService.accounts.findFirst({
+            where: {
+              username: search,
+            },
+          });
+        }
+
+        if (!account) {
+          throw new Error("Account not found");
+        }
+
+        this.id = account.id;
+        this.username = account.username;
+        this.user_email = account.email;
+
+        resolve(this);
+      } catch (err) {
+        reject(this.identifyErrorType(err));
+      }
+    });
+  }
+
   public async validatePassword(password: string): Promise<boolean> {
     return this.comparePassword(password, await this.getPassword());
   }
@@ -75,45 +107,65 @@ export class Account extends DatabaseModel {
   }
 
   public getUsername(): string {
-    return this.username;
+    return this.username ?? "";
   }
 
   public getUserEmail(): string {
-    return this.user_email;
+    return this.user_email ?? "";
   }
 
-  public registerUser(password: string): Promise<Account> {
+  private validateUsernameParameters(username: string): boolean {
+    return RegExp(/^[a-zA-Z0-9_]{3,16}$/).test(username);
+  }
+
+  private validatePasswordParameters(password: string): boolean {
+    return RegExp(/.{8,}/).test(password);
+  }
+
+  public registerUser(
+    username: string,
+    user_email: string,
+    password: string
+  ): Promise<Account> {
     return new Promise(async (resolve, reject) => {
       try {
-        const account = await this._databaseService
-          .getClient()
-          .$transaction(async (tx) => {
-            const account = await tx.accounts.create({
-              data: {
-                username: this.username,
-                email: this.user_email,
-                password: await this.hashPassword(password),
-              },
-            });
+        if (username === undefined || user_email === undefined) {
+          throw new Error("Username and email are required");
+        } else if (
+          !this.validateUsernameParameters(username) ||
+          !this.validatePasswordParameters(password)
+        ) {
+          throw new Error("Invalid username or password");
+        } else {
+          const dbService = this._databaseService.getClient();
+          const registrationTransaction = await dbService.$transaction(
+            async (tx) => {
+              const account = await tx.accounts.create({
+                data: {
+                  username: username,
+                  email: user_email,
+                  password: await this.hashPassword(password),
+                },
+              });
 
-            if (account.id === undefined) {
-              throw new Error("Account ID is undefined");
+              await tx.users.create({
+                data: {
+                  account_id: account.id,
+                },
+              });
+
+              return account;
             }
+          );
 
-            const user = await tx.users.create({
-              data: {
-                account_id: account.id,
-              },
-            });
+          this.id = registrationTransaction.id;
+          this.username = username;
+          this.user_email = user_email;
 
-            return account;
-          });
-
-        this.id = account.id;
-
-        resolve(this);
-      } catch (err) {
-        reject(this.identifyErrorType(err));
+          resolve(this);
+        }
+      } catch (e) {
+        reject(this.identifyErrorType(e));
       }
     });
   }

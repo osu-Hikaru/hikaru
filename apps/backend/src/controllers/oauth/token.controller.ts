@@ -17,11 +17,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    const contextUser = new Account(
-      null,
-      formData.username,
-      formData.user_email
-    );
+    const contextUser = new Account();
+    await contextUser.fetchAccountData(formData.username);
 
     contextUser.validatePassword(formData.password).then((valid) => {
       if (!valid) {
