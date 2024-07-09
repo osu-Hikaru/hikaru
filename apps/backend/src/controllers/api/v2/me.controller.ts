@@ -9,7 +9,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     await contextUser.fetchUserById(contextUser.getId());
 
-    res.status(200).json(contextUser.getObject());
+    res.status(200).json(JSON.parse(contextUser.getObject()));
   } catch (e) {
     next(e);
   }

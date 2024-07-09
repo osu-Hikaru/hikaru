@@ -8,17 +8,11 @@ import { Statistics } from "../classes/statistics.class.js";
 
 import { Prisma } from "@prisma/client";
 import { DatabaseModel } from "./model.js";
+import { StatisticsRulesets } from "../classes/statisticsRuleset.class.js";
 
 type UserWithAccount = Prisma.usersGetPayload<{
   include: { accounts: true };
 }>;
-
-type StatisticsRulesets = {
-  osu: Statistics;
-  taiko: Statistics;
-  fruits: Statistics;
-  mania: Statistics;
-};
 
 export class User extends DatabaseModel {
   private account_history: Array<any> = [];
@@ -79,12 +73,7 @@ export class User extends DatabaseModel {
   private scores_recent_count: number = 0;
   private session_verified: boolean = true;
   private statistics: Statistics = new Statistics();
-  private statistics_rulesets: StatisticsRulesets = {
-    osu: new Statistics(),
-    taiko: new Statistics(),
-    fruits: new Statistics(),
-    mania: new Statistics(),
-  };
+  private statistics_rulesets: StatisticsRulesets = new StatisticsRulesets();
   private support_level: number = 0;
   private title: string = "";
   private title_url: string = "";
@@ -149,7 +138,7 @@ export class User extends DatabaseModel {
   }
 
   getObject(): string {
-    return this.package();
+    return this.package(this);
   }
 
   getAccountHistory(): Array<any> {
