@@ -7,7 +7,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const searchParameter = req.url.split("/")[1];
     const contextUser = new User();
 
-    contextUser.init(searchParameter);
+    await contextUser.init(searchParameter);
 
     res.status(200).json(JSON.parse(contextUser.getObject()));
   } catch (e) {

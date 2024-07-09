@@ -9,7 +9,7 @@ export class DatabaseModel {
 
   constructor() {}
 
-  identifyErrorType(error: any) {
+  protected identifyErrorType(error: any) {
     switch (error.constructor) {
       case PrismaClientKnownRequestError:
         return this.handleKnownDatabaseError(error);
@@ -18,7 +18,7 @@ export class DatabaseModel {
     }
   }
 
-  handleKnownDatabaseError(error: PrismaClientKnownRequestError) {
+  protected handleKnownDatabaseError(error: PrismaClientKnownRequestError) {
     switch (error.code) {
       case "P2002":
         if (!error.meta) {

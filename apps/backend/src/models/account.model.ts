@@ -69,10 +69,13 @@ export class Account extends DatabaseModel {
         let account;
         const dbService = this._databaseService.getClient();
 
-        if (typeof search === "number") {
+        if (
+          (typeof search === "string" && parseInt(search)) ||
+          typeof search === "number"
+        ) {
           account = await dbService.accounts.findFirst({
             where: {
-              id: search,
+              id: Number(search),
             },
           });
         } else {

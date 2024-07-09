@@ -1,4 +1,5 @@
 import { DatabaseModel } from "./model.js";
+import { GroupsModel } from "./groups.model.js";
 
 import { Account } from "./account.model.js";
 import { Country } from "../classes/country.class.js";
@@ -27,7 +28,7 @@ export class User extends DatabaseModel {
   private favorite_beatmapset_count: number = 0;
   private follower_count: number = 0;
   private graveyard_beatmapset_count: number = 0;
-  private groups: Array<Group> = [];
+  private groups: Promise<Group[]> | Group[] = [];
   private guest_beatmapset_count: number = 0;
   private has_supported: boolean = false;
   private id: number = 1;
@@ -87,15 +88,21 @@ export class User extends DatabaseModel {
 
   public init(parameter: string | number): Promise<User> {
     return new Promise(async (resolve, reject) => {
+      // Fetch account data
       const account = await this.fetchAccountData(parameter);
 
+      // Set account data
       this.id = account.getId();
       this.username = account.getUsername();
 
+      // Fetch user data
       await this.fetchUserData(this.id);
 
-      this._ready = true;
+      // Fetch groups
+      this.groups = await this.groups;
 
+      // Set signal user is prepared
+      this._ready = true;
       resolve(this);
     });
   }
@@ -122,14 +129,27 @@ export class User extends DatabaseModel {
         },
       });
 
-      Object.keys(user).forEach((key) => {
-        if (this.isValidKey(key, this)) {
-          (this as any)[key] = (user as any)[key];
+      Object.keys(user).forEach(async (key) => {
+        switch (key) {
+          case "groups":
+            this.groups = this.fetchUserGroups(user["groups"]);
+            break;
+          default:
+            if (this.isValidKey(key, this)) {
+              (this as any)[key] = (user as any)[key];
+            }
+            break;
         }
       });
 
       resolve(this);
     });
+  }
+
+  private fetchUserGroups(groups: Array<number>): Promise<Array<Group>> {
+    const g = GroupsModel.getInstance();
+
+    return g.getGroups(groups);
   }
 
   private isValidKey(
