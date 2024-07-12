@@ -18,7 +18,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const contextUser = new Account();
-    await contextUser.fetchAccountData(formData.username);
+    await contextUser.getAccount(formData.username);
 
     contextUser.validatePassword(formData.password).then((valid) => {
       if (!valid) {

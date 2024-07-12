@@ -18,6 +18,13 @@ class DatabaseError extends Error {
   }
 }
 
+export class UnknownEntry extends DatabaseError {
+  constructor(message: string, model: string) {
+    super(message, model, 404, true);
+    this.name = "UnknownEntry";
+  }
+}
+
 export class DuplicateEntry extends DatabaseError {
   constructor(message: string, model: string) {
     super(message, model, 409, true);

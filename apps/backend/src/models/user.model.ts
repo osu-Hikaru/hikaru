@@ -124,7 +124,7 @@ export class User extends DatabaseModel {
   private fetchAccountData(parameter: string | number): Promise<Account> {
     return new Promise(async (resolve, reject) => {
       const account: Account = new Account();
-      resolve(account.fetchAccountData(parameter));
+      resolve(account.getAccount(parameter));
     });
   }
 
