@@ -160,8 +160,8 @@ export class Account extends DatabaseModel {
         } else {
           reject("Hashed password does not match");
         }
-      } catch (e) {
-        reject(e);
+      } catch (err) {
+        reject(err);
       }
     });
   }
