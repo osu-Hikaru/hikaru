@@ -59,7 +59,7 @@ export const post = async (
     );
 
     res
-      .cookie("jwt", jwt, {
+      .cookie("jwt", jwt.token, {
         maxAge: jwt.data.exp,
       })
       .status(200)
