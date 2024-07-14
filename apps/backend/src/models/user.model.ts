@@ -89,7 +89,8 @@ export class User extends DatabaseModel {
   public init(parameter: string | number): Promise<User> {
     return new Promise(async (resolve, reject) => {
       // Fetch account data
-      const account = await this.fetchAccountData(parameter);
+      const account = new Account();
+      await account.getAccount(parameter);
 
       // Set account data
       this.id = account.getId();
@@ -119,13 +120,6 @@ export class User extends DatabaseModel {
     } else {
       return groups;
     }
-  }
-
-  private fetchAccountData(parameter: string | number): Promise<Account> {
-    return new Promise(async (resolve, reject) => {
-      const account: Account = new Account();
-      resolve(account.getAccount(parameter));
-    });
   }
 
   private fetchUserData(id: number): Promise<User> {

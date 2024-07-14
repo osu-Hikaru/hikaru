@@ -161,7 +161,7 @@ export class Account extends DatabaseModel {
           reject("Hashed password does not match");
         }
       } catch (err) {
-        reject(err);
+        reject(this.identifyErrorType(err));
       }
     });
   }
@@ -173,21 +173,17 @@ export class Account extends DatabaseModel {
    */
   public async getAccount(search: number | string): Promise<Account> {
     return new Promise(async (resolve, reject) => {
-      this.fetchAccountData(search)
-        .then((account) => {
-          resolve(account);
-        })
-        .catch((err) => {
-          if (err instanceof UnknownEntry) {
-            reject(
-              this.identifyErrorType(
-                new Unauthorized("Incorrect username or password")
-              )
-            );
-          } else {
-            reject(this.identifyErrorType(err));
-          }
-        });
+      try {
+        const user = await this.fetchAccountData(search);
+
+        if (!user) {
+          throw new UnknownEntry("Incorrect username or password", "account");
+        } else {
+          resolve(user);
+        }
+      } catch (err) {
+        reject(this.identifyErrorType(err));
+      }
     });
   }
 
@@ -197,7 +193,9 @@ export class Account extends DatabaseModel {
    * @returns A Promise that resolves to an Account object.
    * @throws UnknownEntry - If the account is not found.
    */
-  private async fetchAccountData(search: number | string): Promise<Account> {
+  private async fetchAccountData(
+    search: number | string
+  ): Promise<Account | null> {
     return new Promise(async (resolve, reject) => {
       try {
         const dbService = this._databaseService.getClient();
@@ -221,16 +219,16 @@ export class Account extends DatabaseModel {
         }
 
         if (!account) {
-          throw new UnknownEntry("Incorrect username or password", "account");
+          resolve(null);
+        } else {
+          this.id = account.id;
+          this.username = account.username;
+          this.user_email = account.email;
+
+          resolve(this);
         }
-
-        this.id = account.id;
-        this.username = account.username;
-        this.user_email = account.email;
-
-        resolve(this);
-      } catch (err) {
-        reject(err);
+      } catch (err: any) {
+        reject(this.handleKnownDatabaseError(err));
       }
     });
   }
