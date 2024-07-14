@@ -24,6 +24,7 @@ model users {
   account_id           Int                    @id @default(autoincrement())
   country_code         String?                @db.Char(2)
   join_date            DateTime?              @default(now()) @db.Timestamp(6)
+  groups               Int[]
   seasonal_backgrounds seasonal_backgrounds[]
   accounts             accounts               @relation(fields: [account_id], references: [id], map: "users_account_id_seq")
 }
@@ -36,4 +37,17 @@ model seasonal_backgrounds {
   users       users    @relation(fields: [user], references: [account_id])
 
   @@map("seasonal-backgrounds")
+}
+
+model groups {
+  internal_id     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  colour          String   @db.Char(7)
+  has_listing     Boolean
+  has_playmodes   Boolean
+  id              Int      @unique(map: "id") @default(autoincrement())
+  identifier      String   @db.VarChar(16)
+  is_probationary Boolean
+  name            String   @db.VarChar(256)
+  playmodes       String[] @db.Char(1)
+  short_name      String   @unique(map: "short_name") @db.VarChar(3)
 }

@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.4",
     "js-cookie": "^3.0.5",
+    "ldrs": "^1.0.2",
     "lucide-react": "^0.378.0",
     "next": "14.2.3",
     "react": "^18",

@@ -1,7 +1,7 @@
 interface ResponseToast {
-  title: string,
-  description: string,
-  variant?: "default" | "destructive" | null | undefined
+  title: string;
+  description: string;
+  variant?: "default" | "destructive" | null | undefined;
 }
 
 export const login = async (
@@ -68,6 +68,12 @@ export const register = async (
         return {
           title: "Successfully registered.",
           description: "You are being automatically logged in...",
+        };
+      case 403:
+        return {
+          title: jsonData.message,
+          description: "Please try again later.",
+          variant: "destructive",
         };
       case 409:
         return {
