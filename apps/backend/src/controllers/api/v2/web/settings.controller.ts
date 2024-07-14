@@ -21,11 +21,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Setup web parameters
     const WebSettingInstance = WebSetting.getInstance();
-    const setting = req.body.setting;
+    const setting = req.query.setting?.toString() || req.body.setting;
 
     // Check for required values
     if (!setting) {
-      throw new BadRequest("Setting and value are required.");
+      throw new BadRequest("Setting is required.");
     }
 
     // Retrieve setting
@@ -51,8 +51,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Setup web parameters
     const WebSettingInstance = WebSetting.getInstance();
-    const setting = req.query.setting?.toString();
-    const value = req.query.value?.toString();
+    const setting = req.body.setting;
+    const value = req.body.value;
 
     // Initialize user
     const contextUser = new User();

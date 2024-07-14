@@ -5,6 +5,7 @@ import pkg from "jsonwebtoken";
 const { verify: jwtVerify, sign: jwtSign } = pkg;
 
 // Services
+import { Service } from "./service.js";
 import { genSecureHexString } from "./util.service.js";
 
 // Interfaces
@@ -24,7 +25,7 @@ interface jwtData {
 /**
  * Service for handling JSON Web Tokens (JWT).
  */
-export default class JwtService {
+export default class JwtService extends Service {
   private static instance: JwtService;
   private static private_key: Buffer;
   private static public_key: Buffer;
@@ -33,6 +34,8 @@ export default class JwtService {
    * Private constructor to enforce singleton pattern.
    */
   private constructor() {
+    super();
+
     if (!JwtService.instance) {
       JwtService.instance = this;
     }
@@ -91,6 +94,12 @@ export default class JwtService {
    * @returns The decoded data from the JWT.
    */
   public verify(jwt: string): any {
-    return jwtVerify(jwt, JwtService.public_key);
+    try {
+      let token = jwtVerify(jwt, JwtService.public_key);
+
+      return token;
+    } catch (err) {
+      return this.identifyErrorType(err);
+    }
   }
 }

@@ -39,8 +39,8 @@ router.use("*", (req: Request, res: Response, next: NextFunction) => {
     const jwt = JwtService.getInstance().verify(token);
 
     // Check if the token is valid
-    if (jwt.sub === undefined) {
-      throw new Forbidden("Invalid authorization provided");
+    if (jwt instanceof Error) {
+      throw jwt;
     } else {
       // Add the JWT to the request body
       if (req.body === undefined) {

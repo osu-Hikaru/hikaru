@@ -5,5 +5,4 @@ import { get, post } from "../../../../controllers/api/v2/web/settings.controlle
 export const router: Router = express.Router();
 
 router.get("/", get);
-
 router.post("/", post);

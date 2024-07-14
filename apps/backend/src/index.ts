@@ -16,6 +16,7 @@ const app: Express = express();
 
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.use(express.json());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader("Access-Control-Allow-Origin", process.env.WEB_URL ?? "");
