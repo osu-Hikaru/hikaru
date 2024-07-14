@@ -2,13 +2,16 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
+import { WebSetting } from "./models/web.model.js";
 import { LoggerService } from "./services/logger.service.js";
 
 import { router as oauthRouter } from "./routes/oauth.route.js";
 import { router as usersRouter } from "./routes/users.route.js";
+import { router as webRouter } from "./routes/web.route.js";
 import { router as apiRouter } from "./routes/api.route.js";
 
 const logger = LoggerService.getInstance().getLogger();
+WebSetting.getInstance();
 const app: Express = express();
 
 app.use(morgan("dev"));
@@ -30,6 +33,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use("/oauth", oauthRouter);
 app.use("/users", usersRouter);
+app.use("/web", webRouter);
 app.use("/api", apiRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {

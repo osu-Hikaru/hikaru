@@ -78,7 +78,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       setting: setting,
       value: updateResult,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };

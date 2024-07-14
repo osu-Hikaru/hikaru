@@ -1,13 +1,17 @@
 import { DatabaseModel } from "./model.js";
 
+export type WebSettings = Map<string, string>;
+
 export class WebSetting extends DatabaseModel {
   private static instance: WebSetting;
-  private settingCache: Map<string, string> = new Map<string, string>();
+  private settingCache: WebSettings = new Map<string, string>();
 
   private constructor() {
     super();
     if (!WebSetting.instance) {
       WebSetting.instance = this;
+
+      this.fetchSettings()
     }
 
     return WebSetting.instance;
@@ -20,14 +24,13 @@ export class WebSetting extends DatabaseModel {
     return WebSetting.instance;
   }
 
-  public getCache(): Map<string, string> {
-    return this.settingCache;
-  }
-
-  public async getSetting(setting: string): Promise<string> {
+  public async getSetting(
+    setting: string,
+    forceRefresh: boolean = false
+  ): Promise<string> {
     let retrieved;
 
-    if (this.settingCache.has(setting)) {
+    if (this.settingCache.has(setting) && !forceRefresh) {
       this.settingCache.get(setting);
 
       if (retrieved) {
@@ -41,9 +44,10 @@ export class WebSetting extends DatabaseModel {
 
   private fetchSetting(setting: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      this._databaseService
-        .getClient()
-        .web.findFirstOrThrow({
+      const dbClient = this._databaseService.getClient();
+
+      dbClient.web
+        .findFirstOrThrow({
           where: {
             setting: setting,
           },
@@ -58,25 +62,61 @@ export class WebSetting extends DatabaseModel {
     });
   }
 
-  public updateSetting(setting: string, value: string): Promise<string> {
+  public async getSettings(
+    forceRefresh: boolean = false
+  ): Promise<WebSettings> {
+    if (!forceRefresh) {
+      return this.getCache();
+    }
+
+    return this.fetchSettings();
+  }
+
+  private fetchSettings(): Promise<WebSettings> {
     return new Promise((resolve, reject) => {
-      this._databaseService
-        .getClient()
-        .web.update({
+      const dbClient = this._databaseService.getClient();
+
+      dbClient.web
+        .findMany()
+        .then((results) => {
+          for (const result of results) {
+            this.settingCache.set(result.setting, result.value);
+          }
+
+          resolve(this.getCache());
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  private getCache(): Map<string, string> {
+    return this.settingCache;
+  }
+
+  public updateSetting(setting: string, value: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const dbClient = this._databaseService.getClient();
+        const res = await dbClient.web.update({
           where: {
             setting: setting,
           },
           data: {
             value: value,
           },
-        })
-        .then((result) => {
-          this.settingCache.set(result.setting, result.value);
-          resolve(result.value);
-        })
-        .catch((err) => {
-          reject(err);
         });
+
+        if (!res) {
+          throw new Error("Failed to update setting.");
+        }
+
+        this.settingCache.set(res.setting, res.value);
+        resolve(res.value);
+      } catch (err) {
+        reject(this.identifyErrorType(err));
+      }
     });
   }
 }
