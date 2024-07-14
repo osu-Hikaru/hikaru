@@ -8,30 +8,39 @@ import { router as v2Router } from "./api/v2.route.js";
 import JwtService from "../services/jwt.service.js";
 
 // Errors
-import { Forbidden } from "../errors/api.error.js";
+import { BadRequest, Forbidden, Unauthorized } from "../errors/api.error.js";
 
 // Router definition
 export const router: Router = express.Router();
 
 router.use("*", (req: Request, res: Response, next: NextFunction) => {
   try {
+    const authHeader = req.headers.authorization || req.cookies.jwt;
+
     // Check if the authorization header is provided
-    if (!req.headers.authorization?.startsWith("Bearer ")) {
-      throw new Forbidden("Invalid authorization header");
+    if (!authHeader) {
+      throw new Unauthorized("Authorization header is required");
     }
 
-    const token = req.headers.authorization?.split(" ")[1];
+    let token;
+
+    // Check if the authorization header is provided
+    if (!req.headers.authorization?.startsWith("Bearer ")) {
+      token = authHeader;
+    } else {
+      token = req.headers.authorization?.split(" ")[1];
+    }
 
     // Check if the token is provided
     if (token === undefined) {
-      throw new Forbidden("Invalid authorization header");
+      throw new BadRequest("No authorization token provided");
     }
 
     const jwt = JwtService.getInstance().verify(token);
 
     // Check if the token is valid
     if (jwt.sub === undefined) {
-      throw new Forbidden("Invalid authorization header");
+      throw new Forbidden("Invalid authorization provided");
     } else {
       // Add the JWT to the request body
       if (req.body === undefined) {
@@ -42,7 +51,7 @@ router.use("*", (req: Request, res: Response, next: NextFunction) => {
       next();
     }
   } catch (err: any) {
-    throw new Error(err);
+    next(err);
   }
 });
 

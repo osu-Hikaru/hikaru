@@ -18,17 +18,19 @@ export class PermissionService {
     return PermissionService.instance;
   }
 
-  public static checkPermission(groups: number[], requiredLevel: string) {
+  public static checkPermission(
+    groups: number[],
+    requiredLevel: string
+  ): boolean {
     switch (requiredLevel) {
       case "admin":
-        return new Promise((resolve, reject) => {
-          if (groups.some((group) => this.groups_admin.includes(group))) {
-            resolve(true);
-          } else {
-            reject(false);
-          }
-        });
-        break;
+        if (groups.some((group) => this.groups_admin.includes(group))) {
+          return true;
+        } else {
+          return false;
+        }
+      default:
+        return false;
     }
   }
 }
