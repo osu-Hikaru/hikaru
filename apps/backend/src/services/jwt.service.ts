@@ -103,9 +103,7 @@ export default class JwtService extends Service {
      */
     public verify(jwt: string): any {
         try {
-            let token = jwtVerify(jwt, JwtService.public_key);
-
-            return token;
+            return jwtVerify(jwt, JwtService.public_key);
         } catch (err) {
             return this.identifyErrorType(err);
         }
