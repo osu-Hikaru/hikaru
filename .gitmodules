@@ -1,3 +1,6 @@
-[submodule "bridgeppy"]
-	path = bridgeppy
-	url = git@github.com:osu-Hikaru/bridgeppy.git
+[submodule "submodules/bridgeppy"]
+	path = submodules/bridgeppy
+	url = https://github.com/osu-Hikaru/bridgeppy.git
+[submodule "submodules/backend-framework"]
+	path = submodules/backend-framework
+	url = https://github.com/osu-Hikaru/backend-framework.git
