@@ -26,7 +26,7 @@ export const post = async (
     ): Promise<void> => {
 
         const formData = req.body;
-        console.log(formData)
+
         switch (formData.grant_type) {
             case "password":
                 await authorizePassword(formData).then(jwt => {
