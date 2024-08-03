@@ -1,0 +1,3 @@
+[submodule "submodules/bridgeppy"]
+	path = submodules/bridgeppy
+	url = git@github.com:osu-Hikaru/bridgeppy.git
