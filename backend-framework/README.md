@@ -1,1 +1,0 @@
-# Hikaru: Backend Framework

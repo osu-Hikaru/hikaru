@@ -6,9 +6,9 @@
   "license": "GPLv3",
   "type": "module",
   "scripts": {
-    "submodule:update": "git submodule update --remote --merge && tsc",
+    "submodule:update": "git submodule update --remote --merge",
     "run:dev": "node --loader ts-node/esm index.ts",
-    "compile:dev": "tsc"
+    "compile:dev": "npx prisma db pull && npx prisma generate && tsc"
   },
   "keywords": [],
   "author": "",
