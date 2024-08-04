@@ -1,0 +1,12 @@
+{
+  "name": "backend-framework",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build:backend": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

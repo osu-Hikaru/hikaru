@@ -1,0 +1,37 @@
+{
+  "name": "backend-server",
+  "version": "0.2.0",
+  "description": "",
+  "main": "index.js",
+  "license": "GPLv3",
+  "type": "module",
+  "scripts": {
+    "submodule:update": "git submodule update --remote --merge && tsc",
+    "run:dev": "node --loader ts-node/esm index.ts",
+    "compile:dev": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "@prisma/client": "5.15.0",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "1.4.5-lts.1",
+    "pino": "^9.2.0",
+    "pino-pretty": "^11.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "ts-node": "^10.9.2",
+    "prisma": "^5.15.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.11"
+  }
+}
